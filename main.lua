@@ -1,24 +1,18 @@
-entities = {}
-
 tools = {
-  AABB = require("tools.aabbDetect")
+	AABB = require("tools.aabbDetect"),
+	WF = require("plugins.windfield"),
 }
 
 function love.load()
-  
+  require("startup")
+  sceneManager.changeScene(1)
 end
 
 function love.update(delta)
-  for index, entity in ipairs(entities) do
-    entity:update()
-  end     
+  sceneManager.update(delta)
 end
 
 function love.draw()
-  for index, entity in ipairs(entities) do
-    entity:draw()
-  end
-
-  love.graphics.print(tostring(tools.AABB.detect(2, 2, 10, 10, 1, 1, 6, 6)), 100, 100, 0, 10)
+  sceneManager.draw()
+  love.graphics.clear()
 end
-
