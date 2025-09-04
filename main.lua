@@ -9,10 +9,11 @@ function love.load()
 end
 
 function love.update(delta)
+  input:update()
   sceneManager.update(delta)
 end
 
 function love.draw()
-  sceneManager.draw()
   love.graphics.clear()
+  sceneManager.draw()
 end
