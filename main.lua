@@ -4,12 +4,13 @@ tools = {
 }
 
 function love.load()
+  print("é q n ta funcionando mesmo")
   require("startup")
   sceneManager.changeScene(1)
 end
 
 function love.update(delta)
-  input:update()
+  --input:update()
   sceneManager.update(delta)
 end
 

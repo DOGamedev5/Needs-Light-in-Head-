@@ -3,13 +3,13 @@ Button = {}
 
 Button.font = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 32, "normal")
 
-function Button.new(text, x, y, width, height)
+function Button.new(text, x, y, width, height, pressedFunction)
   local instance = setmetatable({}, {__index = Button})
   instance.text = text or ""
   instance.x = x
   instance.y = y
   instance.hover = false
-  instance.pressed = false
+  instance.pressed = pressedFunction
   instance.selected = false
   instance.width = width
   instance.height = height
@@ -21,6 +21,9 @@ function Button:draw()
   
   if self.hover or self.selected then
     love.graphics.setColor(120/255, 180/255, 190/255)
+    if love.mouse.isDown(1) then
+      love.graphics.setColor(70/255, 80/255, 100/255)
+    end
   end
 
   love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
@@ -39,4 +42,20 @@ end
 function Button:update()
   local posX, posY = love.mouse.getPosition()
   self.hover = tools.AABB.detectPoint(posX, posY, self.x, self.y, self.width, self.height)
+end
+
+function  Button:input(inputInfo)
+  if inputInfo.action ~= "confirm" or not inputInfo.pressed then
+    return
+  end
+
+  if inputInfo.type == 0 then
+    if self.hover then
+      self.pressed()
+    end
+  elseif inputInfo.type == 1 then
+    if self.selected then
+      self.pressed()
+    end
+  end
 end
