@@ -3,6 +3,24 @@ main = {}
 tools = {
 	AABB = require("tools.aabbDetect"),
 	WF = require("plugins.windfield"),
+  sign = function (n)
+    if n < 0 then
+      return -1
+    elseif n > 0 then
+      return 1
+    else
+      return 0
+    end
+  end,
+  lerp = function (n1, n2, l)
+    return n1 + (n2-n1)*l
+  end,
+  ysort = function (a, b)
+    local AsortOffset = a.sortOffset or 0
+    local BsortOffset = b.sortOffset or 0
+
+    return a.y + AsortOffset < b.y + BsortOffset
+  end
 }
 
 function love.load()
@@ -17,6 +35,7 @@ end
 
 function love.draw()
   love.graphics.clear()
+  love.graphics.setColor(1, 1, 1)
   sceneManager.draw()
 end
 

@@ -1,18 +1,14 @@
 local menu = {}
 
-local rodolfo = 0
-
 function menu:load()
   self.buttons = {}
-  self.buttons[1] = Button.new("play", 100, 100, 200, 50, self.playPressed)
-  self.buttons[1].selected = true
-  self.buttons[2] = Button.new("options", 100, 160, 200, 50, self.optionsPressed)
-  self.buttons[3] = Button.new("exit", 100, 220, 200, 50, self.exitPressed)
+  self.buttons[1] = Button.new("play", 40, 40, 200, 50, self.playPressed)
+  self.buttons[2] = Button.new("options", 40, 90, 200, 50, self.optionsPressed)
+  self.buttons[3] = Button.new("exit", 40, 140, 200, 50, self.exitPressed)
 
   self.buttons[1]:setNextUI(nil, self.buttons[2])
   self.buttons[2]:setNextUI(self.buttons[1], self.buttons[3])
   self.buttons[3]:setNextUI(self.buttons[3])
-
 end
 
 function menu:update(delta)
@@ -34,7 +30,7 @@ function menu:input(event, value)
 end
 
 function menu.playPressed()
-  
+  sceneManager.changeScene(2)
 end
 
 function menu.optionsPressed()

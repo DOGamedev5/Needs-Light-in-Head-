@@ -1,7 +1,8 @@
 sceneManager = {}
 
 local sceneList = {
-  require("src.menu")
+  require("src.menu"),
+  require("src.game")
 }
 
 local currentScene = {}

@@ -5,6 +5,7 @@ Input.LEFT_INPUT = 1
 Input.UP_INPUT = 2
 Input.DOWN_INPUT = 3
 Input.ACTION_INPUT = 4
+Input.CONFIRM_INPUT = 5
 
 local actions = {
   left = {key = {'left', 'a'}, axis = {'leftx-'}, button = {'dpleft'}},

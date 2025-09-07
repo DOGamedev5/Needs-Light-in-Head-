@@ -2,6 +2,16 @@ Button = {}
 --Button.__index = Button
 
 Button.font = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 32, "normal")
+Button.textures = {
+  menu = {
+    lovepatch.load("assets/buttons/menu/menu1.png", 5, 5, 5, 5),
+    lovepatch.load("assets/buttons/menu/menu2.png", 5, 5, 5, 5),
+    lovepatch.load("assets/buttons/menu/menu3.png", 5, 5, 5, 5),
+    lovepatch.load("assets/buttons/menu/menu4.png", 5, 5, 5, 5),
+    lovepatch.load("assets/buttons/menu/menu5.png", 5, 5, 5, 5),
+    lovepatch.load("assets/buttons/menu/menu6.png", 5, 5, 5, 5),
+  }
+}
 
 
 function Button.new(text, x, y, width, height, pressedFunction)
@@ -28,17 +38,25 @@ function Button:setNextUI(upUI, downUI, leftUI, rightUI)
 end
 
 function Button:draw()
-  love.graphics.setColor(100/255, 130/255, 150/255)
+  local imageId = 1
+
+  -- love.graphics.setColor(100/255, 130/255, 150/255)
   
-  if self.hover or self.selected then
-    love.graphics.setColor(120/255, 180/255, 190/255)
+  if self.hover then
+    imageId = 2
+    --love.graphics.setColor(120/255, 180/255, 190/255)
   end
   if self.pressed then
-    love.graphics.setColor(80/255, 100/255, 120/255)
+    imageId = 3
+    --love.graphics.setColor(80/255, 100/255, 120/255)
+  end
+  if self.selected then
+    imageId = imageId + 3
   end
 
-
-  love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+  --love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+  love.graphics.setColor(1, 1, 1, 1)
+  lovepatch.draw(self.textures.menu[imageId], self.x, self.y, self.width, self.height, 2, 2)
 
   love.graphics.setColor(0, 0, 0)
   love.graphics.setFont(self.font)
@@ -57,41 +75,20 @@ function Button:update(delta)
   self.timer:update(delta)
 end
 
-function Button:mousePressed(x, y, button, touch, presses)
-  if (button == 1 or touch) and tools.AABB.detectPoint(x, y, self.x, self.y, self.width, self.height) and not pressed then
-    self.timer:after(0.2, self.pressedFunction)
-    self.timer:after(0.1, function () self.pressed = false end)
+function Button:press()
+  self.timer:after(0.2, self.pressedFunction)
+  self.timer:after(0.1, function () self.pressed = false end)
+  self.pressed = true
+end
 
-    -- self.pressedFunction()
-    self.pressed = true
+function Button:mousePressed(x, y, button, touch, presses)
+  if (button == 1 or touch) and tools.AABB.detectPoint(x, y, self.x, self.y, self.width, self.height) and not self.pressed then
+    self:press()
   end
 end
 
 function Button:input(event, value)
-  print(event == Input.UP_INPUT)
-
-  if event == Input.UP_INPUT and self.selected and value == 1 then
-    if self.upUI ~= nil then
-      if self.upUI.selected ~= nil then
-        if not self.lastSelected then
-          self.upUI.selected = true
-          self.upUI.lastSelected = true
-          self.selected = false
-        else
-          self.lastSelected = false
-        end
-      end
-    end
-  elseif event == Input.DOWN_INPUT and self.selected and value == 1 then
-    if self.downUI ~= nil then
-      if self.downUI.selected ~= nil then
-        if not self.lastSelected then
-          self.downUI.selected = true
-          self.downUI.lastSelected = true
-          self.selected = false
-        else
-          self.lastSelected = false
-        end      end 
-    end
+  if event == Input.CONFIRM_INPUT and self.selected and not self.pressed then
+    self:press()
   end
 end
