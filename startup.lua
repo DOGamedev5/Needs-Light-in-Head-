@@ -1,6 +1,9 @@
 world = nil
 
-local baton = require 'plugins.baton'
+-- local baton = require 'plugins.baton'
+lovepatch = require("plugins.lovepatch")
+Timer = require("plugins.hump.timer")
+require("tools.input")
 
 --[[input = baton.new {
   controls = {
@@ -8,7 +11,7 @@ local baton = require 'plugins.baton'
     right = {'key:right', 'key:d', 'axis:leftx+', 'button:dpright'},
     up = {'key:up', 'key:w', 'axis:lefty-', 'button:dpup'},
     down = {'key:down', 'key:s', 'axis:lefty+', 'button:dpdown'},
-    action = {'key:x', 'key:k', 'button:a'},
+    action = {'key:x', 'keyk', 'button:a'},
     confirm = {'key:return', 'mouse:l', 'button:b'}
   },
   pairs = {

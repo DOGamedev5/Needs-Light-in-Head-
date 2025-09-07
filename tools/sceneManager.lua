@@ -27,6 +27,26 @@ function sceneManager.draw()
   end
 end
 
-function sceneManager.mousePressed()
-  
+function sceneManager.mousePressed(x, y, button, touch, presses)
+  if currentScene.mousePressed then
+    currentScene:mousePressed(x, y, button, touch, presses)
+  end
+end
+
+function sceneManager.mouseRelease(x, y, button, touch, presses)
+  if currentScene.mouseRelease then
+    currentScene:mouseRelease(x, y, button, touch, presses)
+  end
+end
+
+function sceneManager.mouseMoved(x, y, dx, dy, touch)
+  if currentScene.mouseMoved then
+    currentScene:mouseMoved(x, y, dx, dy, touch)
+  end
+end
+
+function sceneManager.input(event, value)
+  if currentScene.input then
+    currentScene:input(event, value)
+  end
 end
