@@ -15,7 +15,11 @@ function game:draw()
 end
 
 function game:input(event, value)
-  
+  game.ocean:input(event, value)
+end
+
+function game:mouseMoved(x, y, dx, dy, touch)
+  game.ocean:mouseMoved(x, y, dx, dy, touch)
 end
 
 return game

@@ -5,29 +5,29 @@ light.y = 0
 light.speed = 300
 light.radius = 50
 light.direction = 0
+light.target = {x = 0, y = 0}
 
 function light:init()
-  self.x, self.y = love.mouse.getPosition()
+  self.x, self.y = Push:toGame(lastMousePosition.x, lastMousePosition.y)
   self.timer = Timer.new()
+  self.target.x, self.target.y = self.x, self.y
 end
 
 function light:update(delta)
-  local targetX, targetY = love.mouse.getPosition()
-  
-  local distX, distY = targetX - self.x, targetY - self.y
+  local distX, distY = self.target.x - self.x, self.target.y - self.y
   local dirX, dirY = Vector.normalize(distX, distY)
-
-  if self.x ~= targetX or self.y ~= targetY then
+  
+  if self.x ~= self.target.x or self.y ~= self.target.y then
     local oldX, oldY = self.x, self.y 
     
     self.x = self.x + dirX*self.speed*delta
     self.y = self.y + dirY*self.speed*delta
 
-    if ((oldX < targetX and self.x > targetX) or (oldX > targetX and self.x < targetX)) then 
-      self.x = tools.lerp(oldX, targetX, delta*4)
+    if ((oldX < self.target.x and self.x > self.target.x) or (oldX > self.target.x and self.x < self.target.x)) then 
+      self.x = tools.lerp(oldX, self.target.x, delta*0.5)
     end
-    if ((oldY < targetY and self.y > targetY) or (oldY > targetY and self.y < targetY)) then
-      self.y = tools.lerp(oldY, targetY, delta*4)
+    if ((oldY < self.target.y and self.y > self.target.y) or (oldY > self.target.y and self.y < self.target.y)) then
+      self.y = tools.lerp(oldY, self.target.y, delta*0.5)
     end
   end
   self.timer:update(delta)
@@ -43,17 +43,47 @@ end
 
 function light:rayLight()
   local poligon = {}
-  poligon[1] = love.graphics.getWidth()/2
-  poligon[2] = love.graphics.getHeight()/2 - 88
+  poligon[1] = windowSize.x/2
+  poligon[2] = windowSize.y/2 - 88
   
---  local dir = Vector.angleTo(self.x, self.y, poligon[1], poligon[2])
-  local dir = math.atan2(poligon[2] - self.y, poligon[1] - self.x)
-  poligon[3] = self.x + (math.cos(dir + math.pi/2)*self.radius)
-  poligon[4] = self.y + (math.sin(dir + math.pi/2)*self.radius)
-  poligon[5] = self.x + (math.cos(dir - math.pi/2)*self.radius)
-  poligon[6] = self.y + (math.sin(dir - math.pi/2)*self.radius)
+  local angleMin = ((36-2) * math.pi)/36
+  local dir = math.atan2(poligon[2] - self.y, poligon[1] - self.x) + math.pi
+  local circle = {}
 
+  for i=-8, 27, 1 do
+    local newDir = (dir + math.pi*3/4) - (i/18*math.pi)
+    circle[1+(i+8)*2] = self.x + ((math.cos(newDir))*self.radius)
+    circle[2+(i+8)*2] = self.y + ((math.sin(newDir))*self.radius)
+  end
+  if Vector.len(self.x - poligon[1], self.y - poligon[2]) <= self.radius then
+    return circle
+  end
+  local offset = 0
+  
+  --[[
+  while offset < 6 do
+    local vectorX, vectorY = Vector.normalize(circle[1 +((10+offset)*2)] - poligon[1], circle[2+ ((10+offset)*2)] - poligon[2])
+    local a = ((circle[1 + ((10+offset)*2)] + vectorX) - self.x)
+    local b = ((circle[2 + ((10+offset)*2)] + vectorY) - self.y)
+
+    if a*a + b*b <= (self.radius-0.05)*(self.radius-0.05) then
+      offset = offset + 1
+    else
+      break
+    end
+
+  end
+  ]]--
+  for i = 10+offset, (16-offset)*2, 1 do
+    poligon[3+(i-(10+offset))*2] = circle[1 + (i*2)]
+    poligon[4+(i-(10+offset))*2] = circle[2 + (i*2)]
+  end
+  
   return poligon
+end
+
+function light:mouseMoved(x, y, dx, dy, touch)
+  self.target.x, self.target.y = Push:toGame(x, y)
 end
 
 return light

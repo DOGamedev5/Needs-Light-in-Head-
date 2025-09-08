@@ -18,14 +18,22 @@ function menu:update(delta)
 end
 
 function menu:draw()
+  --camera:attach()
   for i, b in ipairs(self.buttons) do
     b:draw()
   end
+  --camera:detach()
 end
 
 function menu:input(event, value)
   for i, b in ipairs(self.buttons) do
     b:input(event, value)
+  end
+end
+
+function menu:mouseMoved(x, y, dx, dy, touch)
+  for i, b in ipairs(self.buttons) do
+    b:mouseMoved(x, y, dx, dy, touch)
   end
 end
 

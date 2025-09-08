@@ -4,7 +4,9 @@ world = nil
 lovepatch = require("plugins.lovepatch")
 Timer = require("plugins.hump.timer")
 Vector = require("plugins.hump.vector-light")
+-- Camera = require("plugins.hump.camera")
 anim8 = require("plugins.anim8")
+Push = require("plugins.push")
 require("tools.input")
 
 --[[input = baton.new {

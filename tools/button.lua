@@ -69,9 +69,12 @@ function Button:draw()
   )
 end
 
-function Button:update(delta)
-  local posX, posY = love.mouse.getPosition()
+function Button:mouseMoved(x, y, dx, dy, touch)
+  local posX, posY = Push:toGame(x, y)
   self.hover = tools.AABB.detectPoint(posX, posY, self.x, self.y, self.width, self.height)
+end
+
+function Button:update(delta)
   self.timer:update(delta)
 end
 
@@ -82,7 +85,8 @@ function Button:press()
 end
 
 function Button:mousePressed(x, y, button, touch, presses)
-  if (button == 1 or touch) and tools.AABB.detectPoint(x, y, self.x, self.y, self.width, self.height) and not self.pressed then
+  local tx,ty = Push:toGame(x, y)
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.x, self.y, self.width, self.height) and not self.pressed then
     self:press()
   end
 end

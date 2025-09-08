@@ -22,9 +22,15 @@ function ocean:draw()
     self.light
   }
   table.sort(drawObjects, tools.ysort)
+  --camera:attach()
   for i, o in ipairs(drawObjects) do
     o:draw()
   end
+  --camera:detach()
+end
+
+function ocean:mouseMoved(x, y, dx, dy, touch)
+  self.light:mouseMoved(x, y, dx, dy, touch)
 end
 
 return ocean
