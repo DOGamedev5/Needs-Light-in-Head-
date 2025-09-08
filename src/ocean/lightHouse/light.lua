@@ -36,7 +36,24 @@ end
 function light:draw()
   love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.3)
   love.graphics.circle("fill", self.x, self.y, self.radius)
+  local poligon = self:rayLight()
+  love.graphics.polygon("fill", unpack(poligon))
   love.graphics.setColor(1, 1, 1, 1)
+end
+
+function light:rayLight()
+  local poligon = {}
+  poligon[1] = love.graphics.getWidth()/2
+  poligon[2] = love.graphics.getHeight()/2 - 88
+  
+--  local dir = Vector.angleTo(self.x, self.y, poligon[1], poligon[2])
+  local dir = math.atan2(poligon[2] - self.y, poligon[1] - self.x)
+  poligon[3] = self.x + (math.cos(dir + math.pi/2)*self.radius)
+  poligon[4] = self.y + (math.sin(dir + math.pi/2)*self.radius)
+  poligon[5] = self.x + (math.cos(dir - math.pi/2)*self.radius)
+  poligon[6] = self.y + (math.sin(dir - math.pi/2)*self.radius)
+
+  return poligon
 end
 
 return light
