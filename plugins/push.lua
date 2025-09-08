@@ -234,8 +234,8 @@ function push:toGame(x, y)
   x, y = x - self._OFFSET.x, y - self._OFFSET.y
   local normalX, normalY = x / self._GWIDTH, y / self._GHEIGHT
   
-  x = (x >= 0 and x <= self._WWIDTH * self._SCALE.x) and normalX * self._WWIDTH or nil
-  y = (y >= 0 and y <= self._WHEIGHT * self._SCALE.y) and normalY * self._WHEIGHT or nil
+  x = math.max(0, math.min(normalX * self._WWIDTH, self._WWIDTH)) or 0
+  y = math.max(0, math.min(normalY * self._WHEIGHT, self._WHEIGHT)) or 0
   
   return x, y
 end

@@ -46,7 +46,7 @@ function light:rayLight()
   poligon[1] = windowSize.x/2
   poligon[2] = windowSize.y/2 - 88
   
-  local angleMin = ((36-2) * math.pi)/36
+  --local angleMin = ((36-2) * math.pi)/36
   local dir = math.atan2(poligon[2] - self.y, poligon[1] - self.x) + math.pi
   local circle = {}
 
