@@ -33,10 +33,17 @@ lastMousePosition = {
   y = 0
 }
 
+gameScale = 1
+local pading = {
+  x = 0,
+  y = 0
+}
+
 function love.load()
   require("startup")
   local ww, wh = love.window.getDesktopDimensions()
   Push:setupScreen(windowSize.x, windowSize.y, ww, wh, {fullscreen = true, vsync = true, resizable = false})
+  resizeWindow(ww, wh)
   --camera = Camera(windowSize.x/2, windowSize.y/2)
   --camera:lockWindow(windowSize.x/2, windowSize.y/2) --, 0, 0, windowSize.x, windowSize.y)
   sceneManager.changeScene(1)
@@ -48,13 +55,18 @@ function love.update(delta)
 end
 
 function love.draw()
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-  Push:start()
+  love.graphics.setBackgroundColor(0, 0, 0, 1)
+  --love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+  --Push:start()
+  love.graphics.setScissor(pading.x, pading.y, windowSize.x*gameScale, windowSize.y*gameScale)
+  love.graphics.push()
+  love.graphics.translate(pading.x, pading.y)
+  love.graphics.scale(gameScale, gameScale)
   love.graphics.clear()
   love.graphics.setColor(1, 1, 1)
   sceneManager.draw()
-  Push:finish()
+  love.graphics.pop()
+  --Push:finish()
 end
 
 function love.mousepressed(x, y, button, touch, presses)
@@ -92,5 +104,11 @@ function main.input(event, value)
 end
 
 function love.resize(w, h)
-  Push:resize(w, h)
+  resizeWindow(w, h)
+  --Push:resize(w, h)
+end
+
+function resizeWindow(w, h)
+  gameScale = h / windowSize.y   
+  pading.x = (w - (gameScale * windowSize.x))/2
 end
