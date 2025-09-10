@@ -70,7 +70,7 @@ function Button:draw()
 end
 
 function Button:mouseMoved(x, y, dx, dy, touch)
-  local posX, posY = Push:toGame(x, y)
+  local posX, posY = toGame(x, y)
   self.hover = tools.AABB.detectPoint(posX, posY, self.x, self.y, self.width, self.height)
 end
 
@@ -85,7 +85,7 @@ function Button:press()
 end
 
 function Button:mousePressed(x, y, button, touch, presses)
-  local tx,ty = Push:toGame(x, y)
+  local tx,ty = toGame(x, y)
   if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.x, self.y, self.width, self.height) and not self.pressed then
     self:press()
   end

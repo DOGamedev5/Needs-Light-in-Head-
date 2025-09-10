@@ -1,7 +1,7 @@
 local lightHouse = {}
 
 lightHouse.texture = love.graphics.newImage("src/ocean/lightHouse/lighthouse.png")
-lightHouse.sortOffset = 6
+lightHouse.sortOffset = -10
 
 
 function lightHouse:init()

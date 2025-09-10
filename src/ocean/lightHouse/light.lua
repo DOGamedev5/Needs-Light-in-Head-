@@ -8,7 +8,7 @@ light.direction = 0
 light.target = {x = 0, y = 0}
 
 function light:init()
-  self.x, self.y = Push:toGame(lastMousePosition.x, lastMousePosition.y)
+  self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
   self.timer = Timer.new()
   self.target.x, self.target.y = self.x, self.y
 end
@@ -34,8 +34,10 @@ function light:update(delta)
 end
 
 function light:draw()
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.3)
+  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2)
   love.graphics.circle("fill", self.x, self.y, self.radius)
+  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.1)
+
   local poligon = self:rayLight()
   love.graphics.polygon("fill", unpack(poligon))
   love.graphics.setColor(1, 1, 1, 1)
@@ -60,20 +62,6 @@ function light:rayLight()
   end
   local offset = 0
   
-  --[[
-  while offset < 6 do
-    local vectorX, vectorY = Vector.normalize(circle[1 +((10+offset)*2)] - poligon[1], circle[2+ ((10+offset)*2)] - poligon[2])
-    local a = ((circle[1 + ((10+offset)*2)] + vectorX) - self.x)
-    local b = ((circle[2 + ((10+offset)*2)] + vectorY) - self.y)
-
-    if a*a + b*b <= (self.radius-0.05)*(self.radius-0.05) then
-      offset = offset + 1
-    else
-      break
-    end
-
-  end
-  ]]--
   for i = 10+offset, (16-offset)*2, 1 do
     poligon[3+(i-(10+offset))*2] = circle[1 + (i*2)]
     poligon[4+(i-(10+offset))*2] = circle[2 + (i*2)]
@@ -83,7 +71,7 @@ function light:rayLight()
 end
 
 function light:mouseMoved(x, y, dx, dy, touch)
-  self.target.x, self.target.y = Push:toGame(x, y)
+  self.target.x, self.target.y = toGame(x, y)
 end
 
 return light

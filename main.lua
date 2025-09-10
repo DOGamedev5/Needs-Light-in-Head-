@@ -41,32 +41,39 @@ local pading = {
 
 function love.load()
   require("startup")
+  love.math.setRandomSeed(love.timer.getTime())
+
   local ww, wh = love.window.getDesktopDimensions()
-  Push:setupScreen(windowSize.x, windowSize.y, ww, wh, {fullscreen = true, vsync = true, resizable = false})
   resizeWindow(ww, wh)
-  --camera = Camera(windowSize.x/2, windowSize.y/2)
-  --camera:lockWindow(windowSize.x/2, windowSize.y/2) --, 0, 0, windowSize.x, windowSize.y)
   sceneManager.changeScene(1)
 end
 
 function love.update(delta)
-  --input:update()
+  resizeWindow(love.window.getDesktopDimensions())
   sceneManager.update(delta)
 end
 
+function toGame(x, y)
+  local ww, wh = love.window.getDesktopDimensions()
+
+  x, y = (x - pading.x) / gameScale, (y - pading.y) / gameScale
+
+  return x, y
+end
+
 function love.draw()
+  love.graphics.clear()
   love.graphics.setBackgroundColor(0, 0, 0, 1)
-  --love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-  --Push:start()
   love.graphics.setScissor(pading.x, pading.y, windowSize.x*gameScale, windowSize.y*gameScale)
   love.graphics.push()
+  
   love.graphics.translate(pading.x, pading.y)
   love.graphics.scale(gameScale, gameScale)
-  love.graphics.clear()
+  
   love.graphics.setColor(1, 1, 1)
   sceneManager.draw()
+
   love.graphics.pop()
-  --Push:finish()
 end
 
 function love.mousepressed(x, y, button, touch, presses)
