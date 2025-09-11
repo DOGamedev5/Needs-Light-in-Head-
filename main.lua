@@ -23,8 +23,15 @@ tools = {
   ysort = function (a, b)
     local AsortOffset = a.sortOffset or 0
     local BsortOffset = b.sortOffset or 0
+    local aY, bY = a.y, b.y
+    if not aY and a.body then
+      aY = a.body:getY()
+    end
+    if not bY and b.body then
+      bY = b.body:getY()
+    end
 
-    return a.y + AsortOffset < b.y + BsortOffset
+    return aY + AsortOffset < bY + BsortOffset
   end
 }
 
@@ -34,22 +41,24 @@ lastMousePosition = {
 }
 
 gameScale = 1
-local pading = {
+pading = {
   x = 0,
   y = 0
 }
 
 function love.load()
+  World = love.physics.newWorld(0 , 0, true)
   require("startup")
   love.math.setRandomSeed(love.timer.getTime())
 
-  local ww, wh = love.window.getDesktopDimensions()
+  local ww, wh = love.graphics.getDimensions()
   resizeWindow(ww, wh)
   sceneManager.changeScene(1)
 end
 
 function love.update(delta)
-  resizeWindow(love.window.getDesktopDimensions())
+  resizeWindow(love.graphics.getDimensions())
+  World:update(delta)
   sceneManager.update(delta)
 end
 

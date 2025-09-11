@@ -6,6 +6,10 @@ function game:load()
   game.ocean:init() 
 end
 
+function game:exit()
+  game.ocean:exit()
+end
+
 function game:update(delta)
   game.ocean:update(delta)
 end

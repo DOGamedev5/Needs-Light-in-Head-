@@ -2,7 +2,7 @@ local effect = {}
 
 function effect:_delay()
   self.ready = false
-  self.timer:after(love.math.random(0., 1.2), function ()
+  self.timer:after(love.math.random(0.2, 4.3), function ()
     self:_setup()
   end)
 end
@@ -10,7 +10,7 @@ end
 function effect:_setup()
   self.id = love.math.random(1, #self.variants)
   local variant = self.variants[self.id]
-  self.animation = anim8.newAnimation(variant.grid("1-"..tostring(variant.frames), 1), 0.6, 'pauseAtEnd')
+  self.animation = anim8.newAnimation(variant.grid("1-"..tostring(variant.frames), 1), 0.2, 'pauseAtEnd')
   self.x, self.y = love.math.random(16, windowSize.x - 16), love.math.random(16, windowSize.y - 16)  
   self.ready = true
 end
@@ -28,7 +28,7 @@ end
 
 
 effect.variants = {
-  effect._addVariant("src/ocean/effects/effect1.png", 5, 16, 16)
+  effect._addVariant("src/ocean/effects/effect1.png", 7, 16, 16)
 }
 
 function effect.new()
@@ -58,6 +58,7 @@ end
 
 function effect:draw()
   if self.ready then
+    love.graphics.setColor(1, 1, 1, 0.3)
     self.animation:draw(self.variants[self.id].texture, self.x, self.y, 0, 2, 2)
   end
 end

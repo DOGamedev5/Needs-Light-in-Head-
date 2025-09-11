@@ -7,10 +7,24 @@ light.radius = 50
 light.direction = 0
 light.target = {x = 0, y = 0}
 
+
 function light:init()
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
   self.timer = Timer.new()
   self.target.x, self.target.y = self.x, self.y
+  self.body = love.physics.newBody(World, self.x, self.y, "dynamic")
+  self.shape = love.physics.newCircleShape(self.radius)
+  self.fixture = love.physics.newFixture(self.body, self.shape, 1)
+  self.fixture:setSensor(true)
+  self.body:isFixedRotation(true)
+end
+
+function light:exit()
+  self.fixture:destroy()
+  self.fixture:release()
+  self.body:release()
+  self.shape:release()
+  self.timer = nil
 end
 
 function light:update(delta)
@@ -29,18 +43,23 @@ function light:update(delta)
     if ((oldY < self.target.y and self.y > self.target.y) or (oldY > self.target.y and self.y < self.target.y)) then
       self.y = tools.lerp(oldY, self.target.y, delta*0.5)
     end
+    self.body:setPosition(self.x, self.y)
   end
+
   self.timer:update(delta)
 end
 
 function light:draw()
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2)
+  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.25)
   love.graphics.circle("fill", self.x, self.y, self.radius)
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.1)
+  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2)
 
   local poligon = self:rayLight()
   love.graphics.polygon("fill", unpack(poligon))
-  love.graphics.setColor(1, 1, 1, 1)
+  
+  love.graphics.setColor(1, 1, 1, 0.2)
+  love.graphics.circle("line", self.x, self.y, self.radius)
+  love.graphics.polygon("line", unpack(poligon))
 end
 
 function light:rayLight()
@@ -71,6 +90,10 @@ function light:rayLight()
 end
 
 function light:mouseMoved(x, y, dx, dy, touch)
+  if x < pading.x or x > windowSize.x*gameScale+pading.x or y < pading.y or y > windowSize.y*gameScale+pading.y then
+    return
+  end
+
   self.target.x, self.target.y = toGame(x, y)
 end
 

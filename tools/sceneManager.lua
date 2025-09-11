@@ -9,6 +9,10 @@ local currentScene = {}
 
 function sceneManager.changeScene(id)
   assert(sceneList[id] ~= nil, string.format("sceneManager erro: does not have the scene id: %d", id))
+  
+  if currentScene.exit then
+    currentScene:exit()
+  end
 
   currentScene = sceneList[id]
   if currentScene.load then
