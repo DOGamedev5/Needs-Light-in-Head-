@@ -6,7 +6,8 @@ light.speed = 300
 light.radius = 50
 light.direction = 0
 light.target = {x = 0, y = 0}
-
+light.reference = "light"
+light.sortOffset = light.radius
 
 function light:init()
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
@@ -16,6 +17,7 @@ function light:init()
   self.shape = love.physics.newCircleShape(self.radius)
   self.fixture = love.physics.newFixture(self.body, self.shape, 1)
   self.fixture:setSensor(true)
+  self.fixture:setCategory(2)
   self.body:isFixedRotation(true)
 end
 

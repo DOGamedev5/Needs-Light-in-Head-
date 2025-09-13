@@ -23,7 +23,7 @@ function ocean:init()
   end
   self.already = true
 
-  --self.entities[1] = self.enemiesTable[1].new(40, 40)
+  self.entities[1] = self.enemiesTable[1].new(40, 40)
   --self.entities[2] = self.enemiesTable[1].new(400, 400)
 
 end
@@ -37,7 +37,7 @@ function ocean:update(delta)
     self.effects[i]:update(delta)
   end
   for i=1, #self.entities do
-    --self.entities[i]:update()
+    self.entities[i]:update()
   end
 
   self.lighthouse:update(delta)

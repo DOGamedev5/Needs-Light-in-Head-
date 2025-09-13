@@ -30,6 +30,12 @@ tools = {
     if not bY and b.body then
       bY = b.body:getY()
     end
+    if b.reference == "light" then
+      --return true
+    end
+    if a.reference == "light" then
+      --return false
+    end
 
     return aY + AsortOffset < bY + BsortOffset
   end
