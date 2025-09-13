@@ -24,8 +24,9 @@ function ocean:init()
   self.already = true
 
   self.entities[1] = self.enemiesTable[1].new(0, 0)
-  self.entities[2] = self.enemiesTable[1].new(0, 300)
-
+  self.entities[2] = self.enemiesTable[1].new(-40, 300)
+  self.entities[3] = self.enemiesTable[1].new(800, 200)
+  self.entities[4] = self.enemiesTable[1].new(300, -300)
 end
 
 function ocean:exit()
