@@ -26,4 +26,13 @@ function game:mouseMoved(x, y, dx, dy, touch)
   game.ocean:mouseMoved(x, y, dx, dy, touch)
 end
 
+function game:beginContact(a, b, col)
+  game.ocean:beginContact(a, b, col)
+end
+
+function game:afterContact(a, b, col)
+  game.ocean:afterContact(a, b, col)
+  
+end
+
 return game

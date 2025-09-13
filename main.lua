@@ -30,14 +30,17 @@ tools = {
     if not bY and b.body then
       bY = b.body:getY()
     end
-    if b.reference == "light" then
-      --return true
-    end
-    if a.reference == "light" then
-      --return false
-    end
-
+    
     return aY + AsortOffset < bY + BsortOffset
+  end,
+  erase = function (t, value, all)
+    all = all or false
+    for i=#t, 1, -1 do
+      if t[i] == value then
+        table.remove(t, i)
+        if all then break end
+      end
+    end
   end
 }
 
@@ -54,6 +57,7 @@ pading = {
 
 function love.load()
   World = love.physics.newWorld(0 , 0, true)
+  World:setCallbacks(worldBegincontact, worldAftercontact)
   require("startup")
   love.math.setRandomSeed(love.timer.getTime())
 
@@ -119,6 +123,19 @@ end
 
 function love.gamepadreleased(joystick, button)
   Input.gamepadRelease(joystick, button)
+end
+
+function worldBegincontact(a, b, col)
+  sceneManager.beginContact(a, b, col)
+end
+
+function worldAftercontact(a, b, col)
+  sceneManager.afterContact(a, b, col)  
+end
+
+function love.quit()
+  
+  return false
 end
 
 function main.input(event, value)

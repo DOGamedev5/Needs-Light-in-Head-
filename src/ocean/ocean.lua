@@ -23,8 +23,8 @@ function ocean:init()
   end
   self.already = true
 
-  self.entities[1] = self.enemiesTable[1].new(40, 40)
-  --self.entities[2] = self.enemiesTable[1].new(400, 400)
+  self.entities[1] = self.enemiesTable[1].new(0, 0)
+  self.entities[2] = self.enemiesTable[1].new(0, 300)
 
 end
 
@@ -36,8 +36,13 @@ function ocean:update(delta)
   for i=1, #self.effects do
     self.effects[i]:update(delta)
   end
-  for i=1, #self.entities do
-    self.entities[i]:update()
+  for i=#self.entities, 1, -1 do
+    if self.entities[i].toDie then
+      self.entities[i]:die()
+      table.remove(self.entities, i)
+    else
+      self.entities[i]:update(delta)
+    end
   end
 
   self.lighthouse:update(delta)
@@ -56,8 +61,9 @@ function ocean:draw()
   local drawObjects = {
     self.lighthouse,
     self.light,
-    unpack(self.entities)
+    unpack(EnemyClass.toDraw)
   }
+
   table.sort(drawObjects, tools.ysort)
   --camera:attach()
   for i, o in ipairs(drawObjects) do
@@ -69,6 +75,36 @@ end
 
 function ocean:mouseMoved(x, y, dx, dy, touch)
   self.light:mouseMoved(x, y, dx, dy, touch)
+end
+
+function ocean:beginContact(a, b, col)
+  local dataA = a:getUserData()
+  local dataB = b:getUserData()
+  if dataA then
+    if dataA.beginContact then
+      dataA:beginContact(b)
+    end
+  end
+  if dataB then
+    if dataB.beginContact then
+      dataB:beginContact(a)
+    end
+  end
+end
+
+function ocean:afterContact(a, b, col)
+  local dataA = a:getUserData()
+  local dataB = b:getUserData()
+  if dataA then
+    if dataA.afterContact then
+      dataA:afterContact(b)
+    end
+  end
+  if dataB then
+    if dataB.afterContact then
+      dataB:afterContact(a)
+    end
+  end
 end
 
 return ocean

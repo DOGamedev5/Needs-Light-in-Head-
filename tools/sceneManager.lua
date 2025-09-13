@@ -50,6 +50,18 @@ function sceneManager.mouseMoved(x, y, dx, dy, touch)
   end
 end
 
+function sceneManager.beginContact(a, b, col)
+  if currentScene.beginContact then
+    currentScene:beginContact(a, b, col)
+  end
+end
+
+function sceneManager.afterContact(a, b, col)
+  if currentScene.afterContact then
+    currentScene:afterContact(a, b, col)
+  end
+end
+
 function sceneManager.input(event, value)
   if currentScene.input then
     currentScene:input(event, value)

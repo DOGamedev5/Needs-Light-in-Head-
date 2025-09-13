@@ -8,6 +8,8 @@ light.direction = 0
 light.target = {x = 0, y = 0}
 light.reference = "light"
 light.sortOffset = light.radius
+light.entered = {}
+light.attackHandler = nil
 
 function light:init()
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
@@ -18,7 +20,38 @@ function light:init()
   self.fixture = love.physics.newFixture(self.body, self.shape, 1)
   self.fixture:setSensor(true)
   self.fixture:setCategory(2)
+  self.fixture:setUserData(self)
   self.body:isFixedRotation(true)
+  self.body:setUserData("light")
+
+  self.entered = {}
+
+  self.damage = 20
+  self.timeToDamage = 1
+  self:start()
+end
+
+function light:start()
+  if self.attackHandler then
+    Timer.cancel(self.attackHandler)
+  end
+  self.attackHandler = self.timer:every(self.timeToDamage, function ()
+    self:attack()
+  end)
+end
+
+function light:beginContact(otherFixture)
+  local otherBody = otherFixture:getBody()
+  if otherBody:getUserData() == "enemy" then
+    table.insert(self.entered, 1, otherFixture)
+  end
+end
+
+function light:afterContact(otherFixture)
+  local otherBody = otherFixture:getBody()
+  if otherBody:getUserData() == "enemy" then
+    tools.erase(self.entered, otherFixture)
+  end
 end
 
 function light:exit()
@@ -30,23 +63,37 @@ function light:exit()
 end
 
 function light:update(delta)
-  local distX, distY = self.target.x - self.x, self.target.y - self.y
+  local distX, distY = self.target.x - self.body:getX(), self.target.y - self.body:getY()
   local dirX, dirY = Vector.normalize(distX, distY)
   
-  if self.x ~= self.target.x or self.y ~= self.target.y then
-    local oldX, oldY = self.x, self.y 
+  if self.body:getX() ~= self.target.x or self.body:getY() ~= self.target.y then
+    local oldX, oldY = self.body:getPosition()--self.x, self.y 
     
-    self.x = self.x + dirX*self.speed*delta
-    self.y = self.y + dirY*self.speed*delta
+    local speedX = dirX*self.speed
+    if math.abs(distX) < math.abs(speedX)*delta then
+      speedX = distX
+    end
+    local speedY = dirY*self.speed
+    if math.abs(distY) < math.abs(speedY)*delta then
+      speedY = distY
+    end
+
+    self.body:setLinearVelocity(speedX, speedY)
 
     if ((oldX < self.target.x and self.x > self.target.x) or (oldX > self.target.x and self.x < self.target.x)) then 
       self.x = tools.lerp(oldX, self.target.x, delta*0.5)
+      self.body:setX(self.x)
+
     end
     if ((oldY < self.target.y and self.y > self.target.y) or (oldY > self.target.y and self.y < self.target.y)) then
       self.y = tools.lerp(oldY, self.target.y, delta*0.5)
+      self.body:setY(self.y)
     end
-    self.body:setPosition(self.x, self.y)
+  else
+    self.body:setLinearVelocity(0, 0)
   end
+  
+  self.x, self.y = self.body:getPosition()
 
   self.timer:update(delta)
 end
@@ -97,6 +144,17 @@ function light:mouseMoved(x, y, dx, dy, touch)
   end
 
   self.target.x, self.target.y = toGame(x, y)
+end
+
+function light:attack()
+  for i, e in ipairs(self.entered) do
+    local enemy = e:getUserData()
+    if enemy.toDie then
+      tools.erase(self.entered, e)
+    elseif enemy.damaged then
+      enemy:damaged(self.damage)
+    end
+  end
 end
 
 return light
