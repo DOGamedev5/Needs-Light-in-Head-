@@ -13,63 +13,43 @@ enemy.animations = {
 
 enemy.sortOffset = enemy.height
 enemy.toDie = false
+enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
 
 function enemy.new(x, y)
-  local instance = setmetatable({}, {__index = enemy})
-  instance.body = love.physics.newBody(World, x, y, "dynamic")
+  local instance = setmetatable(EnemyClass.new(x, y, {
+    speed = 20,
+    health = 50
+  }), {__index = enemy})
   instance.shape = love.physics.newCircleShape(14)
   instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
   instance.fixture:setCategory(1)
   instance.fixture:setMask(1)
   instance.fixture:setUserData(instance)
-  instance.body:setUserData("enemy")
-  instance.speed = 20
-  instance.enteredLights = {}
-  instance.health = 50
-  instance.drawList = false
-  instance.toDie = false
   instance.currentAnimation = 1
   instance.damageTimer = Timer.new()
   instance.currentState = 1
-  instance.flip = false
+  
+  instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
+  instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
+  instance.particleHandler:setParticleLifetime(0.3, 0.9)
+  instance.particleHandler:setLinearAcceleration(0, 10, 0, 30)
+  instance.particleHandler:setColors(1, 1, 1, 0.8, 1, 1, 1, 0)
+  instance.particleHandler:setRelativeRotation(true)
+  instance.particleHandler:setSpread(3.14*2)
+  instance.particleHandler:setSpinVariation(1)
+  instance.particleHandler:setSpeed(30)
 
   return instance
 end
 
-function enemy:beginContact(otherFixture)
-  local otherBody = otherFixture:getBody()
-  if otherBody:getUserData() == "light" then
-    table.insert(self.enteredLights, 1, otherFixture)
-  end
-end
-
-function enemy:afterContact(otherFixture)
-  local otherBody = otherFixture:getBody()
-  if otherBody:getUserData() == "light" then
-    tools.erase(self.enteredLights, otherFixture)
-  end
-end
-
 function enemy:draw()
-  local flip = 1
-  if self.flip then
-    flip = -1
-  end
-  local x, y = self.body:getX() - self.width* flip, self.body:getY() - self.height
-
-  self.animations[self.currentAnimation]:draw(self.texture, x, y, 0, 2*flip, 2)
-  if #self.enteredLights > 0 then
-    love.graphics.setBlendMode("add")
-    self.animations[self.currentAnimation]:draw(self.texture, x, y, 0, 2*flip, 2)
-    self.animations[self.currentAnimation]:draw(self.texture, x, y, 0, 2*flip, 2)
-    love.graphics.setBlendMode("alpha")
-  end
+  self:drawHandler(self.animations[self.currentAnimation], self.texture)
+  love.graphics.draw(self.particleHandler, self.body:getX(), self.body:getY(), 0, 2, 2)
 end
 
 function enemy:update(delta)
   local dirX, dirY = Vector.normalize(windowSize.x/2 - self.body:getX(), windowSize.y/2 - self.body:getY())
   local debuf = 1
-
   self.flip = dirX < 0
 
   if self.currentState == 2 then
@@ -86,23 +66,16 @@ function enemy:update(delta)
   
   else
     self.currentAnimation = 1
-  
+
   end
 
   local x, y = self.body:getX() - self.width, self.body:getY() - self.height
-
-  if tools.AABB.detect(x, y, self.width*2, self.height*2, 0, 0, windowSize.x, windowSize.y) then
-    if not self.drawList then
-      self:addToDraw()
-      self.drawList = true
-    end
-  elseif self.drawList then
-    self:removeToDraw()
-  end
-
+  self:updateHandler(delta, x, y)
   self.body:setLinearVelocity(dirX * self.speed * debuf, dirY * self.speed * debuf)
   self.animations[self.currentAnimation]:update(delta)
   self.damageTimer:update(delta)
+ 
+  self.particleHandler:update(delta)
 end
 
 function enemy:damaged(d)
@@ -110,6 +83,7 @@ function enemy:damaged(d)
     return
   end
   
+  self.scale = 1.2
   self.health = self.health - d
   self.currentState = 2
   self.damageTimer:clear()
@@ -120,6 +94,7 @@ function enemy:damaged(d)
   if self.health <= 0 then
     self.toDie = true
   end
+  self.particleHandler:emit(4)
 end
 
 function enemy:die()

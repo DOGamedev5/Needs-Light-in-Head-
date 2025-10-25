@@ -150,4 +150,5 @@ end
 function resizeWindow(w, h)
   gameScale = h / windowSize.y   
   pading.x = (w - (gameScale * windowSize.x))/2
+  
 end

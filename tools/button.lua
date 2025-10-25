@@ -13,7 +13,6 @@ Button.textures = {
   }
 }
 
-
 function Button.new(text, x, y, width, height, pressedFunction)
   local instance = setmetatable({}, {__index = Button})
   instance.text = text or ""

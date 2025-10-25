@@ -15,3 +15,4 @@ require("tools.button")
 require("plugins.hump.camera")
 require("tools.sceneManager")
 
+require("src.hud")

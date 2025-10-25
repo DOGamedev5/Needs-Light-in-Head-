@@ -12,7 +12,7 @@ function lightHouse:init()
   --local wx, wy = love.graphics.getDimensions()
   self.x = windowSize.x/2
   self.y = windowSize.y/2
-
+  
 end
 
 function lightHouse:update(delta)
@@ -20,14 +20,7 @@ function lightHouse:update(delta)
 end
 
 function lightHouse:draw()
-  --local wx, wy = love.graphics.getDimensions()
-  --local x = wx/2
-  --local y = wy/2
-
---  love.graphics.draw(self.texture, x - self.width, y - self.height-48, 0, 2, 2)
   self.animation:draw(self.texture, self.x - self.width, self.y - self.height-48, 0, 2, 2)
-
-
 end
 
 return lightHouse

@@ -12,10 +12,12 @@ end
 
 function game:update(delta)
   game.ocean:update(delta)
+  Hud:update(delta)
 end
 
 function game:draw()
   game.ocean:draw()
+  Hud:draw()
 end
 
 function game:input(event, value)

@@ -10,6 +10,12 @@ light.reference = "light"
 light.sortOffset = light.radius
 light.entered = {}
 light.attackHandler = nil
+light.force = 1
+light.sfx = love.audio.newSource("src/ocean/lightHouse/attackEffect.wav", "static")
+
+light.hud = {
+  attackBarr = require("src.ocean.lightHouse.lightBarr.lightBarr")
+}
 
 function light:init()
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
@@ -28,6 +34,13 @@ function light:init()
 
   self.damage = 20
   self.timeToDamage = 1
+  self.fuel = 100
+  self.attackTimerMax = 1
+  self.attackTimer = self.attackTimerMax
+
+  Hud:addToHud(self.hud.attackBarr)
+  self.hud.attackBarr:setup(100)
+
   self:start()
 end
 
@@ -95,13 +108,22 @@ function light:update(delta)
   
   self.x, self.y = self.body:getPosition()
 
-  self.timer:update(delta)
+  --self.timer:update(delta)
+  self.force = tools.lerp(self.force, 1, delta*3)
+  self.hud.attackBarr:updateFuel(100 - (self.attackTimer / self.attackTimerMax * 100))
+  
+  self.attackTimer = self.attackTimer - delta
+
+  if self.attackTimer <= 0 then
+    self.attackTimer = self.attackTimerMax
+    self:attack()
+  end
 end
 
 function light:draw()
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.25)
+  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.25*self.force)
   love.graphics.circle("fill", self.x, self.y, self.radius)
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2)
+  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2*self.force)
 
   local poligon = self:rayLight()
   love.graphics.polygon("fill", unpack(poligon))
@@ -147,6 +169,19 @@ function light:mouseMoved(x, y, dx, dy, touch)
 end
 
 function light:attack()
+  self.force = 3
+  
+
+  if #self.entered == 0 then
+    self.force = 1
+  else
+    self.sfx:stop()
+    local p = love.math.random(60, 85)
+    self.sfx:setPitch(p/100)
+    self.sfx:setVolume(0.3)
+    self.sfx:play()
+    self.fuel = self.fuel - 5
+  end
   for i, e in ipairs(self.entered) do
     local enemy = e:getUserData()
     if enemy.toDie then

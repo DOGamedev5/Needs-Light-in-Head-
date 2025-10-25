@@ -1,0 +1,1 @@
+../../tileset/houseTileset/rules.tmx
