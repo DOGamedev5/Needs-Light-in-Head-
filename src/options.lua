@@ -1,9 +1,18 @@
 local options = {}
+options.file = "configuration.lua"
 
 function options:load(menu)
 	self.conf = {}
 	self.conf.languege = "en"
 	self.conf.gamma = 1
+	
+	if not FileSystem.fileExist(self.file) then
+		FileSystem.writeFile(self.file, self.conf)
+	else
+		self.conf = FileSystem.loadFile(self.file)
+	end
+	print(self.conf.gamma)
+
 	self.buttons = Button.new("exit", windowSize.x/2 - 100, windowSize.y - 100, 200, 50, menu.exitOptions)
 end
 
