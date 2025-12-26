@@ -11,6 +11,7 @@ require("tools.input")
 love.graphics.setDefaultFilter("nearest", "nearest")
 
 require("tools.button")
+require("src.ocean.lightHouse.lightBarr.lightBarr")
 
 require("plugins.hump.camera")
 require("tools.sceneManager")

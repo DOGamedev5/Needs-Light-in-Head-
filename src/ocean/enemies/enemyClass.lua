@@ -7,6 +7,7 @@ function EnemyClass.new(x, y, prototype)
   instance.body = love.physics.newBody(World, x, y, "dynamic")
   instance.body:setUserData("enemy")
   instance.enteredLights = {}
+  instance.attacking = {}
   instance.drawList = false
   instance.toDie = false
   instance.flip = false
@@ -18,14 +19,18 @@ end
 
 function EnemyClass:beginContact(otherFixture)
   local otherBody = otherFixture:getBody()
-  if otherBody:getUserData() == "light" then
+  local data = otherBody:getUserData() 
+  if data == "light" then
     table.insert(self.enteredLights, 1, otherFixture)
+  elseif data == "lightHouse" then
+    table.insert(self.attacking, 1, otherFixture)
   end
 end
 
 function EnemyClass:afterContact(otherFixture)
   local otherBody = otherFixture:getBody()
-  if otherBody:getUserData() == "light" then
+  local data = otherBody:getUserData()
+  if data == "light" then
     tools.erase(self.enteredLights, otherFixture)
   end
 end

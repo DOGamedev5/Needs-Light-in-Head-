@@ -9,6 +9,10 @@ function Hud:addToHud(object)
 	end
 end
 
+function Hud:remove(object)
+	tools.erase(self.items, object)
+end
+
 function Hud:draw()
 	for i, o in ipairs(self.items) do
 		if o.draw then

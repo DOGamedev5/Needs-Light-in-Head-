@@ -1,32 +1,36 @@
-local lightBarr = {}
+LightBarr = {}
 
-lightBarr.lightBarrTexture = {
+LightBarr.lightBarrTexture = {
   lovepatch.load("src/ocean/lightHouse/lightBarr/lightFuel1.png", 2, 2, 1, 1),
   lovepatch.load("src/ocean/lightHouse/lightBarr/lightFuel2.png", 2, 2, 1, 1)
 }
 
-lightBarr.max = 80
-lightBarr.current = 10
+LightBarr.max = 80
+LightBarr.current = 10
 
-function lightBarr:init()
+function LightBarr.new(max)
+  local instance = setmetatable({}, {__index = LightBarr}) 
+
+  instance.max = max
+  instance.current = max
+
+  return instance
+end
+
+function LightBarr:init()
   self.x = windowSize.x/2
   self.y = windowSize.y/2
 end
 
-function lightBarr:setup(max)
-	self.max = max
-	self.current = max
-end
-
-function lightBarr:updateFuel(value)
+function LightBarr:updateFuel(value)
 	self.current = value
 end
 
-function lightBarr:getCurrentValue()
+function LightBarr:getCurrentValue()
 	return self.current
 end
 
-function lightBarr:draw()
+function LightBarr:draw()
   love.graphics.setColor(1, 1, 1, 0.7)
   lovepatch.draw(self.lightBarrTexture[1], self.x- self.max/2, self.y+20, self.max, 12, 2, 2)
   if self.current > 5 then
@@ -34,5 +38,3 @@ function lightBarr:draw()
   end
   love.graphics.setColor(1, 1, 1, 1)
 end
-
-return lightBarr

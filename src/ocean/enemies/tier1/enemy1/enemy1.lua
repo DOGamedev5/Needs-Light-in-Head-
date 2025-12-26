@@ -2,13 +2,14 @@ local enemy = setmetatable({}, {__index = EnemyClass})
 
 enemy.texture = love.graphics.newImage("src/ocean/enemies/tier1/enemy1/enemy1.png")
 enemy.textureWidth = enemy.texture:getWidth()
-enemy.width = enemy.textureWidth / 6
+enemy.width = enemy.textureWidth / 9
 enemy.height = enemy.texture:getHeight() 
 enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.height)
 enemy.animations = {
   anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
   anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
-  anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd")
+  anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
+  anim8.newAnimation(enemy.grid:getFrames("7-9", 1), 0.1, "pauseAtEnd")
 }
 
 enemy.sortOffset = enemy.height
@@ -28,6 +29,7 @@ function enemy.new(x, y)
   instance.currentAnimation = 1
   instance.damageTimer = Timer.new()
   instance.currentState = 1
+  instance.attackTime = 1
   
   instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
   instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
@@ -50,9 +52,21 @@ end
 function enemy:update(delta)
   local dirX, dirY = Vector.normalize(windowSize.x/2 - self.body:getX(), windowSize.y/2 - self.body:getY())
   local debuf = 1
-  self.flip = dirX < 0
 
-  if self.currentState == 2 then
+  self.flip = dirX < 0
+  if self.currentState == 3 then
+    if self.currentAnimation ~= 4 then
+      self.currentAnimation = 4
+      self.animations[4]:pauseAtStart()
+      self.animations[4]:resume()
+    elseif self.animations[4].status == "paused" then
+      self.attackTime = 1
+      self.currentState = 1
+      for _, o in ipairs(self.attacking) do
+        o:getUserData():damage(5)  
+      end
+    end
+  elseif self.currentState == 2 then
     debuf = 0
     if self.currentAnimation ~= 3 then
       self.currentAnimation = 3
@@ -71,7 +85,20 @@ function enemy:update(delta)
 
   local x, y = self.body:getX() - self.width, self.body:getY() - self.height
   self:updateHandler(delta, x, y)
-  self.body:setLinearVelocity(dirX * self.speed * debuf, dirY * self.speed * debuf)
+  if #self.attacking == 0 then
+    self.body:setLinearVelocity(dirX * self.speed * debuf, dirY * self.speed * debuf)
+  else
+    self.body:setLinearVelocity(0, 0)
+    if #self.enteredLights == 0 then
+      self.attackTime = self.attackTime - delta
+      if self.attackTime <= 0 then
+        self.attackTime = 0
+        self.currentState = 3
+      end
+
+
+    end
+  end
   self.animations[self.currentAnimation]:update(delta)
   self.damageTimer:update(delta)
  

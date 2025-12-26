@@ -14,8 +14,8 @@ ocean.enemiesTable = {
 ocean.entities = {}
 
 function ocean:init()
-  self.lighthouse:init()
   self.light:init()
+  self.lighthouse:init(self.light)
   
   if self.already then return end
   for i=1, 20 do

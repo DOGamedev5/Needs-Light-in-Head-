@@ -14,12 +14,11 @@ light.force = 1
 light.sfx = love.audio.newSource("src/ocean/lightHouse/attackEffect.wav", "static")
 
 light.hud = {
-  attackBarr = require("src.ocean.lightHouse.lightBarr.lightBarr")
+  attackBarr = LightBarr.new(100)
 }
 
 function light:init()
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
-  self.timer = Timer.new()
   self.target.x, self.target.y = self.x, self.y
   self.body = love.physics.newBody(World, self.x, self.y, "dynamic")
   self.shape = love.physics.newCircleShape(self.radius)
@@ -34,23 +33,18 @@ function light:init()
 
   self.damage = 20
   self.timeToDamage = 1
-  self.fuel = 100
-  self.attackTimerMax = 1
+  self.fuelMax = 100
+  self.fuel = self.fuelMax
+  self.attackTimerMax = 2
   self.attackTimer = self.attackTimerMax
 
   Hud:addToHud(self.hud.attackBarr)
-  self.hud.attackBarr:setup(100)
 
   self:start()
 end
 
 function light:start()
-  if self.attackHandler then
-    Timer.cancel(self.attackHandler)
-  end
-  self.attackHandler = self.timer:every(self.timeToDamage, function ()
-    self:attack()
-  end)
+  self.attackTimer = self.attackTimerMax
 end
 
 function light:beginContact(otherFixture)
@@ -72,7 +66,7 @@ function light:exit()
   self.fixture:release()
   self.body:release()
   self.shape:release()
-  self.timer = nil
+  Hud:remove(self.hud.attackBarr)
 end
 
 function light:update(delta)
@@ -107,36 +101,48 @@ function light:update(delta)
   end
   
   self.x, self.y = self.body:getPosition()
-
-  --self.timer:update(delta)
-  self.force = tools.lerp(self.force, 1, delta*3)
-  self.hud.attackBarr:updateFuel(100 - (self.attackTimer / self.attackTimerMax * 100))
   
-  self.attackTimer = self.attackTimer - delta
+  if self.fuel > 0 then
+    self.force = tools.lerp(self.force, 1, delta*3)
+    self.hud.attackBarr:updateFuel(100 - (self.attackTimer / self.attackTimerMax * 100))
+  
+    self.attackTimer = self.attackTimer - delta
 
-  if self.attackTimer <= 0 then
-    self.attackTimer = self.attackTimerMax
-    self:attack()
+    if self.attackTimer <= 0 then
+      self.attackTimer = self.attackTimerMax
+      self:attack()
+    end
+    self.fuel = self.fuel - delta
+    if self.fuel <= 0 then
+      self.fuel = 0
+      Hud:remove(self.hud.attackBarr)
+      self.fixture:setCategory(1)
+   end
   end
+  
 end
 
 function light:draw()
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.25*self.force)
-  love.graphics.circle("fill", self.x, self.y, self.radius)
-  love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2*self.force)
+  if self.fuel > 0 then
+    love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.25*self.force)
+    love.graphics.circle("fill", self.x, self.y, self.radius)
+    love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2*self.force)
 
-  local poligon = self:rayLight()
-  love.graphics.polygon("fill", unpack(poligon))
+    local poligon = self:rayLight()
+    love.graphics.polygon("fill", unpack(poligon))
   
-  love.graphics.setColor(1, 1, 1, 0.2)
-  love.graphics.circle("line", self.x, self.y, self.radius)
-  love.graphics.polygon("line", unpack(poligon))
+    love.graphics.setColor(1, 1, 1, 0.2)
+    love.graphics.circle("line", self.x, self.y, self.radius)
+    love.graphics.polygon("line", unpack(poligon))
+  end
+  love.graphics.setColor(0.8, 0.6, 0.3, 1)
+  love.graphics.rectangle("fill", 0, windowSize.y-30, windowSize.x*(self.fuel/self.fuelMax), 30)
 end
 
 function light:rayLight()
   local poligon = {}
   poligon[1] = windowSize.x/2
-  poligon[2] = windowSize.y/2 - 88
+  poligon[2] = windowSize.y/2 - 100
   
   --local angleMin = ((36-2) * math.pi)/36
   local dir = math.atan2(poligon[2] - self.y, poligon[1] - self.x) + math.pi
@@ -171,16 +177,16 @@ end
 function light:attack()
   self.force = 3
   
-
   if #self.entered == 0 then
     self.force = 1
   else
+    
     self.sfx:stop()
     local p = love.math.random(60, 85)
     self.sfx:setPitch(p/100)
     self.sfx:setVolume(0.3)
     self.sfx:play()
-    self.fuel = self.fuel - 5
+ 
   end
   for i, e in ipairs(self.entered) do
     local enemy = e:getUserData()
@@ -189,6 +195,15 @@ function light:attack()
     elseif enemy.damaged then
       enemy:damaged(self.damage)
     end
+  end
+end
+
+function light:damageFuel(dmg)
+  self.fuel = self.fuel - dmg
+  if self.fuel < 0 then
+    self.fuel = 0
+    Hud:remove(self.hud.attackBarr)
+    self.fixture:setCategory(1)
   end
 end
 
