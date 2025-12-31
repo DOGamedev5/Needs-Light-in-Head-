@@ -135,8 +135,7 @@ function light:draw()
     love.graphics.circle("line", self.x, self.y, self.radius)
     love.graphics.polygon("line", unpack(poligon))
   end
-  love.graphics.setColor(0.8, 0.6, 0.3, 1)
-  love.graphics.rectangle("fill", 0, windowSize.y-30, windowSize.x*(self.fuel/self.fuelMax), 30)
+  
 end
 
 function light:rayLight()

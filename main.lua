@@ -30,6 +30,8 @@ tools = {
     if not bY and b.body then
       bY = b.body:getY()
     end
+    local AhudTag = a.hud or false
+    local BhudTag = b.hud or false
     
     return aY + AsortOffset < bY + BsortOffset
   end,
@@ -152,11 +154,9 @@ end
 
 function love.resize(w, h)
   resizeWindow(w, h)
-  --Push:resize(w, h)
 end
 
 function resizeWindow(w, h)
   gameScale = h / windowSize.y   
   pading.x = (w - (gameScale * windowSize.x))/2
-  
 end

@@ -69,12 +69,18 @@ function ocean:draw()
   }
 
   table.sort(drawObjects, tools.ysort)
-  --camera:attach()
   for i, o in ipairs(drawObjects) do
     love.graphics.setColor(1, 1, 1, 1)
     o:draw()
   end
-  --camera:detach()
+
+  love.graphics.setColor(0.8, 0.6, 0.3, 0.7)
+  local y = love.mouse.getY()
+  if y > windowSize.y*gameScale - 40*gameScale then
+    love.graphics.setColor(0.8, 0.6, 0.3, 0.2)
+  end
+
+  love.graphics.rectangle("fill", 0, windowSize.y-30, windowSize.x*(self.light.fuel/self.light.fuelMax), 30)
 end
 
 function ocean:mouseMoved(x, y, dx, dy, touch)
