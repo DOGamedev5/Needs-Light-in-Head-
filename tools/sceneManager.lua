@@ -5,7 +5,7 @@ local sceneList = {
   require("src.game")
 }
 
-local currentScene = {}
+currentScene = {}
 
 function sceneManager.changeScene(id)
   assert(sceneList[id] ~= nil, string.format("sceneManager erro: does not have the scene id: %d", id))

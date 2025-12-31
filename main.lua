@@ -41,6 +41,13 @@ tools = {
         if all then break end
       end
     end
+  end,
+  size = function (t)
+    local n = 0
+    for k, v in ipairs(t) do
+      n = n + 1
+    end
+    return n
   end
 }
 
@@ -54,6 +61,7 @@ pading = {
   x = 0,
   y = 0
 }
+currentGameFile = 1
 
 function love.load()
   World = love.physics.newWorld(0 , 0, true)

@@ -12,6 +12,9 @@ ocean.enemiesTable = {
   require("src.ocean.enemies.tier1.enemy1.enemy1")
 }
 ocean.entities = {}
+ocean.dayManager = require("src.ocean.daysManager")
+ocean.enemyManager = require("src.ocean.enemies.enemySpawner")
+ocean.currentDay = {}
 
 function ocean:init()
   self.light:init()
@@ -22,11 +25,9 @@ function ocean:init()
     self.effects[i] = self.Effect.new()
   end
   self.already = true
-
-  self.entities[1] = self.enemiesTable[1].new(0, 0)
-  self.entities[2] = self.enemiesTable[1].new(-40, 300)
-  self.entities[3] = self.enemiesTable[1].new(800, 200)
-  self.entities[4] = self.enemiesTable[1].new(300, -300)
+  self.enemyManager:load()
+  self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay)
+  self.enemyManager:init(self.currentDay.enemies, self.currentDay.rules, self.currentDay.sides, self.currentDay.time)
 end
 
 function ocean:exit()
@@ -34,6 +35,8 @@ function ocean:exit()
 end
 
 function ocean:update(delta)
+  self.enemyManager:update(delta)
+  
   for i=1, #self.effects do
     self.effects[i]:update(delta)
   end

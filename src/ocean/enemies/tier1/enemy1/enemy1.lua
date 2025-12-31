@@ -15,6 +15,7 @@ enemy.animations = {
 enemy.sortOffset = enemy.height
 enemy.toDie = false
 enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
+enemy.offsetSpawn = 16
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {

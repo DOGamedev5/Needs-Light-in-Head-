@@ -2,12 +2,25 @@ local game = {}
 
 game.ocean = require("src.ocean.ocean")
 
+game.saveDirPath = ""
+game.save = {}
+
 function game:load()
-  game.ocean:init() 
+self.saveDirPath = "file".. tostring(currentGameFile) .. "/"
+  if FileSystem.fileExist(self.saveDirPath .."save.lua") then
+    self.save = FileSystem.loadFile(self.saveDirPath .."save.lua")
+  else
+    self.save = self:newSave()
+    if not FileSystem.fileExist(self.saveDirPath, "directory") then
+      love.filesystem.createDirectory(self.saveDirPath)
+      FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
+    end
+  end
+  self.ocean:init() 
 end
 
 function game:exit()
-  game.ocean:exit()
+  self.ocean:exit()
 end
 
 function game:update(delta)
@@ -35,6 +48,12 @@ end
 function game:afterContact(a, b, col)
   game.ocean:afterContact(a, b, col)
   
+end
+
+function game:newSave()
+  return {
+    currentDay = 1
+  }
 end
 
 return game

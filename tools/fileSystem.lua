@@ -20,8 +20,9 @@ function FileSystem.serialize(data, indentation)
 	end
 end
 
-function FileSystem.fileExist(file)
-	return love.filesystem.getInfo(file, "file") ~= nil
+function FileSystem.fileExist(file, tipe)
+	tipe = "file" or tipe
+	return love.filesystem.getInfo(file, tipe) ~= nil
 end
 
 function FileSystem.writeFile(file, data)
