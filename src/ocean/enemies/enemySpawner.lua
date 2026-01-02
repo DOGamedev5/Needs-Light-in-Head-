@@ -1,6 +1,7 @@
 local EnemySpawner = {}
 
 
+
 function EnemySpawner:load()
 	self.enemiesClass = {}
 	self.instances = {}
@@ -11,7 +12,7 @@ function EnemySpawner:load()
 		down = false
 	}
 	--self.timerControl = Timer.new()
-	self.timeAlive = 0
+	self.timeAlive = 0.0
 	self.timeMax = 90
 	self.spawnTimer = 7
 	self.rules = {}
@@ -64,9 +65,7 @@ function EnemySpawner:spawnEnemy()
 		local side = self:getSideSpawn()
 		local enemy = self:getEnemySpawn()
 		if enemy == null then
-			print("erro")
 			return 
-
 		end
 
 		local posX = 0
@@ -102,8 +101,6 @@ function EnemySpawner:getSideSpawn()
 		end
 	end
 	side = love.math.random(1, #possible)
-	print(#possible)
-	print(possible[side])
 	return possible[side]
 end
 

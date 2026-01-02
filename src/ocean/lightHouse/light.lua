@@ -49,8 +49,12 @@ end
 
 function light:beginContact(otherFixture)
   local otherBody = otherFixture:getBody()
-  if otherBody:getUserData() == "enemy" then
+  local data = otherBody:getUserData()
+  if data == "enemy" then
     table.insert(self.entered, 1, otherFixture)
+  elseif data == "drop" then
+    local obj = otherFixture:getUserData()
+    --obj.toCollect = true
   end
 end
 

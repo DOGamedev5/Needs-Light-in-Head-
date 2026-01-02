@@ -3,9 +3,9 @@ local DaysManager = {}
 DaysManager.daysData = {
 	{
 		enemies = {"1"},
-		rules = {["1"] = {5, 40}},
+		rules = {["1"] = {5, 60}},
 		sides = {"down", "up"},
-		time = 40
+		time = 60
 	}
 }
 

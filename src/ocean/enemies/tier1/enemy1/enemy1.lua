@@ -5,23 +5,24 @@ enemy.textureWidth = enemy.texture:getWidth()
 enemy.width = enemy.textureWidth / 9
 enemy.height = enemy.texture:getHeight() 
 enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.height)
-enemy.animations = {
-  anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
-  anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
-  anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
-  anim8.newAnimation(enemy.grid:getFrames("7-9", 1), 0.1, "pauseAtEnd")
-}
 
 enemy.sortOffset = enemy.height
 enemy.toDie = false
 enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
-enemy.offsetSpawn = 16
+enemy.offsetSpawn = 1
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
     speed = 20,
     health = 50
   }), {__index = enemy})
+  instance.animations = {
+    anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
+    anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
+    anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
+    anim8.newAnimation(enemy.grid:getFrames("7-9", 1), 0.1, "pauseAtEnd")
+  }
+
   instance.shape = love.physics.newCircleShape(14)
   instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
   instance.fixture:setCategory(1)
@@ -41,6 +42,7 @@ function enemy.new(x, y)
   instance.particleHandler:setSpread(3.14*2)
   instance.particleHandler:setSpinVariation(1)
   instance.particleHandler:setSpeed(30)
+  instance.drop = {["darkEssence"] = 2}
 
   return instance
 end
@@ -126,6 +128,12 @@ function enemy:damaged(d)
 end
 
 function enemy:die()
+  for k,v in pairs(self.drop) do
+    for i=1, v do
+      currentScene.ocean.dropManager:addDrop(k, self.body:getX(), self.body:getY(), love.math.random(30, 50))
+    end
+  end
+
   self.fixture:destroy()
   self.fixture:release()
   self.body:release()

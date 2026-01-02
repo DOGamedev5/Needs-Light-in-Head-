@@ -9,6 +9,12 @@ function Hud:addToHud(object)
 	end
 end
 
+function Hud:clear()
+	for i, v in ipairs(self.items) do
+		tools.erase(self.items, v)	
+	end
+end
+
 function Hud:remove(object)
 	tools.erase(self.items, object)
 end
