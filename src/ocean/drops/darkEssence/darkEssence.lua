@@ -2,8 +2,8 @@ local darkEssence = setmetatable({}, {__index = DropClass})
 
 darkEssence.image = love.graphics.newImage("src/ocean/drops/darkEssence/darkEssence.png")
 darkEssence.textureWidth = darkEssence.image:getWidth()
-darkEssence.width = 8
-darkEssence.height = 8
+darkEssence.width = 10
+darkEssence.height = 10
 darkEssence.grid = anim8.newGrid(darkEssence.width, darkEssence.height, darkEssence.textureWidth, darkEssence.height)
 
 function darkEssence.new(x, y, sizeEx)
@@ -34,6 +34,7 @@ function darkEssence:collect()
   	self.fixture:release()
   	self.body:release()
   	self.shape:release()
+  	currentScene.ocean:registerDrop("darkEssence")
 end
 
 return darkEssence

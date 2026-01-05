@@ -16,6 +16,8 @@ light.sfx = love.audio.newSource("src/ocean/lightHouse/attackEffect.wav", "stati
 light.hud = {
   attackBarr = LightBarr.new(100)
 }
+light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
+
 
 function light:init()
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
@@ -35,10 +37,13 @@ function light:init()
   self.timeToDamage = 1
   self.fuelMax = 100
   self.fuel = self.fuelMax
+  
   self.attackTimerMax = 2
   self.attackTimer = self.attackTimerMax
 
+  self.fuelBarr:setup(self)
   Hud:addToHud(self.hud.attackBarr)
+  Hud:addToHud(self.fuelBarr)
 
   self:start()
 end
@@ -54,7 +59,7 @@ function light:beginContact(otherFixture)
     table.insert(self.entered, 1, otherFixture)
   elseif data == "drop" then
     local obj = otherFixture:getUserData()
-    --obj.toCollect = true
+    obj.toCollect = true
   end
 end
 

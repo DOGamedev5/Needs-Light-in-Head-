@@ -33,7 +33,7 @@ end
 
 function ButtonBase:mouseMoved(x, y, dx, dy, touch)
   local posX, posY = toGame(x, y)
-  self.hover = tools.AABB.detectPoint(posX, posY, self.x, self.y, self.width, self.height)
+  self.hover = tools.AABB.detectPoint(posX, posY, self.posX, self.posY, self.width, self.height)
 end
 
 function ButtonBase:update(delta)
@@ -41,16 +41,18 @@ function ButtonBase:update(delta)
 end
 
 function ButtonBase:press()
-  self.timer:after(0.2, function()
+  if type(self.pressedFunction) == "function" then 
+    self.timer:after(0.2, function()
     self.pressedFunction(unpack(self.args)) end
     )
+  end
   self.timer:after(0.1, function () self.pressed = false end)
   self.pressed = true
 end
 
 function ButtonBase:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.x, self.y, self.width, self.height) and not self.pressed then
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX, self.posY, self.width, self.height) and not self.pressed then
     self:press()
   end
 end
@@ -70,32 +72,27 @@ end
 
 function ButtonBase.draw(self)
   local imageId = 1
-
-  -- love.graphics.setColor(100/255, 130/255, 150/255)
   
   if self.hover then
     imageId = 2
-    --love.graphics.setColor(120/255, 180/255, 190/255)
   end
   if self.pressed then
     imageId = 3
-    --love.graphics.setColor(80/255, 100/255, 120/255)
   end
   if self.selected then
     imageId = imageId + 3
   end
 
-  --love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
   love.graphics.setColor(1, 1, 1, 1)
-  lovepatch.draw(self.textures.menu[imageId], self.x, self.y, self.width, self.height, 2, 2)
+  lovepatch.draw(self.textures.menu[imageId], self.posX, self.posY, self.width, self.height, 2, 2)
 end
 
 function ButtonImage.new(image, x, y, width, height, pressedFunction)
   local instance = setmetatable({}, {__index = ButtonImage})
   instance = ButtonBase.construct(instance)
   instance.image = image
-  instance.x = x
-  instance.y = y
+  instance.posX = x
+  instance.posY = y
   instance.pressedFunction = pressedFunction
   instance.width = width
   instance.height = height
@@ -107,10 +104,11 @@ function Button.new(text, x, y, width, height, pressedFunction)
   local instance = setmetatable({}, {__index = Button}) 
   instance = ButtonBase.construct(instance)
   instance.text = text or ""
-  instance.x = x
-  instance.y = y
-  instance.width = width
-  instance.height = height
+  instance.posX = x or 0
+  instance.posY = y or 0
+  instance.width = width or ButtonBase.font:getWidth(text)
+  local _, count = string.gsub(instance.text, "\n", "")
+  instance.height = height or ButtonBase.font:getHeight(instance.text)*(count+1)
   instance.pressedFunction = pressedFunction
   
   return instance
@@ -126,11 +124,15 @@ function Button:draw()
   local hei = self.font:getHeight(self.text)*(count+1)
 
   love.graphics.print(self.text, self.font,
-    self.x + self.width/2 - wid/2,
-    self.y + self.height/2 - hei/2
+    self.posX + self.width/2 - wid/2,
+    self.posY + self.height/2 - hei/2
   )
 end
 
 function Button:changeText(text)
   self.text = text
+end
+
+function Button:getDimentions()
+  return self.width, self.height
 end

@@ -9,7 +9,7 @@ enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.
 enemy.sortOffset = enemy.height
 enemy.toDie = false
 enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
-enemy.offsetSpawn = 1
+enemy.offsetSpawn = 24
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {

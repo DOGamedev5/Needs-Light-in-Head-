@@ -64,6 +64,7 @@ pading = {
   y = 0
 }
 currentGameFile = 1
+isPaused = false
 
 function love.load()
   World = love.physics.newWorld(0 , 0, true)
@@ -78,7 +79,9 @@ end
 
 function love.update(delta)
   resizeWindow(love.graphics.getDimensions())
-  World:update(delta)
+  if not isPaused then
+    World:update(delta)
+  end
   sceneManager.update(delta)
 end
 

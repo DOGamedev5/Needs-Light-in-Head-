@@ -31,7 +31,10 @@ function lightHouse:update(delta)
 end
 
 function lightHouse:draw()
-  self.animation:draw(self.texture, self.x - self.width, self.y - self.height-48, 0, 2, 2)
+  local offsetX = 0
+  local offsetY = math.sin(love.timer.getTime()*0.25)*4
+
+  self.animation:draw(self.texture, self.x - self.width + offsetX, self.y - self.height-48 + offsetY, math.rad(0.2)*offsetY/2, 2, 2)
 end
 
 function lightHouse:damage(dmg)

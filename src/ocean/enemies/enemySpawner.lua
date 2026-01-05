@@ -14,6 +14,7 @@ function EnemySpawner:load()
 	--self.timerControl = Timer.new()
 	self.timeAlive = 0.0
 	self.timeMax = 90
+	self.frequency = 1
 	self.spawnTimer = 7
 	self.rules = {}
 	self.enemiesInst ={
@@ -21,29 +22,30 @@ function EnemySpawner:load()
 	}
 end
 
-function EnemySpawner:init(enemies, spawnRules, sides, maxtime)
+function EnemySpawner:init(dayInfo)
 	self.spawnSide.left = false
 	self.spawnSide.right = false
 	self.spawnSide.up = false
 	self.spawnSide.down = false
 
-	for _, side in pairs(sides) do
+	for _, side in pairs(dayInfo.sides) do
 		self.spawnSide[side] = true
 	end
 
-	self.enemiesClass = enemies
-	self.rules = spawnRules
-	self.timeMax = maxtime or 90
+	self.enemiesClass = dayInfo.enemies
+	self.rules = dayInfo.rules
+	self.timeMax = dayInfo.time or 90
+	self.frequency = dayInfo.frequency
 	self.spawnTimer = 7
 end
 
 function EnemySpawner:update(delta)
 	--self.timerControl:update(delta)
 	self.timeAlive = self.timeAlive + delta
-	self.spawnTimer = self.spawnTimer - delta
+	self.spawnTimer = self.spawnTimer - delta * self.frequency
 	if self.spawnTimer <= 0 then
 		self:spawnEnemy()
-		self.spawnTimer = love.math.random(9, 12)
+		self.spawnTimer = love.math.random(12, 15)
 	end
 
 	for i=#self.instances, 1, -1 do

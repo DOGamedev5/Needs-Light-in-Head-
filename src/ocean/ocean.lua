@@ -13,9 +13,13 @@ ocean.entities = {}
 ocean.dayManager = require("src.ocean.daysManager")
 ocean.enemyManager = require("src.ocean.enemies.enemySpawner")
 ocean.dropManager = require("src.ocean.dropManager")
+ocean.counter = require("src.ocean.hudElements.counter")
+ocean.counterList = {}
+
 ocean.currentDay = {}
 
 function ocean:init()
+  self.collects = {}
   self.light:init()
   self.lighthouse:init(self.light)
   
@@ -26,8 +30,10 @@ function ocean:init()
   self.already = true
   self.enemyManager:load()
   self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay)
-  self.enemyManager:init(self.currentDay.enemies, self.currentDay.rules, self.currentDay.sides, self.currentDay.time)
- 
+  self.enemyManager:init(self.currentDay)
+  self.counterHud = ListOrder.new(5, 5, 5)
+
+  Hud:addToHud(self.counterHud)
 end
 
 function ocean:exit()
@@ -37,6 +43,7 @@ end
 function ocean:update(delta)
   self.enemyManager:update(delta)
   self.dropManager:update(delta)
+  self.counterHud:update(delta)
   
   for i=1, #self.effects do
     self.effects[i]:update(delta)
@@ -52,16 +59,20 @@ function ocean:update(delta)
 
   self.lighthouse:update(delta)
   self.light:update(delta)
-  if self.light.fuel == 0 then
+
+  local function finished(beat)
     currentScene:finish({
-      beated = false
-    })
-  elseif self.enemyManager.timeAlive >= self.currentDay.time and #self.enemyManager.instances == 0 then
-    currentScene:finish({
-      beated = true
+      beated = beat,
+      collects = self.collects,
+      counters = self.counterList
     })
   end
 
+  if self.light.fuel == 0 then
+    finished(false)
+  elseif self.enemyManager.timeAlive >= self.currentDay.time then
+    finished(true)
+  end
 end
  
 function ocean:draw()
@@ -86,13 +97,7 @@ function ocean:draw()
   end
   self.dropManager:draw()
 
-  love.graphics.setColor(0.8, 0.6, 0.3, 0.7)
-  local y = love.mouse.getY()
-  if y > windowSize.y*gameScale - 40*gameScale then
-    love.graphics.setColor(0.8, 0.6, 0.3, 0.2)
-  end
-
-  love.graphics.rectangle("fill", 0, windowSize.y-30, windowSize.x*(self.light.fuel/self.light.fuelMax), 30)
+  love.graphics.setColor(1, 1, 1, 1)
 end
 
 function ocean:mouseMoved(x, y, dx, dy, touch)
@@ -127,6 +132,21 @@ function ocean:afterContact(a, b, col)
       dataB:afterContact(a)
     end
   end
+end
+
+function ocean:registerDrop(drop)
+  if self.collects[drop] == nil then
+    self.collects[drop] = 0
+    local image = string.gsub("src/ocean/drops/$d/$dIcon.png", "$d", drop)
+    self.counterList[drop] = self.counter.new(
+      love.graphics.newImage(image)
+    )
+  self.counterHud:addToList(self.counterList["darkEssence"])
+  end
+
+  self.collects[drop] = self.collects[drop] + 1
+
+  self.counterList[drop]:updateCounter(self.collects[drop])
 end
 
 return ocean

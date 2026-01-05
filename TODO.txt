@@ -6,12 +6,10 @@ upgrades system
 	button
 	system
 	ui
-enemy spawn system
-oil counter
+
 particleSystem
 	spawn system
-Hud system
-	remove hud
+
 Menu
 	options
 pause menu

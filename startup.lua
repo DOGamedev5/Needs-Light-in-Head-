@@ -3,6 +3,8 @@ world = nil
 require("tools.fileSystem")
 require("src.ocean.enemies.enemyClass")
 require("src.ocean.drops.dropClass")
+require("tools.listOrder")
+require("tools.tween")
 
 -- local baton = require 'plugins.baton'
 lovepatch = require("plugins.lovepatch")

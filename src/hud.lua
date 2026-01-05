@@ -11,7 +11,7 @@ end
 
 function Hud:clear()
 	for i, v in ipairs(self.items) do
-		tools.erase(self.items, v)	
+		self.items[i] = nil
 	end
 end
 

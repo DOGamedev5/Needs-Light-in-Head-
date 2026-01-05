@@ -32,11 +32,9 @@ function menu:update(delta)
 end
 
 function menu:draw()
-  --camera:attach()
   for i, b in ipairs(self.buttons) do
     b:draw()
   end
-  --camera:detach()
   if self.currentScreen == 1 then
     self.options:draw()
   elseif self.currentScreen == 2 then

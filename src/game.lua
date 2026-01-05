@@ -5,7 +5,7 @@ game.results = require("src.results")
 
 game.saveDirPath = ""
 game.save = {}
-game.mode = "ocean"
+game.mode = ""
 
 function game:load()
   self.saveDirPath = "file".. tostring(currentGameFile) .. "/"
@@ -18,7 +18,7 @@ function game:load()
       FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
     end
   end
-  self.ocean:init() 
+  self:changeMode("ocean")
 end
 
 function game:exit()
@@ -50,7 +50,14 @@ function game:input(event, value)
   if self.mode == "ocean" then
     self.ocean:input(event, value)
   else
-    --self.results:input(event, value)
+    self.results:input(event, value)
+  end
+end
+
+function game:mousePressed(x, y, button, touch, presses)
+  if self.mode == "ocean" then
+  else
+    self.results:mousePressed(x, y, button, touch, presses)
   end
 end
 
@@ -58,13 +65,13 @@ function game:mouseMoved(x, y, dx, dy, touch)
   if self.mode == "ocean" then
     self.ocean:mouseMoved(x, y, dx, dy, touch)
   else
-    --self.results:mouseMoved(x, y, dx, dy, touch)
+    self.results:mouseMoved(x, y, dx, dy, touch)
   end
 end
 
 function game:beginContact(a, b, col)
   if self.mode == "ocean" then
-    game.ocean:beginContact(a, b, col)
+    self.ocean:beginContact(a, b, col)
   else
   end
 end
@@ -79,17 +86,36 @@ end
 
 function game:newSave()
   return {
-    currentDay = 1
+    currentDay = 1,
+    totalDays = 1,
+    collects = {
+
+    },
+    upgrades = {}
   }
 end
 
 function game:finish(info)
-  self.mode = "results"
-  if info.beated == true then
-    self.save.currentDay = self.save.currentDay + 1 
+  if info.beated == true and self.save.currentDay == self.save.totalDays then
+    self.save.totalDays = self.save.totalDays + 1 
   end
-  Hud:clear()
-  self.results:init(info)
+  
+  self.results:setupInfo(info)
+  self:changeMode("results")
 end
+
+
+function game:changeMode(mode)
+  self.mode = mode
+  Hud:clear()
+  if mode == "ocean" then
+    isPaused = false
+    self.ocean:init() 
+  elseif mode == "results" then
+    isPaused = true
+    self.results:init(info)
+  end
+end
+
 
 return game
