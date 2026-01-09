@@ -31,9 +31,16 @@ function EnemySpawner:init(dayInfo)
 	for _, side in pairs(dayInfo.sides) do
 		self.spawnSide[side] = true
 	end
+	for i=#self.instances, 1, -1 do
+		self.instances[i]:remove()
+		table.remove(self.instances, i)
+		--self.instances[i]:removeToDraw()
+	end
+
 
 	self.enemiesClass = dayInfo.enemies
 	self.rules = dayInfo.rules
+	self.timeAlive = 0
 	self.timeMax = dayInfo.time or 90
 	self.frequency = dayInfo.frequency
 	self.spawnTimer = 7

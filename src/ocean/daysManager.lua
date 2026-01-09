@@ -5,7 +5,7 @@ DaysManager.daysData = {
 		enemies = {"1"},
 		rules = {["1"] = {5, 90}},
 		sides = {"down", "up"},
-		time = 90,
+		time = 20,
 		frequency = 1.2,
 	},
 	{

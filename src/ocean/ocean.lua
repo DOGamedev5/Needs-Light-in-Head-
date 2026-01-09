@@ -23,6 +23,7 @@ ocean.enemiesTable = {
 ocean.entities = {}
 ocean.dayManager = require("src.ocean.daysManager")
 ocean.enemyManager = require("src.ocean.enemies.enemySpawner")
+ocean.enemyManager:load()
 ocean.dropManager = require("src.ocean.dropManager")
 ocean.counter = require("src.ocean.hudElements.counter")
 ocean.counterList = {}
@@ -63,18 +64,17 @@ function ocean:init()
   self.light:init()
   self.lighthouse:init(self.light)
   
-  if self.already then return end
-  for i=1, 20 do
-    self.effects[i] = self.Effect.new()
-  end
-  self.already = true
-  self.enemyManager:load()
   self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay)
   self.enemyManager:init(self.currentDay)
   self.counterHud = ListOrder.new(5, 5, 5)
 
   Hud:addToHud(self.counterHud)
   Hud:addToHud(self.timeCounter)
+  if self.already then return end
+  for i=1, 20 do
+    self.effects[i] = self.Effect.new()
+  end
+  self.already = true
 
 end
 

@@ -1,5 +1,7 @@
 TO DO
 
+otimize EnemyClass
+
 stateMachineClass
 	stateClass
 upgrades system

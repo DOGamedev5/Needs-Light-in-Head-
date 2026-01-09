@@ -8,7 +8,9 @@ results.counters = {
 
 }
 results.buttons = {
-	repeatPhase = Button.new("Repeat", windowSize.x/2 - 200, windowSize.y-110, 200, 50),
+	repeatPhase = Button.new("Repeat", windowSize.x/2 - 200, windowSize.y-110, 200, 50, function()
+		currentScene:changeMode("ocean")
+	end),
 	continue = Button.new("continue", windowSize.x/2 + 10, windowSize.y-110, 200, 50),
 }
 results.buttonList = ListOrder.new(windowSize.x/2 - 200, windowSize.y-110, 10, "x")

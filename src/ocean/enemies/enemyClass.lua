@@ -76,3 +76,11 @@ function EnemyClass:canDrawDetect(x, y)
     self:removeToDraw()
   end
 end
+
+function EnemyClass:remove()
+  self.fixture:destroy()
+  self.fixture:release()
+  self.body:release()
+  self.shape:release()
+  self:removeToDraw()
+end
