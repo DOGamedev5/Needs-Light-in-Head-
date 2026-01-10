@@ -24,10 +24,10 @@ tools = {
     local AsortOffset = a.sortOffset or 0
     local BsortOffset = b.sortOffset or 0
     local aY, bY = a.y, b.y
-    if not aY and a.body then
+    if aY == nil and a.body then
       aY = a.body:getY()
     end
-    if not bY and b.body then
+    if bY == nil and b.body then
       bY = b.body:getY()
     end
     local AhudTag = a.hud or false

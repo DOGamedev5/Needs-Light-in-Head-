@@ -35,7 +35,7 @@ function light:init()
 
   self.damage = 20
   self.timeToDamage = 1
-  self.fuelMax = 100
+  self.fuelMax = 40
   self.fuel = self.fuelMax
   
   self.attackTimerMax = 2

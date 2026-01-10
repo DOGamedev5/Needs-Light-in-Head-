@@ -6,6 +6,16 @@ function EnemyClass.new(x, y, prototype)
   local instance = setmetatable({}, {__index == EnemyClass})
   instance.body = love.physics.newBody(World, x, y, "dynamic")
   instance.body:setUserData("enemy")
+  
+  instance.shape = prototype.shape
+  instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
+  instance.fixture:setCategory(1)
+  instance.fixture:setMask(1)
+  instance.fixture:setUserData(instance)
+  instance.damageTimer = Timer.new()
+  instance.currentState = 1
+  instance.attackTime = 1
+  
   instance.enteredLights = {}
   instance.attacking = {}
   instance.drawList = false

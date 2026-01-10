@@ -34,7 +34,6 @@ function EnemySpawner:init(dayInfo)
 	for i=#self.instances, 1, -1 do
 		self.instances[i]:remove()
 		table.remove(self.instances, i)
-		--self.instances[i]:removeToDraw()
 	end
 
 
@@ -44,6 +43,8 @@ function EnemySpawner:init(dayInfo)
 	self.timeMax = dayInfo.time or 90
 	self.frequency = dayInfo.frequency
 	self.spawnTimer = 7
+	self.amount = dayInfo.amount
+	self.perc = dayInfo.groupsPerc
 end
 
 function EnemySpawner:update(delta)
@@ -52,7 +53,7 @@ function EnemySpawner:update(delta)
 	self.spawnTimer = self.spawnTimer - delta * self.frequency
 	if self.spawnTimer <= 0 then
 		self:spawnEnemy()
-		self.spawnTimer = love.math.random(12, 15)
+		self:setTimer()
 	end
 
 	for i=#self.instances, 1, -1 do
@@ -67,8 +68,8 @@ end
 
 function EnemySpawner:spawnEnemy()
 	local porc = love.math.random(1, 100)
-	local amount = 0
-	if porc <= 30 then amount = 1 end
+	local amount = self.amount[1]-1
+	if porc <= self.perc then amount = love.math.random(self.amount[1], self.amount[2]-1) end
 
 	local function spawn()
 		local side = self:getSideSpawn()
@@ -123,6 +124,10 @@ function EnemySpawner:getEnemySpawn()
 	if #possible == 0 then return end
 	local choosen = love.math.random(1, #possible)
 	return self.enemiesInst[choosen]
+end
+
+function EnemySpawner:setTimer()
+	self.spawnTimer = love.math.random(12, 15) - self.frequency
 end
 
 return EnemySpawner

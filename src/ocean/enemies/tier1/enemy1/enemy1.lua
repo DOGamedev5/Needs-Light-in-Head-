@@ -14,7 +14,8 @@ enemy.offsetSpawn = 24
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
     speed = 20,
-    health = 50
+    health = 50,
+    shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {
     anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
@@ -23,15 +24,7 @@ function enemy.new(x, y)
     anim8.newAnimation(enemy.grid:getFrames("7-9", 1), 0.1, "pauseAtEnd")
   }
 
-  instance.shape = love.physics.newCircleShape(14)
-  instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
-  instance.fixture:setCategory(1)
-  instance.fixture:setMask(1)
-  instance.fixture:setUserData(instance)
   instance.currentAnimation = 1
-  instance.damageTimer = Timer.new()
-  instance.currentState = 1
-  instance.attackTime = 1
   
   instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
   instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
@@ -42,6 +35,7 @@ function enemy.new(x, y)
   instance.particleHandler:setSpread(3.14*2)
   instance.particleHandler:setSpinVariation(1)
   instance.particleHandler:setSpeed(30)
+
   instance.drop = {["darkEssence"] = 2}
 
   return instance
@@ -98,8 +92,6 @@ function enemy:update(delta)
         self.attackTime = 0
         self.currentState = 3
       end
-
-
     end
   end
   self.animations[self.currentAnimation]:update(delta)

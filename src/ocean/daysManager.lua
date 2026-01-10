@@ -5,15 +5,18 @@ DaysManager.daysData = {
 		enemies = {"1"},
 		rules = {["1"] = {5, 90}},
 		sides = {"down", "up"},
-		time = 20,
-		frequency = 1.2,
+		time = 90,
+		frequency = 1.8,
+		amount = {1, 3},
+		groupsPerc = 40
 	},
 	{
 		enemies = {"1"},
 		rules = {["1"] = {5, 60}},
 		sides = {"left", "right", "up"},
 		time = 90,
-		frequency = 1.75
+		frequency = 1.75,
+		amount = {1, 3}
 	}
 }
 

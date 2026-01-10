@@ -9,7 +9,11 @@ function FileSystem.serialize(data, indentation)
 		return string.format("%q", data)
 	elseif type(data) == "table" then
 		result = result .. "{\n"
-		for key, value in pairs(data) do
+		for k, value in pairs(data) do
+			local key = k
+			if type(key) == "number" then
+				key = "[ " .. k .. " ]"
+			end 
 			result = result .. string.rep("  ", indentation + 1) .. key .. " = "
 			result = result .. FileSystem.serialize(value, indentation + 1) .. ",\n"
 		end

@@ -2,6 +2,7 @@ local game = {}
 
 game.ocean = require("src.ocean.ocean")
 game.results = require("src.results")
+game.initial = require("src.initial.initial")
 
 game.saveDirPath = ""
 game.save = {}
@@ -19,6 +20,7 @@ function game:load()
     end
   end
   self:changeMode("ocean")
+  --self:changeMode("initial")
 end
 
 function game:exit()
@@ -28,8 +30,10 @@ end
 function game:update(delta)
   if self.mode == "ocean" then
     self.ocean:update(delta)
-  else
+  elseif self.mode == "results" then
     self.results:update(delta)
+  else
+    self.initial:update(delta)
   end
   Hud:update(delta)
 end
@@ -41,7 +45,7 @@ function game:draw()
       self.results:draw()
     end
   else 
-
+    self.initial:draw()
   end
   Hud:draw()
 end
@@ -91,6 +95,7 @@ function game:newSave()
     collects = {
 
     },
+    knowCollects = {"darkEssence"},
     upgrades = {}
   }
 end
@@ -114,6 +119,8 @@ function game:changeMode(mode)
   elseif mode == "results" then
     isPaused = true
     self.results:init(info)
+  else
+    self.initial:init()
   end
 end
 

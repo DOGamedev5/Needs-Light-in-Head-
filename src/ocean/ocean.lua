@@ -30,13 +30,11 @@ ocean.counterList = {}
 
 ocean.currentDay = {}
 ocean.timeCounter = {
-  --font = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 16, "normal"),
   font = love.graphics.newImageFont("assets/fonts/SimpleFont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
   draw = function(self)
     love.graphics.setColor(1, 1, 1, 0.7)
     love.graphics.setFont(self.font)
     local scale = 2
-    ----[[
     local remain = ocean.enemyManager.timeMax - ocean.enemyManager.timeAlive 
     local seconds = math.floor(remain)
 
@@ -44,17 +42,12 @@ ocean.timeCounter = {
       love.graphics.setColor(0.9, 0.1, 0.3, 0.7)
       scale = 1 + scale + 1*(remain - seconds)
     end
-    --local minutes = math.floor(remain / 60)
-    --local seconds = math.floor(remain % 60)
-    
-    --local text = string.format(string.gsub("m:%02d", "m", tostring(minutes)), seconds)
-    
     
     local text = string.format("%ds", seconds)
     local wid = self.font:getWidth(text)*scale
-  --]]
+
     love.graphics.print(text, windowSize.x - wid - 10, 10, 0, scale, scale)
-    --love.graphics.print("Rodolfo 1+1=2", 16, 10, 0, scale, scale)
+
   end
 }
 
@@ -71,10 +64,12 @@ function ocean:init()
   Hud:addToHud(self.counterHud)
   Hud:addToHud(self.timeCounter)
   if self.already then return end
-  for i=1, 20 do
-    self.effects[i] = self.Effect.new()
-  end
   self.already = true
+
+  for i, v in ipairs(currentScene.save.knowCollects) do
+    self:addCounter(v)
+  end
+  
 
 end
 
@@ -89,9 +84,6 @@ function ocean:update(delta)
   self.dropManager:update(delta)
   self.counterHud:update(delta)
   
-  for i=1, #self.effects do
-    self.effects[i]:update(delta)
-  end
   for i=#self.entities, 1, -1 do
     if self.entities[i].toDie then
       self.entities[i]:die()
@@ -123,19 +115,13 @@ function ocean:draw()
 
   love.graphics.setShader(self.waterShader)
     love.graphics.setColor(3/255, 2/255, 6/255)
-    --love.graphics.setColor(7/255, 5/255, 17/255)
     love.graphics.draw(self.waterTexture, 0, 0, 0, windowSize.x/64, windowSize.y/64)
 
   
   love.graphics.setShader()
 
   love.graphics.setColor(1, 1, 1)
-  --[[
-  for i=1, #self.effects do
-    self.effects[i]:draw()
-  end
-  ]]
-  local drawObjects = {
+   local drawObjects = {
     self.lighthouse,
     self.light,
     unpack(EnemyClass.toDraw),
@@ -187,17 +173,22 @@ end
 
 function ocean:registerDrop(drop)
   if self.collects[drop] == nil then
-    self.collects[drop] = 0
-    local image = string.gsub("src/ocean/drops/$d/$dIcon.png", "$d", drop)
-    self.counterList[drop] = self.counter.new(
-      love.graphics.newImage(image)
-    )
-  self.counterHud:addToList(self.counterList["darkEssence"])
+    self:addCounter(drop)
+    currentScene.save.knowCollects[#currentScene.save.knowCollects + 1] = drop
   end
 
   self.collects[drop] = self.collects[drop] + 1
 
   self.counterList[drop]:updateCounter(self.collects[drop])
+end
+
+function ocean:addCounter(drop)
+  self.collects[drop] = 0
+  local image = string.gsub("src/ocean/drops/$d/$dIcon.png", "$d", drop)
+  self.counterList[drop] = self.counter.new(
+    love.graphics.newImage(image)
+  )
+  self.counterHud:addToList(self.counterList["darkEssence"])
 end
 
 return ocean
