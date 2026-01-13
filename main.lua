@@ -66,6 +66,8 @@ pading = {
 currentGameFile = 1
 isPaused = false
 
+local screenBlacked = 0.1
+
 function love.load()
   World = love.physics.newWorld(0 , 0, true)
   World:setCallbacks(worldBegincontact, worldAftercontact)
@@ -78,10 +80,18 @@ function love.load()
 end
 
 function love.update(delta)
+  if screenBlacked > 0 then screenBlacked = screenBlacked - delta end
+  if screenBlacked > 0 then
+    return
+  end
+
   resizeWindow(love.graphics.getDimensions())
+  
   if not isPaused then
     World:update(delta)
   end
+
+
   sceneManager.update(delta)
 end
 
@@ -94,7 +104,12 @@ function toGame(x, y)
 end
 
 function love.draw()
-  love.graphics.clear()
+  love.graphics.setBackgroundColor(0, 0, 0, 1)   
+  love.graphics.reset()
+  if screenBlacked > 0 then
+    return
+  end
+  
   love.graphics.setBackgroundColor(0, 0, 0, 1)
   love.graphics.setScissor(pading.x, pading.y, windowSize.x*gameScale, windowSize.y*gameScale)
   love.graphics.push()
@@ -152,10 +167,14 @@ function love.quit()
 end
 
 function main.input(event, value)
+  if screenBlacked > 0 then
+    return
+  end
   sceneManager.input(event, value)
 end
 
 function love.resize(w, h)
+  screenBlacked = 0.1
   resizeWindow(w, h)
 end
 
