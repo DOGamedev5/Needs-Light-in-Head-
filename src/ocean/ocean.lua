@@ -27,13 +27,14 @@ ocean.enemyManager:load()
 ocean.dropManager = require("src.ocean.dropManager")
 ocean.counter = require("src.ocean.hudElements.counter")
 ocean.counterList = {}
+ocean.visualCollect = require("src.ocean.hudElements.visualCollect")
 
 ocean.currentDay = {}
 ocean.timeCounter = {
-  font = love.graphics.newImageFont("assets/fonts/SimpleFont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
+  --font = love.graphics.newImageFont("assets/fonts/SimpleFont.png", " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
   draw = function(self)
     love.graphics.setColor(1, 1, 1, 0.7)
-    love.graphics.setFont(self.font)
+    love.graphics.setFont(fonts.normal)
     local scale = 2
     local remain = ocean.enemyManager.timeMax - ocean.enemyManager.timeAlive 
     local seconds = math.floor(remain)
@@ -44,7 +45,7 @@ ocean.timeCounter = {
     end
     
     local text = string.format("%ds", seconds)
-    local wid = self.font:getWidth(text)*scale
+    local wid = fonts.normal:getWidth(text)*scale
 
     love.graphics.print(text, windowSize.x - wid - 10, 10, 0, scale, scale)
 
@@ -171,7 +172,7 @@ function ocean:afterContact(a, b, col)
   end
 end
 
-function ocean:registerDrop(drop)
+function ocean:registerDrop(drop, x, y)
   if self.collects[drop] == nil then
     self:addCounter(drop)
     currentScene.save.knowCollects[#currentScene.save.knowCollects + 1] = drop
@@ -180,6 +181,8 @@ function ocean:registerDrop(drop)
   self.collects[drop] = self.collects[drop] + 1
 
   self.counterList[drop]:updateCounter(self.collects[drop])
+  Hud:addToHud(self.visualCollect.new(self.counterList[drop].image, x, y, self.counterList[drop].posX, self.counterList[drop].posY))
+
 end
 
 function ocean:addCounter(drop)

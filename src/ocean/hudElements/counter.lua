@@ -20,6 +20,7 @@ function Counter:updateCounter(value)
 end
 
 function Counter:draw()
+
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.image, self.posX, self.posY, 0, 2, 2)
 	love.graphics.setFont(self.font)

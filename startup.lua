@@ -1,3 +1,11 @@
+love.graphics.setDefaultFilter("nearest", "nearest")
+
+fonts = {
+	normal = love.graphics.newImageFont(
+		"assets/fonts/SimpleFont.png", 
+		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
+}
+
 world = nil
 
 require("tools.fileSystem")
@@ -15,7 +23,6 @@ Vector = require("plugins.hump.vector-light")
 anim8 = require("plugins.anim8")
 require("tools.input")
 
-love.graphics.setDefaultFilter("nearest", "nearest")
 
 require("tools.button")
 require("src.ocean.lightHouse.lightBarr.lightBarr")

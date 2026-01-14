@@ -28,9 +28,13 @@ function Hud:draw()
 end
 
 function Hud:update(delta)
-	for i, o in ipairs(self.items) do
-		if o.update then
-			o:update(delta)
+	for i=#self.items, 1, -1 do
+		if self.items[i].update then
+			self.items[i]:update(delta)
+		end
+		if self.items[i].toRemove then
+			table.remove(self.items, i)
 		end
 	end
+
 end

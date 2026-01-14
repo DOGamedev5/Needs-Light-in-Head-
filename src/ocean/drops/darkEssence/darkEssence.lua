@@ -5,15 +5,11 @@ darkEssence.textureWidth = darkEssence.image:getWidth()
 darkEssence.width = 10
 darkEssence.height = 10
 darkEssence.grid = anim8.newGrid(darkEssence.width, darkEssence.height, darkEssence.textureWidth, darkEssence.height)
+darkEssence.name = "darkEssence"
 
 function darkEssence.new(x, y, sizeEx)
-	local instance = setmetatable(DropClass.new(x, y, {size = sizeEx}), {__index  = darkEssence})
-	instance.shape = love.physics.newCircleShape(4)
-	instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
-  	instance.fixture:setCategory(1)
-  	instance.fixture:setMask(1)
-  	instance.fixture:setUserData(instance)
-  	instance.fixture:setFriction(1)
+	local instance = setmetatable(DropClass.new(x, y, {size = sizeEx, shape = love.physics.newCircleShape(4)}), {__index  = darkEssence})
+	
   	instance.animation = anim8.newAnimation(darkEssence.grid:getFrames("1-4", 1), 0.4)
 
   	return instance
@@ -29,12 +25,6 @@ function darkEssence:update(delta)
 	self:physics(delta)
 end
 
-function darkEssence:collect()
-	self.fixture:destroy()
-  	self.fixture:release()
-  	self.body:release()
-  	self.shape:release()
-  	currentScene.ocean:registerDrop("darkEssence")
-end
+
 
 return darkEssence

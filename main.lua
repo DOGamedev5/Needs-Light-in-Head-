@@ -69,6 +69,7 @@ isPaused = false
 local screenBlacked = 0.1
 
 function love.load()
+
   World = love.physics.newWorld(0 , 0, true)
   World:setCallbacks(worldBegincontact, worldAftercontact)
   require("startup")
@@ -84,6 +85,7 @@ function love.update(delta)
   if screenBlacked > 0 then
     return
   end
+  love.graphics.setDefaultFilter("nearest", "nearest")
 
   resizeWindow(love.graphics.getDimensions())
   
@@ -106,7 +108,7 @@ end
 function love.draw()
   love.graphics.setBackgroundColor(0, 0, 0, 1)   
   love.graphics.reset()
-  if screenBlacked > 0 then
+  if screenBlacked > 0 then 
     return
   end
   
