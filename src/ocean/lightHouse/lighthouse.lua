@@ -33,7 +33,7 @@ end
 function lightHouse:draw()
   local offsetX = 0
   local offsetY = math.sin(love.timer.getTime()*0.25)*4
-  love.graphics.setColor(0.7, 0.75, 0.9)
+  --love.graphics.setColor(0.7, 0.75, 0.9)
   self.animation:draw(self.texture, self.x - self.width + offsetX, self.y - self.height-48 + offsetY, math.rad(0.2)*offsetY/2, 2, 2)
   love.graphics.setColor(1, 1, 1)
 end

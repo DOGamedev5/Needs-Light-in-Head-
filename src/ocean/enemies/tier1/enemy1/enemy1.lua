@@ -2,7 +2,7 @@ local enemy = setmetatable({}, {__index = EnemyClass})
 
 enemy.texture = love.graphics.newImage("src/ocean/enemies/tier1/enemy1/enemy1.png")
 enemy.textureWidth = enemy.texture:getWidth()
-enemy.width = enemy.textureWidth / 9
+enemy.width = 32
 enemy.height = enemy.texture:getHeight() 
 enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.height)
 
@@ -21,7 +21,8 @@ function enemy.new(x, y)
     anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
     anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
     anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("7-9", 1), 0.1, "pauseAtEnd")
+    anim8.newAnimation(enemy.grid:getFrames("7-9", 1), 0.1, "pauseAtEnd"),
+    anim8.newAnimation(enemy.grid:getFrames("10-14", 1), 0.15, "pauseAtEnd"),
   }
 
   instance.currentAnimation = 1
@@ -51,19 +52,32 @@ function enemy:update(delta)
   local debuf = 1
 
   self.flip = dirX < 0
-  if self.currentState == 3 then
+  if self.currentState == 4 then -- dying State
+    if self.currentAnimation ~= 5 then
+      self.currentAnimation = 5
+      self.animations[5]:pauseAtStart()
+      self.animations[5]:resume()
+
+    elseif self.animations[5].status == "paused" then
+      self.toDie = true
+    end
+
+  elseif self.currentState == 3 then -- attacking State
     if self.currentAnimation ~= 4 then
       self.currentAnimation = 4
       self.animations[4]:pauseAtStart()
       self.animations[4]:resume()
+
     elseif self.animations[4].status == "paused" then
       self.attackTime = 1
       self.currentState = 1
+
       for _, o in ipairs(self.attacking) do
         o:getUserData():damage(5)  
       end
     end
-  elseif self.currentState == 2 then
+
+  elseif self.currentState == 2 then --attacked State
     debuf = 0
     if self.currentAnimation ~= 3 then
       self.currentAnimation = 3
@@ -71,18 +85,20 @@ function enemy:update(delta)
       self.animations[3]:resume()
     end
   
-  elseif #self.enteredLights >= 1 then
+  elseif #self.enteredLights >= 1 then -- slowed State
     debuf = 0.5
     self.currentAnimation = 2  
   
-  else
+  else -- Normal State
     self.currentAnimation = 1
 
   end
 
   local x, y = self.body:getX() - self.width, self.body:getY() - self.height
   self:updateHandler(delta, x, y)
-  if #self.attacking == 0 then
+  if self.currentState == 4 then
+    self.body:setLinearVelocity(0, 0)
+  elseif #self.attacking == 0 then
     self.body:setLinearVelocity(dirX * self.speed * debuf, dirY * self.speed * debuf)
   else
     self.body:setLinearVelocity(0, 0)
@@ -94,6 +110,7 @@ function enemy:update(delta)
       end
     end
   end
+
   self.animations[self.currentAnimation]:update(delta)
   self.damageTimer:update(delta)
  
@@ -101,7 +118,7 @@ function enemy:update(delta)
 end
 
 function enemy:damaged(d)
-  if self.toDie == true then
+  if self.toDie == true or self.currentState == 4 then
     return
   end
   
@@ -109,13 +126,15 @@ function enemy:damaged(d)
   self.health = self.health - d
   self.currentState = 2
   self.damageTimer:clear()
-  self.damageTimer:after(0.5, function ()
-    self.currentState = 1
-  end)
 
   if self.health <= 0 then
-    self.toDie = true
+    self.currentState = 4
+  else
+    self.damageTimer:after(0.5, function ()
+      self.currentState = 1
+    end)
   end
+
   self.particleHandler:emit(4)
 end
 

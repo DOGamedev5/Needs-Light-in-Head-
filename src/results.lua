@@ -2,7 +2,7 @@ local results = {}
 
 results.alpha = 0.0
 results.titleFont = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 16, "normal")
-results.valueFont = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 8, "normal")
+results.valueFont = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 16, "normal")
 results.timeAnim = 0.0
 results.counters = {
 

@@ -36,5 +36,5 @@ function Hud:update(delta)
 			table.remove(self.items, i)
 		end
 	end
-
+	print(#self.items)
 end
