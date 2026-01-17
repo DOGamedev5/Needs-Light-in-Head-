@@ -15,10 +15,11 @@ function EnemySpawner:load()
 	self.timeAlive = 0.0
 	self.timeMax = 90
 	self.frequency = 1
-	self.spawnTimer = 7
+	self.spawnTimer = 2
 	self.rules = {}
 	self.enemiesInst ={
 		require("src.ocean.enemies.tier1.enemy1.enemy1"),
+		require("src.ocean.enemies.tier1.enemy2.enemy2"),
 	}
 end
 
@@ -121,6 +122,7 @@ function EnemySpawner:getEnemySpawn()
 			possible[#possible+1] = k
 		end
 	end
+	
 	if #possible == 0 then return end
 	local choosen = love.math.random(1, #possible)
 	return self.enemiesInst[choosen]

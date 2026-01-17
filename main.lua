@@ -81,10 +81,6 @@ function love.load()
 end
 
 function love.update(delta)
-  if screenBlacked > 0 then screenBlacked = screenBlacked - delta end
-  if screenBlacked > 0 then
-    return
-  end
   love.graphics.setDefaultFilter("nearest", "nearest")
 
   resizeWindow(love.graphics.getDimensions())
@@ -107,13 +103,9 @@ end
 
 function love.draw()
   love.graphics.setBackgroundColor(0, 0, 0, 1)   
-  love.graphics.reset()
-  if screenBlacked > 0 then 
-    return
-  end
   
   love.graphics.setBackgroundColor(0, 0, 0, 1)
-  love.graphics.setScissor(pading.x, pading.y, windowSize.x*gameScale, windowSize.y*gameScale)
+  
   love.graphics.push()
   
   love.graphics.translate(pading.x, pading.y)
@@ -123,6 +115,11 @@ function love.draw()
   sceneManager.draw()
 
   love.graphics.pop()
+  love.graphics.setColor(0, 0, 0, 1)
+  love.graphics.rectangle("fill", 0, 0, pading.x, love.graphics.getHeight())
+  love.graphics.rectangle("fill", love.graphics.getWidth() - pading.x, 0, pading.x, love.graphics.getHeight() + pading.y)
+  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), pading.y)
+  love.graphics.rectangle("fill", 0, love.graphics.getHeight() - pading.y, love.graphics.getWidth(), pading.y)
 end
 
 function love.mousepressed(x, y, button, touch, presses)
@@ -176,7 +173,6 @@ function main.input(event, value)
 end
 
 function love.resize(w, h)
-  screenBlacked = 0.1
   resizeWindow(w, h)
 end
 

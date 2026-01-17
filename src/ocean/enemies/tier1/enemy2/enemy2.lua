@@ -1,6 +1,6 @@
-local enemy = setmetatable({}, {__index = EnemyClass})
+local enemy = {}
 
-enemy.texture = love.graphics.newImage("src/ocean/enemies/tier1/enemy1/enemy1.png")
+enemy.texture = love.graphics.newImage("src/ocean/enemies/tier1/enemy2/enemy2.png")
 enemy.textureWidth = enemy.texture:getWidth()
 enemy.width = 32
 enemy.height = enemy.texture:getHeight() 
@@ -13,20 +13,20 @@ enemy.offsetSpawn = 24
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 20,
-    health = 50,
+    speed = 40,
+    health = 30,
     shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {
-    anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
-    anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
+    anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.0),
+    anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.0),
     anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
     anim8.newAnimation(enemy.grid:getFrames("7-10", 1), 0.1, "pauseAtEnd"),
     anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.15, "pauseAtEnd"),
   }
 
   instance.currentAnimation = 1
-  
+
   instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
   instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
   instance.particleHandler:setParticleLifetime(0.3, 0.9)
@@ -37,9 +37,7 @@ function enemy.new(x, y)
   instance.particleHandler:setSpinVariation(1)
   instance.particleHandler:setSpeed(30)
 
-  instance.drop = {["darkEssence"] = 2}
-
-  return instance
+  instance.drop = {["darkEssence"] = 3}
 end
 
 function enemy:draw()
@@ -152,4 +150,5 @@ function enemy:die()
   self:removeToDraw()
 end
 
-return enemy  
+
+return enemy

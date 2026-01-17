@@ -94,3 +94,7 @@ function EnemyClass:remove()
   self.shape:release()
   self:removeToDraw()
 end
+
+function EnemyClass:getDirection( )
+  return Vector.normalize(windowSize.x/2 - self.body:getX(), windowSize.y/2 - self.body:getY())
+end

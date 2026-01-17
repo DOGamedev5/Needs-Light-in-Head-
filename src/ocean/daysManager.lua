@@ -2,8 +2,8 @@ local DaysManager = {}
 
 DaysManager.daysData = {
 	{
-		enemies = {"1"},
-		rules = {["1"] = {5, 90}},
+		enemies = {"1", "2"},
+		rules = {["1"] = {5, 90}, ["2"] = {0, 60}},
 		sides = {"down", "up"},
 		time = 90,
 		frequency = 1.8,
