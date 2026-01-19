@@ -46,7 +46,7 @@ tools = {
   end,
   size = function (t)
     local n = 0
-    for k, v in ipairs(t) do
+    for k, v in pairs(t) do
       n = n + 1
     end
     return n

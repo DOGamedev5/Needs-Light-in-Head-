@@ -17,7 +17,7 @@ function ParticleManager:update(delta)
     if self.particles[i].part:getCount() == 0 then
       table.remove(self.particles, i)
     else
-    	print(self.particles[i].part:getCount())
+    	
       --self.particles[i].part:update(delta)
     end
   end

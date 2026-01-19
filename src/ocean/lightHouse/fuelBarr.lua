@@ -1,7 +1,6 @@
 local fuelBarr = {}
 
 function fuelBarr:setup (light)
-  print("A")
   self.light = light
 end
 

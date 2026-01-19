@@ -1,8 +1,8 @@
-local enemy = {}
+local enemy = setmetatable({}, {__index = EnemyClass})
 
 enemy.texture = love.graphics.newImage("src/ocean/enemies/tier1/enemy2/enemy2.png")
 enemy.textureWidth = enemy.texture:getWidth()
-enemy.width = 32
+enemy.width = 48
 enemy.height = enemy.texture:getHeight() 
 enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.height)
 
@@ -13,15 +13,15 @@ enemy.offsetSpawn = 24
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 40,
+    speed = 35,
     health = 30,
-    shape = love.physics.newCircleShape(14)
+    shape = love.physics.newCircleShape(16)
   }), {__index = enemy})
   instance.animations = {
     anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.0),
     anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.0),
     anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("7-10", 1), 0.1, "pauseAtEnd"),
+    anim8.newAnimation(enemy.grid:getFrames("7-10", 1), 0.12, "pauseAtEnd"),
     anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.15, "pauseAtEnd"),
   }
 
@@ -38,6 +38,8 @@ function enemy.new(x, y)
   instance.particleHandler:setSpeed(30)
 
   instance.drop = {["darkEssence"] = 3}
+
+  return instance
 end
 
 function enemy:draw()
@@ -48,6 +50,7 @@ end
 function enemy:update(delta)
   local dirX, dirY = self:getDirection()
   local debuf = 1
+
 
   self.flip = dirX < 0
   if self.currentState == 4 then -- dying State
@@ -71,7 +74,7 @@ function enemy:update(delta)
       self.currentState = 1
 
       for _, o in ipairs(self.attacking) do
-        o:getUserData():damage(5)  
+        o:getUserData():damage(3)  
       end
     end
 
