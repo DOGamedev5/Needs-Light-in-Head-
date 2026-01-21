@@ -1,5 +1,5 @@
 local ocean = {}
-
+--[[
 ocean.waterShader = love.graphics.newShader("src/ocean/water.glsl")
 ocean.waterTexture = love.graphics.newImage("assets/wave.png")
 ocean.waterNormal = love.graphics.newImage("assets/normalTest.png")
@@ -8,8 +8,13 @@ ocean.waterTexture:setWrap("repeat", "repeat")
 ocean.waterNormal:setWrap("repeat", "repeat")
 ocean.waterGlow:setWrap("repeat", "repeat")
 ocean.waterShader:send("overColor", {9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
+--ocean.waterShader:send("overColor", {134/255*1.2, 178/255*1.2, 189/255*1.2, 0.75})
+--ocean.waterShader:send("overColor", {1, 1, 1, 0.75})
 ocean.waterShader:send("normalMap", ocean.waterNormal)
 ocean.waterShader:send("glowMap", ocean.waterGlow)
+]]
+
+ocean.water = require("src.ocean.effects.waterEffect")
 
 ocean.lighthouse = require("src.ocean.lightHouse.lighthouse")
 ocean.light = require("src.ocean.lightHouse.light")
@@ -53,12 +58,16 @@ ocean.timeCounter = {
 }
 
 function ocean:init()
+  self.water:setWaterColor({3/255, 2/255, 6/255})
+  self.water:updateOverColor({9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
+  --self.water:setWaterColor({4/255, 2/255, 15/255})
+  --self.water:updateOverColor({12/255*1.2, 20/255*1.2, 70/255*1.2, 0.95})
   
   self.collects = {}
   self.light:init()
   self.lighthouse:init(self.light)
   
-  self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay)
+  self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay, currentScene.save.currentWeek)
   self.enemyManager:init(self.currentDay)
   self.counterHud = ListOrder.new(5, 5, 5)
 
@@ -80,7 +89,7 @@ end
 
 function ocean:update(delta)
 
-  self.waterShader:send("time", love.timer.getTime())
+  self.water:update()
   self.enemyManager:update(delta)
   self.dropManager:update(delta)
   self.counterHud:update(delta)
@@ -97,31 +106,22 @@ function ocean:update(delta)
   self.lighthouse:update(delta)
   self.light:update(delta)
 
-  local function finished(beat)
-    currentScene:finish({
-      beated = beat,
-      collects = self.collects,
-      counters = self.counterList
-    })
-  end
-
-  if self.light.fuel == 0 then
-    finished(false)
-  elseif self.enemyManager.timeAlive >= self.currentDay.time then
-    finished(true)
+  if self.enemyManager.timeAlive >= self.currentDay.time and self.light.fuel > 0 then
+    self:finished(true)
   end
 end
  
+function ocean:finished(beat)
+  currentScene:finish({
+    beated = beat,
+    collects = self.collects,
+    counters = self.counterList
+  })
+end
+
 function ocean:draw()
+  self.water:draw()
 
-  love.graphics.setShader(self.waterShader)
-    love.graphics.setColor(3/255, 2/255, 6/255)
-    love.graphics.draw(self.waterTexture, 0, 0, 0, windowSize.x/64, windowSize.y/64)
-
-  
-  love.graphics.setShader()
-
-  love.graphics.setColor(1, 1, 1)
    local drawObjects = {
     self.lighthouse,
     self.light,

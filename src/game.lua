@@ -19,8 +19,8 @@ function game:load()
       FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
     end
   end
-  self:changeMode("ocean")
-  --self:changeMode("initial")
+  --self:changeMode("ocean")
+  self:changeMode("initial")
 end
 
 function game:exit()
@@ -91,7 +91,9 @@ end
 function game:newSave()
   return {
     currentDay = 1,
+    currentWeek = 1,
     totalDays = 1,
+    totalWeeks = 1,
     collects = {
 
     },
