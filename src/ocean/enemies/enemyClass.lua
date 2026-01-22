@@ -98,3 +98,17 @@ end
 function EnemyClass:getDirection( )
   return Vector.normalize(windowSize.x/2 - self.body:getX(), windowSize.y/2 - self.body:getY())
 end
+
+function EnemyClass:die()
+  for k,v in pairs(self.drop) do
+    for i=1, v do
+      currentScene.ocean.dropManager:addDrop(k, self.body:getX(), self.body:getY(), love.math.random(30, 50))
+    end
+  end
+
+  self.fixture:destroy()
+  self.fixture:release()
+  self.body:release()
+  self.shape:release()
+  self:removeToDraw()
+end

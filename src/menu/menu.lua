@@ -13,9 +13,9 @@ function menu:load()
   self.buttons[1]:setNextUI(nil, self.buttons[2])
   self.buttons[2]:setNextUI(self.buttons[1], self.buttons[3])
   self.buttons[3]:setNextUI(self.buttons[3])
-  self.options = require("src.options")
+  self.options = require("src.menu.options")
   self.options:load(self)
-  self.saves = require("src.saves")
+  self.saves = require("src.menu.saves")
   self.saves:load(self)
 end
 
@@ -96,6 +96,18 @@ function menu:mousePressed(x, y, button, touch, presses)
     self.options:mousePressed(x, y, button, touch, presses)
   elseif self.currentScreen == 2 then
     self.saves:mousePressed(x, y, button, touch, presses)
+  end
+end
+
+function menu:mouseReleased(x, y, button, touch, presses)
+  if self.currentScreen == 0 then
+    for i, b in ipairs(self.buttons) do
+      b:mouseReleased(x, y, button, touch)
+    end
+  elseif self.currentScreen == 1 then
+    self.options:mouseReleased(x, y, button, touch)
+  elseif self.currentScreen == 2 then
+    self.saves:mouseReleased(x, y, button, touch)
   end
 end
 

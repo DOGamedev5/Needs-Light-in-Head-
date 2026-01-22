@@ -34,6 +34,12 @@ function saves:mousePressed(x, y, button, touch, presses)
     end
 end
 
+function saves:mouseReleased(x, y, button, touch)
+	for i, b in ipairs(self.buttons) do
+      b:mouseReleased(x, y, button, touch)
+    end
+end
+
 function saves:mouseMoved(x, y, dx, dy, touch)
 	for i, b in ipairs(self.buttons) do
       b:mouseMoved(x, y, dx, dy, touch)

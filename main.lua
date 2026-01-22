@@ -126,14 +126,18 @@ function love.mousepressed(x, y, button, touch, presses)
   sceneManager.mousePressed(x, y, button, touch, presses)
 end
 
-function love.keyboardpressed(key, scancode, presses)
-  Input.keyboardPress(key, scancode, presses)
+function love.mousereleased(x, y, button, touch, presses)
+  sceneManager.mouseReleased(x, y, button, touch, presses)
 end
 
 function love.mousemoved(x, y, dx, dy, touch)
   sceneManager.mouseMoved(x, y, dx, dy, touch)
   lastMousePosition.x = x
   lastMousePosition.y = y
+end
+
+function love.keyboardpressed(key, scancode, presses)
+  Input.keyboardPress(key, scancode, presses)
 end
 
 function love.keyboardreleased(key, scancode)

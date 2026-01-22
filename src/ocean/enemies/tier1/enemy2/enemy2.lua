@@ -137,21 +137,6 @@ function enemy:damaged(d)
   end
 
   self.particleHandler:emit(4)
-end
-
-function enemy:die()
-  for k,v in pairs(self.drop) do
-    for i=1, v do
-      currentScene.ocean.dropManager:addDrop(k, self.body:getX(), self.body:getY(), love.math.random(30, 50))
-    end
-  end
-
-  self.fixture:destroy()
-  self.fixture:release()
-  self.body:release()
-  self.shape:release()
-  self:removeToDraw()
-end
-
+end 
 
 return enemy

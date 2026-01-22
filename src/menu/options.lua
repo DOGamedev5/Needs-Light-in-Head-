@@ -29,6 +29,9 @@ end
 function options:mousePressed(x, y, button, touch, presses)
 	self.buttons:mousePressed(x, y, button, touch, presses)
 end
+function options:mouseReleased(x, y, button, touch)
+	self.buttons:mouseReleased(x, y, button, touch)
+end
 
 function options:mouseMoved(x, y, dx, dy, touch)
 	self.buttons:mouseMoved(x, y, dx, dy, touch)

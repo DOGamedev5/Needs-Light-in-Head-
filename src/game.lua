@@ -53,23 +53,29 @@ end
 function game:input(event, value)
   if self.mode == "ocean" then
     self.ocean:input(event, value)
-  else
+  elseif self.mode == "results" then
     self.results:input(event, value)
+  else
+    self.initial:input(event, value)
   end
 end
 
 function game:mousePressed(x, y, button, touch, presses)
   if self.mode == "ocean" then
-  else
+  elseif self.mode == "results" then
     self.results:mousePressed(x, y, button, touch, presses)
+  else
+    self.initial:mousePressed(x, y, button, touch, presses)
   end
 end
 
 function game:mouseMoved(x, y, dx, dy, touch)
   if self.mode == "ocean" then
     self.ocean:mouseMoved(x, y, dx, dy, touch)
-  else
+  elseif self.mode == "results" then
     self.results:mouseMoved(x, y, dx, dy, touch)
+  else
+    self.initial:mouseMoved(x, y, dx, dy, touch)
   end
 end
 

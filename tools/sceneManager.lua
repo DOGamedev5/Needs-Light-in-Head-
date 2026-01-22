@@ -1,7 +1,7 @@
 sceneManager = {}
 
 local sceneList = {
-  require("src.menu"),
+  require("src.menu.menu"),
   require("src.game")
 }
 
@@ -38,9 +38,9 @@ function sceneManager.mousePressed(x, y, button, touch, presses)
   end
 end
 
-function sceneManager.mouseRelease(x, y, button, touch, presses)
-  if currentScene.mouseRelease then
-    currentScene:mouseRelease(x, y, button, touch, presses)
+function sceneManager.mouseReleased(x, y, button, touch, presses)
+  if currentScene.mouseReleased then
+    currentScene:mouseReleased(x, y, button, touch, presses)
   end
 end
 

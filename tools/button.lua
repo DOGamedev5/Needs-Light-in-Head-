@@ -38,6 +38,9 @@ end
 
 function ButtonBase:update(delta)
   self.timer:update(delta)
+  if self.pressed and not love.mouse.isDown(1) then
+    self.pressed = false
+  end
 end
 
 function ButtonBase:press()
@@ -47,13 +50,23 @@ function ButtonBase:press()
     )
   end
   self.timer:after(0.1, function () self.pressed = false end)
-  self.pressed = true
+
 end
 
 function ButtonBase:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
   if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX, self.posY, self.width, self.height) and not self.pressed then
+    self.pressed = true
+  end
+end
+
+function ButtonBase:mouseReleased(x, y, button, touch)
+  local tx,ty = toGame(x, y)
+
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX, self.posY, self.width, self.height) and self.pressed then
     self:press()
+  else
+    self.pressed = false
   end
 end
 
