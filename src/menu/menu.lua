@@ -1,9 +1,13 @@
 local menu = {}
 
-
+menu.backGround = love.graphics.newImage("assets/menu/background.png")
+menu.water = require("src.ocean.effects.waterEffect")
 
 function menu:load()
   self.currentScreen = 0
+
+  self.water:setWaterColor({3/255, 2/255, 6/255})
+  self.water:updateOverColor({9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
 
   self.buttons = {}
   self.buttons[1] = Button.new("play", 40, 40, 200, 50, self.playPressed)
@@ -13,6 +17,7 @@ function menu:load()
   self.buttons[1]:setNextUI(nil, self.buttons[2])
   self.buttons[2]:setNextUI(self.buttons[1], self.buttons[3])
   self.buttons[3]:setNextUI(self.buttons[3])
+  
   self.options = require("src.menu.options")
   self.options:load(self)
   self.saves = require("src.menu.saves")
@@ -20,6 +25,8 @@ function menu:load()
 end
 
 function menu:update(delta)
+  self.water:update()
+
   if self.currentScreen == 0 then
     for i, b in ipairs(self.buttons) do
       b:update(delta)
@@ -32,6 +39,10 @@ function menu:update(delta)
 end
 
 function menu:draw()
+  self.water:alternativeDraw(0, windowSize.y-128, windowSize.x, windowSize.y, 2.6, 1.0)
+  love.graphics.draw(self.backGround, 0, 0, 0, 2, 2)
+
+
   for i, b in ipairs(self.buttons) do
     b:draw()
   end

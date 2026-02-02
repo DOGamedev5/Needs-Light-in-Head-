@@ -23,6 +23,7 @@ function ButtonBase.construct(instance)
   instance.selected = false
   instance.timer = Timer.new()
   instance.args = {}
+  instance.centered = false
 
   return instance
 end
@@ -119,9 +120,11 @@ function Button.new(text, x, y, width, height, pressedFunction)
   instance.text = text or ""
   instance.posX = x or 0
   instance.posY = y or 0
-  instance.width = width or ButtonBase.font:getWidth(text)
-  local _, count = string.gsub(instance.text, "\n", "")
-  instance.height = height or ButtonBase.font:getHeight(instance.text)*(count+1)
+  instance.width = width or 1
+  instance.height = height or 1
+
+  instance:updateSize()
+
   instance.pressedFunction = pressedFunction
   
   return instance
@@ -148,4 +151,13 @@ end
 
 function Button:getDimentions()
   return self.width, self.height
+end
+
+function Button:updateSize()
+  local wid = self.font:getWidth(self.text) + 25
+  local _, count = string.gsub(self.text, "\n", "")
+  local hei = self.font:getHeight(self.text)*(count+1) + 10
+
+  if self.width < wid then self.width = wid end
+  if self.height < hei then self.height = hei end
 end

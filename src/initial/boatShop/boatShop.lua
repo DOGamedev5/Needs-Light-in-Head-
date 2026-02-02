@@ -3,7 +3,8 @@ local boatShop = {}
 boatShop.boatShop = love.graphics.newImage("src/initial/boatShop.png")
 boatShop.hovered = false
 
-function boatShop:init()
+function boatShop:init(owner)
+	self.owner = owner
 	self.boatShopWidthtext = self.boatShop:getWidth()
 	self.boatShopWidth = self.boatShopWidthtext/2
 	self.boatShopHeight =  self.boatShop:getHeight()
@@ -15,6 +16,10 @@ end
 
 function boatShop:mouseMoved(x, y)
 	self.hovered = tools.AABB.detectPoint(x, y, self.posX - self.boatShopWidth, self.posY - self.boatShopHeight, self.boatShopWidth*2, self.boatShopHeight*2)
+end
+
+function boatShop:mousePressed(x, y, button, touch, presses)
+	
 end
 
 function boatShop:draw()

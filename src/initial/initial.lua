@@ -10,23 +10,31 @@ initial.animation = anim8.newAnimation(initial.grid:getFrames("1-2", 1), 1.0)
 initial.animationOver = anim8.newAnimation(initial.grid:getFrames("1-2", 2), 1.0)
 
 initial.boatLight = require("src.initial.lightHouse.lightHouse") 
---initial.boatLightQuads = love.graphics.newQuad(0, initial.boatLightHeight*2, initial.boatLightWidth, initial.boatLightHeight, initial.boatLight)
-
 initial.boatShop = require("src.initial.boatShop.boatShop")
 
+initial.currentScreen = 1
+
+initial.daySelect = require("src.initial.daySelect")
+
 function initial:init( )
-	self.boatShop:init()
-	self.boatLight:init(windowSize.x/2-70, windowSize.y/2+42)
+	self.currentScreen = 1
+	self.boatShop:init(self)
+	self.daySelect:init(self)
+	
+	self.boatLight:init(windowSize.x/2-70, windowSize.y/2+42, self)
 	self.time = 0
 	self.water:setWaterColor({26/255, 39/255, 61/255})
 	--self.water:updateOverColor({134/255*1.2, 178/255*1.2, 189/255*1.2, 0.75})
 	self.water:updateOverColor({1, 1, 1, 0.75})
 end
 
+
+
 function initial:update(delta)
 	self.water:update()
 	self.time = self.time + delta
 	self.animation:update(delta)
+	if self.currentScreen == 2 then self.daySelect:update(delta) end
 end
 
 function initial:draw()
@@ -39,24 +47,50 @@ function initial:draw()
 	self.boatLight:draw()	
 	self.animationOver:draw(self.piler, windowSize.x/2, windowSize.y/2+32, 0, 2, 2, self.pilerWidth/4, self.pilerHeight/4)
 
+	if self.currentScreen == 2 then
+		self.daySelect:draw()
+	end
+
 
 	local alpha = Tween.interpolate("expo", self.time, 0.1, 0.75, "out")
 
 	love.graphics.setColor(0, 0, 0, alpha)
 	love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
+
 end
 
 function initial:mouseMoved(x, y, dx, dy, touch)
-	self.boatLight:mouseMoved(x, y)
-	self.boatShop:mouseMoved(x, y)
+	if self.currentScreen == 1 then
+		self.boatLight:mouseMoved(x, y)
+		self.boatShop:mouseMoved(x, y)
+	else
+		self.daySelect:mouseMoved(x, y)
+	end
 end
 
 function initial:mousePressed(x, y, button, touch, presses)
-
+	if self.currentScreen == 1 then
+		self.boatLight:mousePressed(x, y, button, touch, presses)
+		self.boatShop:mousePressed(x, y, button, touch, presses)
+	else
+		self.daySelect:mousePressed(x, y, button, touch, presses)
+	end
 end
 
-function initial:input(event, value)
+function initial:mouseReleased(x, y, button, touch, presses)
+	if self.currentScreen == 2 then
+		self.daySelect:mouseReleased(x, y, button, touch, presses)
+	end
+end
 
+
+function initial:input(event, value)
+	if self.currentScreen == 1 then
+		self.boatLight:input(event, value)
+		self.boatShop:input(event, value)
+	else
+		self.daySelect:input(event, value)
+	end
 end
 
 return initial

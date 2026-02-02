@@ -80,7 +80,6 @@ end
 function results:buttonsDraw()
 	if self.timeAnim < 3.9 then return end
 	
-
 	self.buttonList:draw()
 end
 
@@ -97,6 +96,11 @@ end
 function results:mousePressed(x, y, button, touch, presses)
 	if self.timeAnim < 4.1 then return end
 	self.buttonList:mousePressed(x, y, button, touch, presses)
+end
+
+function results:mouseReleased(x, y, button, touch, presses)
+	if self.timeAnim < 4.1 then return end
+	self.buttonList:mouseReleased(x, y, button, touch, presses)
 end
 
 return results

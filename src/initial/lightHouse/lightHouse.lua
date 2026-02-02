@@ -5,7 +5,8 @@ lightHouse.hovered = false
 lightHouse.scale = 2
 lightHouse.pressed = false
 
-function lightHouse:init(x, y)
+function lightHouse:init(x, y, owner)
+	self.owner = owner
 	self.boatLightWidth = self.boatLight:getWidth()/4
 	self.boatLightHeight = self.boatLight:getHeight()/3
 	self.boatLightGrid = anim8.newGrid(self.boatLightWidth, self.boatLightHeight, self.boatLight:getWidth(), self.boatLight:getHeight())
@@ -19,7 +20,9 @@ end
 
 function lightHouse:mousePressed(x, y)
 	if tools.AABB.detectPoint(x, y, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2) then
+		--currentScene:changeMode("ocean")
 
+		self.owner.currentScreen = 2
 	end
 end
 

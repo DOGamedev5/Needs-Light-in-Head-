@@ -36,4 +36,16 @@ function waterEffect:draw()
  	love.graphics.setColor(1, 1, 1)
 end
 
+function waterEffect:alternativeDraw(x, y, sx, sy, scaleX, scaleY)
+	love.graphics.setShader(self.waterShader)
+    	love.graphics.setColor(self.backGroundColor[1], self.backGroundColor[2], self.backGroundColor[3])
+   		--love.graphics.setColor(26/255, 39/255, 61/255)
+    
+ 		love.graphics.draw(self.waterTexture, x, y, 0, sx/64 * scaleX, sy/64 * scaleY)
+
+	love.graphics.setShader()
+
+ 	love.graphics.setColor(1, 1, 1)
+end
+
 return waterEffect

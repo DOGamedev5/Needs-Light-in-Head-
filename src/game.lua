@@ -69,6 +69,16 @@ function game:mousePressed(x, y, button, touch, presses)
   end
 end
 
+function game:mouseReleased(x, y, button, touch, presses)
+  if self.mode == "ocean" then
+  elseif self.mode == "results" then
+    self.results:mouseReleased(x, y, button, touch, presses)
+  else
+    self.initial:mouseReleased(x, y, button, touch, presses)
+  end
+end
+
+
 function game:mouseMoved(x, y, dx, dy, touch)
   if self.mode == "ocean" then
     self.ocean:mouseMoved(x, y, dx, dy, touch)
