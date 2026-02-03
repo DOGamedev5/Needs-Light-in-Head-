@@ -2,20 +2,23 @@ local results = {}
 
 results.alpha = 0.0
 results.titleFont = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 16, "normal")
-results.valueFont = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 16, "normal")
+results.valueFont = fonts.normal
 results.timeAnim = 0.0
 results.counters = {
 
 }
 results.buttons = {
-	repeatPhase = Button.new("Repeat", windowSize.x/2 - 200, windowSize.y-110, 200, 50, function()
+	repeatPhase = Button.new("Retry", windowSize.x/2 - 200, windowSize.y-110, 200, 50, function()
 		currentScene:changeMode("ocean")
 	end),
-	continue = Button.new("continue", windowSize.x/2 + 10, windowSize.y-110, 200, 50),
+	continue = Button.new("continue", windowSize.x/2 - 100, windowSize.y-110, 200, 50, function()
+		currentScene:changeMode("initial")
+	end),
 }
 results.buttonList = ListOrder.new(windowSize.x/2 - 200, windowSize.y-110, 10, "x")
 results.buttonList:addToList(results.buttons.repeatPhase)
 results.buttonList:addToList(results.buttons.continue)
+results.finished = false
 
 function results:init()
 	self.alpha = -1.25
@@ -23,6 +26,8 @@ function results:init()
 end
 
 function results:setupInfo(info)
+	self.counters = {}
+
 	for k, v in pairs(info.collects) do
 		self.counters[#self.counters+1] = {
 			k,
@@ -30,6 +35,8 @@ function results:setupInfo(info)
 			info.counters[k].image
 		}
 	end
+
+	self.finished = info.beated
 end
 
 function results:update(delta)
@@ -49,6 +56,7 @@ function results:draw()
 	self:title()
 	self:values()
 	self:buttonsDraw()
+	self:beatedDraw()
 end
 
 function results:title()
@@ -70,17 +78,42 @@ function results:values()
 	posY = posY + (windowSize.y -100) * (1-porc)
 
 	for i,v in ipairs(self.counters) do
-		local textPosX = windowSize.x/2 + 100 - self.valueFont:getWidth(tostring(self.counters[i][2])) * (2 + 8*(1-porc))
+		local text = tostring(self.counters[i][2])
+		local textPosX = windowSize.x/2 + 100 - self.valueFont:getWidth(text) * (2 + 8*(1-porc))
+		
+
 		love.graphics.draw(self.counters[i][3], posX, posY, math.rad(155)*(1-porc), 2 + 4*(1-porc), 2 + 4*(1-porc))
-		love.graphics.print(tostring(self.counters[i][2]), textPosX, posY, 0, 2 + 8*(1-porc), 2 + 8*(1-porc))
+		love.graphics.print(text, textPosX, posY - (self.valueFont:getHeight(text) * (2 + 8*(1-porc)))/4, 0, 2 + 8*(1-porc), 2 + 8*(1-porc))
 		posY = posY + self.counters[i][3]:getHeight()*2 + 2 + 300*(1-porc)
 	end
+end
+
+function results:beatedDraw()
+	if self.timeAnim < 4 then return end
+
+	local porc = 1-Tween.interpolate("expo", self.timeAnim, 4, 0.8, "out")
+	love.graphics.setFont(self.valueFont)
+	local text = "YOU DID IT :D !!!"
+	local offset = math.cos(love.timer.getTime()*2.1)*2
+	local offset2 = math.cos(love.timer.getTime()*1.6+10)*2
+	local scale = 0.1 + math.cos(love.timer.getTime()*2.8)*0.2
+	local rotation = math.cos(love.timer.getTime()*2.2)*0.1
+
+	love.graphics.setColor(0.5, 0.3, 0.1, 0.4*porc)
+	love.graphics.print(text, windowSize.x/2-2+offset2, windowSize.y - 154 + offset2, -1.05 + 1.1*porc+rotation, 7.1-porc*5+scale, 7.1-porc*5+scale, self.valueFont:getWidth(text)/2, self.valueFont:getHeight(text)/2)
+	love.graphics.setColor(0.9, 0.8, 0.2, 0.9*porc)
+	love.graphics.print(text, windowSize.x/2+offset, windowSize.y - 150 + offset, -0.95 + 1.1*porc+rotation, 4-porc*2+scale, 4-porc*2+scale, self.valueFont:getWidth(text)/2, self.valueFont:getHeight(text)/2)
 end
 
 function results:buttonsDraw()
 	if self.timeAnim < 3.9 then return end
 	
-	self.buttonList:draw()
+	if self.finished then
+		self.buttons.continue.posX = windowSize.x/2 - 100
+		self.buttons.continue:draw()
+	else
+		self.buttonList:draw()
+	end
 end
 
 function results:input(event, value)

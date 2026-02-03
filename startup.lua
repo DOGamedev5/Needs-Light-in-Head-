@@ -4,6 +4,9 @@ fonts = {
 	normal = love.graphics.newImageFont(
 		"assets/fonts/SimpleFont.png", 
 		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
+	small = love.graphics.newImageFont(
+		"assets/fonts/smolFont.png",
+		" abcdefghijklmnopqrstuvwxyz0123456789" , 1)
 }
 
 world = nil

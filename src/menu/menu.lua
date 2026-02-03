@@ -6,8 +6,11 @@ menu.water = require("src.ocean.effects.waterEffect")
 function menu:load()
   self.currentScreen = 0
 
-  self.water:setWaterColor({3/255, 2/255, 6/255})
+  --[[self.water:setWaterColor({3/255, 2/255, 6/255})
   self.water:updateOverColor({9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
+  ]]
+  self.water:setWaterColor({5/255, 4/255, 8/255})
+  self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})
 
   self.buttons = {}
   self.buttons[1] = Button.new("play", 40, 40, 200, 50, self.playPressed)
@@ -39,7 +42,7 @@ function menu:update(delta)
 end
 
 function menu:draw()
-  self.water:alternativeDraw(0, windowSize.y-128, windowSize.x, windowSize.y, 2.6, 1.0)
+  self.water:alternativeDraw(0, windowSize.y-128, windowSize.x, windowSize.y, 2.6/2, 1.6/2)
   love.graphics.draw(self.backGround, 0, 0, 0, 2, 2)
 
 

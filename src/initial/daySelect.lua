@@ -23,7 +23,7 @@ function daySelect:update(delta)
 	if not self.started then
 		self.buttonList:update(delta)
 	else
-		if Tween.interpolate("expo", self.startTime, 0.0, 0.3, "out") <= 0.1 then
+		if Tween.interpolate("expo", self.startTime, 0.0, 0.4, "out") <= 0.001 then
 			currentScene:changeMode("ocean")
 		end
 		self.startTime = self.startTime + delta
@@ -47,7 +47,8 @@ function daySelect:draw()
 
 	love.graphics.print(text, windowSize.x/2- wid, windowSize.y/2-50, 0, 2, 2)
 
-	love.graphics.setColor(0, 0, 0, 1-Tween.interpolate("expo", self.startTime, 0.0, 0.25, "out"))
+	love.graphics.setColor(0, 0, 0, 1-Tween.interpolate("expo", self.startTime, 0.0, 0.4, "out"))
+	love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
 
 end
 

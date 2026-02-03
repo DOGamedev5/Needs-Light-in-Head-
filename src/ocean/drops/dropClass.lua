@@ -2,7 +2,13 @@ DropClass = {}
 
 function DropClass.new(x, y, prototype)
   local instance = setmetatable({}, {__index == DropClass})
-  instance.body = love.physics.newBody(World, x, y, "dynamic")
+
+  local sizeExplosion = prototype.size or 1
+  local dir = math.deg(love.math.random(0, 360))
+  
+  instance.velX, instance.velY = math.cos(dir)*sizeExplosion, math.sin(dir)*sizeExplosion
+  
+  instance.body = love.physics.newBody(World, x + 0.5*instance.velX, y + 0.5*instance.velY, "dynamic")
   instance.body:setUserData("drop")
   instance.shape =  prototype.shape
 
@@ -13,9 +19,6 @@ function DropClass.new(x, y, prototype)
 
   instance.toCollect = false
 
-  local sizeExplosion = prototype.size or 1
-  local dir = math.deg(love.math.random(0, 360))
-  instance.velX, instance.velY = math.cos(dir)*sizeExplosion, math.sin(dir)*sizeExplosion
   instance.enteredLights = {}
 
   return instance

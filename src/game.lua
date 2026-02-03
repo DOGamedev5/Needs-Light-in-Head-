@@ -12,12 +12,13 @@ function game:load()
   self.saveDirPath = "file".. tostring(currentGameFile) .. "/"
   if FileSystem.fileExist(self.saveDirPath .."save.lua") then
     self.save = FileSystem.loadFile(self.saveDirPath .."save.lua")
+    if self.save.version ~= 1 then
+      self.save = self:newSave()
+      self:writeSave()
+    end
   else
     self.save = self:newSave()
-    if not FileSystem.fileExist(self.saveDirPath, "directory") then
-      love.filesystem.createDirectory(self.saveDirPath)
-      FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
-    end
+    self:writeSave()
   end
   --self:changeMode("ocean")
   self:changeMode("initial")
@@ -106,10 +107,9 @@ end
 
 function game:newSave()
   return {
+    version = 1,
     currentDay = 1,
     currentWeek = 1,
-    totalDays = 1,
-    totalWeeks = 1,
     collects = {
 
     },
@@ -118,9 +118,16 @@ function game:newSave()
   }
 end
 
+function game:writeSave()
+  if not FileSystem.fileExist(self.saveDirPath, "directory") then
+    love.filesystem.createDirectory(self.saveDirPath)
+    FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
+  end
+end
+
 function game:finish(info)
-  if info.beated == true and self.save.currentDay == self.save.totalDays then
-    self.save.totalDays = self.save.totalDays + 1 
+  if info.beated == true then
+    self.save.currentDay = self.save.currentDay + 1 
   end
   
   self.results:setupInfo(info)

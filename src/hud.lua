@@ -1,5 +1,6 @@
 Hud = {}
 Hud.items = {}
+Hud.hidden = false
 
 function Hud:addToHud(object)
 	self.items[#self.items+1] = object
@@ -20,6 +21,7 @@ function Hud:remove(object)
 end
 
 function Hud:draw()
+	if self.hidden then return end
 	for i, o in ipairs(self.items) do
 		if o.draw then
 			o:draw()

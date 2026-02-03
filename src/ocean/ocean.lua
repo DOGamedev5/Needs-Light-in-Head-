@@ -1,18 +1,7 @@
 local ocean = {}
---[[
-ocean.waterShader = love.graphics.newShader("src/ocean/water.glsl")
-ocean.waterTexture = love.graphics.newImage("assets/wave.png")
-ocean.waterNormal = love.graphics.newImage("assets/normalTest.png")
-ocean.waterGlow = love.graphics.newImage("assets/glowEffect.png")
-ocean.waterTexture:setWrap("repeat", "repeat")
-ocean.waterNormal:setWrap("repeat", "repeat")
-ocean.waterGlow:setWrap("repeat", "repeat")
-ocean.waterShader:send("overColor", {9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
---ocean.waterShader:send("overColor", {134/255*1.2, 178/255*1.2, 189/255*1.2, 0.75})
---ocean.waterShader:send("overColor", {1, 1, 1, 0.75})
-ocean.waterShader:send("normalMap", ocean.waterNormal)
-ocean.waterShader:send("glowMap", ocean.waterGlow)
-]]
+
+ocean.startStatus = 0
+ocean.startTimer = 0
 
 ocean.water = require("src.ocean.effects.waterEffect")
 
@@ -22,9 +11,6 @@ ocean.Effect = require("src.ocean.effect")
 ocean.effects = {}
 ocean.already = false
 
-ocean.enemiesTable = {
-  require("src.ocean.enemies.tier1.enemy1.enemy1")
-}
 ocean.entities = {}
 ocean.dayManager = require("src.ocean.daysManager")
 ocean.enemyManager = require("src.ocean.enemies.enemySpawner")
@@ -50,16 +36,26 @@ ocean.timeCounter = {
     end
     
     local text = string.format("%ds", seconds)
+    local dayText = string.format("Day %d - %d", currentScene.save.currentDay, currentScene.save.currentWeek)
     local wid = fonts.normal:getWidth(text)*scale
+    local dayWid = fonts.normal:getWidth(dayText)*2
+    local dayHei = fonts.normal:getHeight(dayText)*2
 
-    love.graphics.print(text, windowSize.x - wid - 10, 10, 0, scale, scale)
+    love.graphics.print(dayText, windowSize.x - dayWid - 10, 5, 0, 2, 2)
+    love.graphics.print(text, windowSize.x - wid - 10, dayHei + 2, 0, scale, scale)
 
   end
 }
 
+
 function ocean:init()
-  self.water:setWaterColor({3/255, 2/255, 6/255})
-  self.water:updateOverColor({9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
+  self.startStatus = 0
+  self.startTimer = 0
+  Hud.hidden = true
+
+  self.water:setWaterColor({5/255, 4/255, 8/255})
+  self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})
+
   --self.water:setWaterColor({4/255, 2/255, 15/255})
   --self.water:updateOverColor({12/255*1.2, 20/255*1.2, 70/255*1.2, 0.95})
   
@@ -71,8 +67,7 @@ function ocean:init()
   self.enemyManager:init(self.currentDay)
   self.counterHud = ListOrder.new(5, 5, 5)
 
-  Hud:addToHud(self.counterHud)
-  Hud:addToHud(self.timeCounter)
+  
   if self.already then return end
   self.already = true
 
@@ -88,9 +83,21 @@ function ocean:exit()
 end
 
 function ocean:update(delta)
+  if self.startStatus == 0 then
+    if self.startTimer >= 0.8 then
+      self.startStatus = 1
+    end
+    self.startTimer = self.startTimer + delta
+  elseif self.startStatus == 1 then
+    Hud:addToHud(self.counterHud)
+    Hud:addToHud(self.timeCounter)
+    Hud.hidden = false
+    self.startStatus = 2
+  end
+
 
   self.water:update()
-  self.enemyManager:update(delta)
+  if self.startStatus > 0 then self.enemyManager:update(delta) end
   self.dropManager:update(delta)
   self.counterHud:update(delta)
   
@@ -134,6 +141,9 @@ function ocean:draw()
     o:draw()
   end
   self.dropManager:draw()
+
+  love.graphics.setColor(0, 0, 0, 1-Tween.interpolate("expo", self.startTimer, 0.2, 0.4, "in"))
+  love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
 
   love.graphics.setColor(1, 1, 1, 1)
 end
