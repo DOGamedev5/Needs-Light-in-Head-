@@ -18,6 +18,7 @@ require("tools.stateMachine")
 --require("tools.particleManager")
 require("tools.listOrder")
 require("tools.tween")
+require("tools.bufferRegion")
 
 -- local baton = require 'plugins.baton'
 lovepatch = require("plugins.lovepatch")

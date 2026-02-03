@@ -20,7 +20,7 @@ function FileSystem.serialize(data, indentation)
 		result = result .. string.rep("  ", indentation) .."}\n"
 		return result
 	else
-		print("error: cant serialize type: " .. type(data))
+		print("ERROR: cant serialize type: " .. type(data))
 	end
 end
 
@@ -31,8 +31,10 @@ end
 
 function FileSystem.writeFile(file, data)
 	success, message = love.filesystem.write(file, "return " .. FileSystem.serialize(data))
-	print(success)
-	print(message)
+	if not success then
+		
+		print(string("ERROR WHEN WRITING FILE \"%s\", error message: ", file), message)
+	end
 end
 
 function FileSystem.loadFile(file)

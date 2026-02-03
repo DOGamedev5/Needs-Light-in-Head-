@@ -12,7 +12,7 @@ function game:load()
   self.saveDirPath = "file".. tostring(currentGameFile) .. "/"
   if FileSystem.fileExist(self.saveDirPath .."save.lua") then
     self.save = FileSystem.loadFile(self.saveDirPath .."save.lua")
-    if self.save.version ~= 1 then
+    if self.save.version ~= 2 then
       self.save = self:newSave()
       self:writeSave()
     end
@@ -20,7 +20,7 @@ function game:load()
     self.save = self:newSave()
     self:writeSave()
   end
-  --self:changeMode("ocean")
+  
   self:changeMode("initial")
 end
 
@@ -107,11 +107,11 @@ end
 
 function game:newSave()
   return {
-    version = 1,
+    version = 2,
     currentDay = 1,
     currentWeek = 1,
     collects = {
-
+      ["darkEssence"] = 0
     },
     knowCollects = {"darkEssence"},
     upgrades = {}
@@ -130,6 +130,14 @@ function game:finish(info)
     self.save.currentDay = self.save.currentDay + 1 
   end
   
+  for k, v in pairs(info.collects) do
+    local total = self.save.collects[k] or 0
+    self.save.collects[k] = total + v
+
+  end
+
+  
+
   self.results:setupInfo(info)
   self:changeMode("results")
 end

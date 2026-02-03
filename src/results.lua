@@ -89,7 +89,7 @@ function results:values()
 end
 
 function results:beatedDraw()
-	if self.timeAnim < 4 then return end
+	if self.timeAnim < 4 or not self.finished then return end
 
 	local porc = 1-Tween.interpolate("expo", self.timeAnim, 4, 0.8, "out")
 	love.graphics.setFont(self.valueFont)

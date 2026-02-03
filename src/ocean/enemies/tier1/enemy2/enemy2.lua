@@ -15,13 +15,13 @@ function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
     speed = 35,
     health = 30,
-    shape = love.physics.newCircleShape(16)
+    shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {
     anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.0),
     anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.0),
     anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("7-10", 1), 0.12, "pauseAtEnd"),
+    anim8.newAnimation(enemy.grid:getFrames("7-10", 1), {0.03, 0.05, 0.05, 0.05}, "pauseAtEnd"),
     anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.15, "pauseAtEnd"),
   }
 
@@ -53,7 +53,7 @@ function enemy:update(delta)
 
 
   self.flip = dirX < 0
-  if self.currentState == 4 then -- dying State
+  if self.health <= 0 then -- dying State
     if self.currentAnimation ~= 5 then
       self.currentAnimation = 5
       self.animations[5]:pauseAtStart()
@@ -78,7 +78,7 @@ function enemy:update(delta)
       end
     end
 
-  elseif self.currentState == 2 then --attacked State
+  elseif self.attacked then --attacked State
     debuf = 0
     if self.currentAnimation ~= 3 then
       self.currentAnimation = 3
@@ -97,7 +97,8 @@ function enemy:update(delta)
 
   local x, y = self.body:getX() - self.width, self.body:getY() - self.height
   self:updateHandler(delta, x, y)
-  if self.currentState == 4 then
+
+  if self.health <= 0 then
     self.body:setLinearVelocity(0, 0)
   elseif #self.attacking == 0 then
     self.body:setLinearVelocity(dirX * self.speed * debuf, dirY * self.speed * debuf)
@@ -113,28 +114,12 @@ function enemy:update(delta)
   end
 
   self.animations[self.currentAnimation]:update(delta)
-  self.damageTimer:update(delta)
  
   self.particleHandler:update(delta)
 end
 
 function enemy:damaged(d)
-  if self.toDie == true or self.currentState == 4 then
-    return
-  end
-  
-  self.scale = 1.2
-  self.health = self.health - d
-  self.currentState = 2
-  self.damageTimer:clear()
-
-  if self.health <= 0 then
-    self.currentState = 4
-  else
-    self.damageTimer:after(0.5, function ()
-      self.currentState = 1
-    end)
-  end
+  self:damagedHandler(d)
 
   self.particleHandler:emit(4)
 end 

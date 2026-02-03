@@ -18,6 +18,7 @@ function EnemySpawner:load()
 	self.enemiesInst ={
 		["1-1"] = require("src.ocean.enemies.tier1.enemy1.enemy1"),
 		["1-2"] = require("src.ocean.enemies.tier1.enemy2.enemy2"),
+		["1-3"] = require("src.ocean.enemies.tier1.enemy3.enemy3"),
 	}
 end
 

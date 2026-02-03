@@ -6,6 +6,8 @@ Counter.font = fonts.small
 function Counter.new(image)
 	local instance = setmetatable({}, {__index=Counter})
 
+	instance.autoTracker = false
+	instance.tracker = nil
 	instance.image = image
 	instance.count = 0
 	instance.posX = 0
@@ -20,12 +22,20 @@ function Counter:updateCounter(value)
 	self.count = value
 end
 
+function Counter:valueTracker(tab, key)
+	self.tracker = {tab, key}
+end
+
 function Counter:draw()
 
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.image, self.posX, self.posY, 0, 2, 2)
 	love.graphics.setFont(self.font)
 	
+	if self.autoTracker and self.tracker then
+		self.count = self.tracker[1][self.tracker[2]]
+	end
+
 	local text = tostring(self.count)
 
 	local wid = self.font:getWidth(text)*2

@@ -16,8 +16,14 @@ initial.currentScreen = 1
 
 initial.daySelect = require("src.initial.daySelect")
 
+initial.collects = {}
+initial.counterList = nil
+
+local counter = require("src.ocean.hudElements.counter")
+
 function initial:init( )
 	self.currentScreen = 1
+	currentScene:writeSave()
 	self.boatShop:init(self)
 	self.daySelect:init(self)
 	
@@ -26,14 +32,26 @@ function initial:init( )
 	self.water:setWaterColor({26/255, 39/255, 61/255})
 	--self.water:updateOverColor({134/255*1.2, 178/255*1.2, 189/255*1.2, 0.75})
 	self.water:updateOverColor({1, 1, 1, 0.75})
+
+	self.collects = ListOrder.new(5, 5, 5)
+
+	for k, v in pairs(currentScene.save.collects) do
+		local path = string.gsub("src/ocean/drops/$a/$aIcon.png", "$a", k)
+
+		local count = counter.new(love.graphics.newImage(path))
+
+		count:valueTracker(currentScene.save.collects, k)
+		count.autoTracker = true
+
+		self.collects:addToList(count)
+	end
 end
-
-
 
 function initial:update(delta)
 	self.water:update()
 	self.time = self.time + delta
 	self.animation:update(delta)
+	self.collects:update()
 	if self.currentScreen == 2 then self.daySelect:update(delta) end
 end
 
@@ -46,6 +64,8 @@ function initial:draw()
 	
 	self.boatLight:draw()	
 	self.animationOver:draw(self.piler, windowSize.x/2, windowSize.y/2+32, 0, 2, 2, self.pilerWidth/4, self.pilerHeight/4)
+
+	self.collects:draw()
 
 	if self.currentScreen == 2 then
 		self.daySelect:draw()
