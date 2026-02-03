@@ -15,11 +15,14 @@ function lightHouse:init(x, y, owner)
 end
 
 function lightHouse:mouseMoved(x, y)
-	self.hovered = tools.AABB.detectPoint(x, y, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2)
+	local tx, ty = toGame(x, y)
+	self.hovered = tools.AABB.detectPoint(tx, ty, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2)
 end
 
 function lightHouse:mousePressed(x, y)
-	if tools.AABB.detectPoint(x, y, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2) then
+	local tx, ty = toGame(x, y)
+
+	if tools.AABB.detectPoint(tx, ty, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2) then
 		--currentScene:changeMode("ocean")
 
 		self.owner.currentScreen = 2

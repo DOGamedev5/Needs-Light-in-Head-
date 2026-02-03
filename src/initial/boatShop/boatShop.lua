@@ -15,11 +15,19 @@ function boatShop:init(owner)
 end
 
 function boatShop:mouseMoved(x, y)
-	self.hovered = tools.AABB.detectPoint(x, y, self.posX - self.boatShopWidth, self.posY - self.boatShopHeight, self.boatShopWidth*2, self.boatShopHeight*2)
+	local tx, ty = toGame(x, y)
+
+	self.hovered = tools.AABB.detectPoint(tx, ty, self.posX - self.boatShopWidth, self.posY - self.boatShopHeight, self.boatShopWidth*2, self.boatShopHeight*2)
 end
 
 function boatShop:mousePressed(x, y, button, touch, presses)
+	local tx, ty = toGame(x, y)
 	
+	if tools.AABB.detectPoint(tx, ty, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2) then
+		--currentScene:changeMode("ocean")
+
+		self.owner.currentScreen = 3
+	end
 end
 
 function boatShop:draw()
