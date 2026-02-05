@@ -30,6 +30,17 @@ function DropClass:physics(delta)
 
 	self.velX = self.velX* (4^(-1*delta))
 	self.velY = self.velY* (4^(-1*delta))
+
+  if self.body:getY() > windowSize.y then
+    self.body:setY(windowSize.y)
+  elseif self.body:getY() < 0 then
+    self.body:setY(0)
+  end
+  if self.body:getX() > windowSize.x then
+    self.body:setX(windowSize.x)
+  elseif self.body:getX() < 0 then
+    self.body:setX(0)
+  end
 end
 
 function DropClass:collect()

@@ -1,6 +1,7 @@
 local IconButton = {}
 
 IconButton.texture = love.graphics.newImage("src/initial/updateTree/Icons/upgradeButton.png")
+IconButton.defaltIcon = love.graphics.newImage("src/initial/updateTree/Icons/light/damage/basic.png")
 IconButton.width = 64
 IconButton.height = 64
 IconButton.quad = {
@@ -22,20 +23,20 @@ vec4 effect(vec4 Color, sampler2D text, vec2 textureCords, vec2 screenCords) {
 ]])
 IconButton.shader:send("complete", 0)
 
-function IconButton.new(tree, id, property, name, x, y, requirements)
+function IconButton.new(tree, id, property, name)
 	local instance = setmetatable({},  {__index=IconButton})
 	instance.tree = tree
 
-	instance.posX = x
-	instance.posY = y
-	
 	instance.id = id
 	instance.property = property
 	instance.name = name
+	
+	instance.posX, instance.posY = UpgradeManager:getPosition(id, property, name)
+	instance.requirements = UpgradeManager:getRequirements(id, property, name)
 
-	instance.requirements = requirements
 	instance.visible = false
 	instance.onScreen = false
+	instance.unlocked = false
 	instance.prices = {}
 	instance.state = 0
 	instance.hover = false
@@ -46,7 +47,12 @@ end
 
 function IconButton:init()
 	if self.image == nil then
-		self.image = love.graphics.newImage(string.format("src/initial/updateTree/Icons/%s/%s/%s.png",  self.id, self.property, self.name))
+		local path = string.format("src/initial/updateTree/Icons/%s/%s/%s.png",  self.id, self.property, self.name)
+		if FileSystem.fileExist(path) then
+			self.image = love.graphics.newImage(path)
+		else
+			self.image = self.defaltIcon
+		end
 	end
 	self:updateInfo()
 end
@@ -55,15 +61,24 @@ function IconButton:updateInfo()
 	self.level, self.levelMax = UpgradeManager:getLevelInfo(self.id, self.property, self.name)
 	self.prices = UpgradeManager:getPrice(self.id, self.property, self.name)
 
-	self.visible = true	
+	self.visible = true
+	self.unlocked = true
 
 	if self.requirements ~= nil then
-		for k, v in pairs(self.requirements) do
-
+		self.visible = false
+		for k, v in ipairs(self.requirements) do
+			local level, max = UpgradeManager:getLevelInfo(v[1], v[2], v[3])
+			if level < v[4] then
+				self.unlocked = false
+			end
+			if level > 0 or max == 0 then
+				self.visible = true
+			end
+			if self.visible and not self.unlocked then break end
 		end
 	end
 
-	if not self.visible then
+	if not self.visible or not self.unlocked then
 		self.state = 0
 		return
 	end
@@ -99,13 +114,36 @@ function IconButton:update(delta)
 	end
 end
 
+function IconButton:drawLine()
+	if self.requirements == nil then return end
+
+	for i, v in ipairs(self.requirements) do
+			local reqX, reqY = UpgradeManager:getPosition(v[1], v[2], v[3])
+			local dirX, dirY = Vector.normalize(reqX - self.posX, reqY - self.posY)
+
+			local x1, y1 = self.posX + (dirX*40), self.posY + (dirY*40)
+			local x2, y2 = reqX - (dirX*40), reqY - (dirY*40)
+
+			love.graphics.setLineStyle("rough")
+			love.graphics.setLineWidth(6)
+			love.graphics.setColor(0.2, 0.3, 0.4)
+			love.graphics.line(x1, y1, x2, y2)
+			love.graphics.setLineWidth(2)
+			love.graphics.setColor(1, 1, 1)
+			love.graphics.line(x1, y1, x2, y2)
+
+	end
+end
+
 function IconButton:draw()
-	if not self.onScreen then
+	if not self.onScreen or not self.visible then
 		return
 	end
+	self:drawLine()
 
 	local quadId = 1 + self.state
 	if self.state ~= 0 and self.hover then
+
 		quadId = quadId + 3
 	end
 		
@@ -137,7 +175,7 @@ function IconButton:press()
 			currentScene.save.collects[k] = currentScene.save.collects[k] - v 
 			UpgradeManager:buy(self.id, self.property, self.name)
 		end
-		self:updateInfo()
+		self.tree:updateInfo()
 	end
  	self.pressed = false
 end

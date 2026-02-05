@@ -67,3 +67,9 @@ function sceneManager.input(event, value)
     currentScene:input(event, value)
   end
 end
+
+function sceneManager.quit()
+  if currentScene.quit then
+    currentScene:quit()
+  end
+end

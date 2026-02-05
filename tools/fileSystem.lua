@@ -25,7 +25,7 @@ function FileSystem.serialize(data, indentation)
 end
 
 function FileSystem.fileExist(file, tipe)
-	tipe = "file" or tipe
+	tipe = tipe or "file"
 	return love.filesystem.getInfo(file, tipe) ~= nil
 end
 

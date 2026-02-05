@@ -2,8 +2,6 @@ local light = {}
 
 light.x = 0
 light.y = 0
-light.speed = 300
-light.radius = 50
 light.direction = 0
 light.target = {x = 0, y = 0}
 light.reference = "light"
@@ -20,6 +18,9 @@ light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
 
 
 function light:init()
+  self.radius = UpgradeManager:apply("light", "size", 50)
+  self.speed = UpgradeManager:apply("light", "speed", 300)
+
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
   self.target.x, self.target.y = self.x, self.y
   self.body = love.physics.newBody(World, self.x, self.y, "dynamic")
@@ -33,7 +34,8 @@ function light:init()
 
   self.entered = {}
 
-  self.damage = 20
+  self.damage = UpgradeManager:apply("light", "damage", 20)
+
   self.timeToDamage = 1
   self.fuelMax = 40
   self.fuel = self.fuelMax

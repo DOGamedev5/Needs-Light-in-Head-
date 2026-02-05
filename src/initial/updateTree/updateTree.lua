@@ -6,16 +6,22 @@ end)
 tree.exit.centered = true
 tree.icons = {}
 
-local IconButton = require("src.initial.updateTree.iconButton")
-
 function tree:init()
-	self.icons[1] = IconButton.new(self, "light", "damage", "basic", windowSize.x/2, windowSize.y/2-40)
+	self.icons = UpgradeManager:getAllButtons(self)
+	self.posX = 0
+	self.posY = 0
 end
 
 function tree:update(delta)
 	self.exit:update(delta)
 	for i, v in ipairs(self.icons) do
 		v:update(delta)
+	end
+end
+
+function tree:updateInfo()
+	for i, v in ipairs(self.icons) do
+		if v.onScreen then v:updateInfo() end
 	end
 end
 

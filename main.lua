@@ -40,7 +40,7 @@ tools = {
     for i=#t, 1, -1 do
       if t[i] == value then
         table.remove(t, i)
-        if all then break end
+        if not all then break end
       end
     end
   end,
@@ -50,6 +50,13 @@ tools = {
       n = n + 1
     end
     return n
+  end,
+  find = function(t, value)
+    for i=#t, 1, -1 do
+      if t[i] == value then
+        return i   
+      end
+    end
   end
 }
 
@@ -165,7 +172,8 @@ function worldAftercontact(a, b, col)
 end
 
 function love.quit()
-  
+  sceneManager.quit()
+
   return false
 end
 

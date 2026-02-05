@@ -56,8 +56,6 @@ function ocean:init()
   self.water:setWaterColor({5/255, 4/255, 8/255})
   self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})
 
-  --self.water:setWaterColor({4/255, 2/255, 15/255})
-  --self.water:updateOverColor({12/255*1.2, 20/255*1.2, 70/255*1.2, 0.95})
   
   self.collects = {}
   self.light:init()
@@ -67,11 +65,13 @@ function ocean:init()
   self.enemyManager:init(self.currentDay)
   self.counterHud = ListOrder.new(5, 5, 5)
 
+  self.counterList = {}
   
   if self.already then return end
   self.already = true
 
   for i, v in ipairs(currentScene.save.knowCollects) do
+    print(v)
     self:addCounter(v)
   end
   
@@ -185,7 +185,9 @@ end
 function ocean:registerDrop(drop, x, y)
   if self.collects[drop] == nil then
     self:addCounter(drop)
-    currentScene.save.knowCollects[#currentScene.save.knowCollects + 1] = drop
+    if tools.find(currentScene.save.knowCollects) == nil then
+      currentScene.save.knowCollects[#currentScene.save.knowCollects + 1] = drop
+    end
   end
 
   self.collects[drop] = self.collects[drop] + 1

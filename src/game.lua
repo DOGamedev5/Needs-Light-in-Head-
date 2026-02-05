@@ -16,11 +16,14 @@ function game:load()
       self.save = self:newSave()
       self:writeSave()
     end
+    
+    UpgradeManager:setSave(self.save.upgrades)
   else
     self.save = self:newSave()
     self:writeSave()
   end
   
+
   self:changeMode("initial")
 end
 
@@ -114,15 +117,16 @@ function game:newSave()
       ["darkEssence"] = 0
     },
     knowCollects = {"darkEssence"},
-    upgrades = {}
+    upgrades = UpgradeManager:getSave()
   }
 end
 
 function game:writeSave()
   if not FileSystem.fileExist(self.saveDirPath, "directory") then
     love.filesystem.createDirectory(self.saveDirPath)
-    FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
   end
+  self.save.upgrades = UpgradeManager:getSave()
+  FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
 end
 
 function game:finish(info)
@@ -135,9 +139,7 @@ function game:finish(info)
     self.save.collects[k] = total + v
 
   end
-
   
-
   self.results:setupInfo(info)
   self:changeMode("results")
 end
@@ -155,6 +157,10 @@ function game:changeMode(mode)
   else
     self.initial:init()
   end
+end
+
+function game:quit()
+  self:writeSave()
 end
 
 
