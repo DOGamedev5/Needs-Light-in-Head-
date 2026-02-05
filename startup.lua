@@ -19,6 +19,7 @@ require("tools.stateMachine")
 require("tools.listOrder")
 require("tools.tween")
 require("tools.bufferRegion")
+require("tools.upgradeManager")
 
 -- local baton = require 'plugins.baton'
 lovepatch = require("plugins.lovepatch")

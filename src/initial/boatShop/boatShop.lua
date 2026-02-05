@@ -23,7 +23,7 @@ end
 function boatShop:mousePressed(x, y, button, touch, presses)
 	local tx, ty = toGame(x, y)
 	
-	if tools.AABB.detectPoint(tx, ty, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2) then
+	if tools.AABB.detectPoint(tx, ty, self.posX - self.boatShopWidth, self.posY - self.boatShopHeight, self.boatShopWidth*2, self.boatShopHeight*2) then
 		--currentScene:changeMode("ocean")
 
 		self.owner.currentScreen = 3

@@ -23,8 +23,6 @@ function lightHouse:mousePressed(x, y)
 	local tx, ty = toGame(x, y)
 
 	if tools.AABB.detectPoint(tx, ty, self.posX - self.boatLightWidth, self.posY - self.boatLightHeight, self.boatLightWidth*2, self.boatLightHeight*2) then
-		--currentScene:changeMode("ocean")
-
 		self.owner.currentScreen = 2
 	end
 end

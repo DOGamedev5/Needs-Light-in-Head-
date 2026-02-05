@@ -34,7 +34,12 @@ end
 
 function ButtonBase:mouseMoved(x, y, dx, dy, touch)
   local posX, posY = toGame(x, y)
-  self.hover = tools.AABB.detectPoint(posX, posY, self.posX, self.posY, self.width, self.height)
+  local oX, oY = 0, 0
+  if self.centered then
+    oX, oY = self.width/2, self.height/2
+  end
+
+  self.hover = tools.AABB.detectPoint(posX, posY, self.posX - oX, self.posY - oY, self.width, self.height)
 end
 
 function ButtonBase:update(delta)
@@ -56,15 +61,26 @@ end
 
 function ButtonBase:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX, self.posY, self.width, self.height) and not self.pressed then
+  local oX, oY = 0, 0
+  
+  if self.centered then
+    oX, oY = self.width/2, self.height/2
+  end
+
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - oX, self.posY - oY, self.width, self.height) and not self.pressed then
     self.pressed = true
   end
 end
 
 function ButtonBase:mouseReleased(x, y, button, touch)
   local tx,ty = toGame(x, y)
+  local oX, oY = 0, 0
+  
+  if self.centered then
+    oX, oY = self.width/2, self.height/2
+  end
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX, self.posY, self.width, self.height) and self.pressed then
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - oX, self.posY - oY, self.width, self.height) and self.pressed then
     self:press()
   else
     self.pressed = false
@@ -98,7 +114,13 @@ function ButtonBase.draw(self)
   end
 
   love.graphics.setColor(1, 1, 1, 1)
-  lovepatch.draw(self.textures.menu[imageId], self.posX, self.posY, self.width, self.height, 2, 2)
+
+  local tx, ty = self.posX, self.posY
+  if self.centered then
+    tx, ty = tx - self.width/2, ty - self.height/2
+  end
+
+  lovepatch.draw(self.textures.menu[imageId], tx, ty, self.width, self.height, 2, 2)
 end
 
 function ButtonImage.new(image, x, y, width, height, pressedFunction)
@@ -139,9 +161,15 @@ function Button:draw()
   local _, count = string.gsub(self.text, "\n", "")
   local hei = self.font:getHeight(self.text)*(count+1)
 
+  local tx, ty = self.posX, self.posY
+  if self.centered then
+    tx, ty = tx - self.width/2, ty - self.height/2
+  end
+
+
   love.graphics.print(self.text, self.font,
-    self.posX + self.width/2 - wid/2,
-    self.posY + self.height/2 - hei/2
+    tx + self.width/2 - wid/2,
+    ty + self.height/2 - hei/2
   )
 end
 

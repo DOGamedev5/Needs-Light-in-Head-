@@ -15,6 +15,7 @@ initial.boatShop = require("src.initial.boatShop.boatShop")
 initial.currentScreen = 1
 
 initial.daySelect = require("src.initial.daySelect")
+initial.updateTree = require("src.initial.updateTree.updateTree")
 
 initial.collects = {}
 initial.counterList = nil
@@ -26,6 +27,8 @@ function initial:init( )
 	currentScene:writeSave()
 	self.boatShop:init(self)
 	self.daySelect:init(self)
+	self.updateTree:init()
+
 	
 	self.boatLight:init(windowSize.x/2-70, windowSize.y/2+42, self)
 	self.time = 0
@@ -53,6 +56,7 @@ function initial:update(delta)
 	self.animation:update(delta)
 	self.collects:update()
 	if self.currentScreen == 2 then self.daySelect:update(delta) end
+	if self.currentScreen == 3 then self.updateTree:update(delta) end
 end
 
 function initial:draw()
@@ -69,6 +73,8 @@ function initial:draw()
 
 	if self.currentScreen == 2 then
 		self.daySelect:draw()
+	elseif self.currentScreen == 3 then
+		self.updateTree:draw()
 	end
 
 
@@ -83,8 +89,10 @@ function initial:mouseMoved(x, y, dx, dy, touch)
 	if self.currentScreen == 1 then
 		self.boatLight:mouseMoved(x, y)
 		self.boatShop:mouseMoved(x, y)
-	else
+	elseif self.currentScreen == 2 then
 		self.daySelect:mouseMoved(x, y)
+	else
+		self.updateTree:mouseMoved(x, y)
 	end
 end
 
@@ -92,14 +100,18 @@ function initial:mousePressed(x, y, button, touch, presses)
 	if self.currentScreen == 1 then
 		self.boatLight:mousePressed(x, y, button, touch, presses)
 		self.boatShop:mousePressed(x, y, button, touch, presses)
-	else
+	elseif self.currentScreen == 2 then
 		self.daySelect:mousePressed(x, y, button, touch, presses)
+	else
+		self.updateTree:mousePressed(x, y, button, touch, presses)
 	end
 end
 
 function initial:mouseReleased(x, y, button, touch, presses)
 	if self.currentScreen == 2 then
 		self.daySelect:mouseReleased(x, y, button, touch, presses)
+	elseif self.currentScreen == 3 then
+		self.updateTree:mouseReleased(x, y, button, touch, presses)
 	end
 end
 
@@ -108,8 +120,10 @@ function initial:input(event, value)
 	if self.currentScreen == 1 then
 		self.boatLight:input(event, value)
 		self.boatShop:input(event, value)
-	else
+	elseif self.currentScreen == 2 then
 		self.daySelect:input(event, value)
+	else
+		self.updateTree:input(event, value)
 	end
 end
 
