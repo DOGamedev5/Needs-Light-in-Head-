@@ -12,8 +12,17 @@ IconButton.quad = {
 	love.graphics.newQuad(160, 0, 32, 32, IconButton.texture),
 	love.graphics.newQuad(192, 0, 32, 32, IconButton.texture),
 }
+IconButton.shader = love.graphics.newShader([[
+uniform float complete;
 
-function IconButton.new(tree, id, property, name, x, y, connects, requirements)
+vec4 effect(vec4 Color, sampler2D text, vec2 textureCords, vec2 screenCords) {
+	float s = step(1.0 - textureCords.y, complete);
+	return Color * Texel(text, textureCords) * vec4(0.5 + 0.7 * s, 0.8 + 0.5*s, 0.8 + 0.4*s, 1);
+}
+]])
+IconButton.shader:send("complete", 0)
+
+function IconButton.new(tree, id, property, name, x, y, requirements)
 	local instance = setmetatable({},  {__index=IconButton})
 	instance.tree = tree
 
@@ -26,7 +35,7 @@ function IconButton.new(tree, id, property, name, x, y, connects, requirements)
 
 	instance.requirements = requirements
 	instance.visible = false
-	instance.onScren = false
+	instance.onScreen = false
 	instance.prices = {}
 	instance.state = 0
 	instance.hover = false
@@ -75,8 +84,8 @@ end
 
 function IconButton:update(delta)
 	if tools.AABB.detect(self.posX, self.posY, self.width, self.height, 0, 0, windowSize.x, windowSize.y) then
-		if not self.onScren then
-			self.onScren = true
+		if not self.onScreen then
+			self.onScreen = true
 			self:init()
 		end
 
@@ -84,14 +93,14 @@ function IconButton:update(delta)
     		self.pressed = false
   		end
 	else
-		if self.onScren then
-			self.onScren = false
+		if self.onScreen then
+			self.onScreen = false
 		end
 	end
 end
 
 function IconButton:draw()
-	if not self.onScren then
+	if not self.onScreen then
 		return
 	end
 
@@ -103,8 +112,15 @@ function IconButton:draw()
 	local scale = 2
 	if self.pressed then scale = 1.8 end
 
+	local full = self.level / (self.levelMax+1)
+
+	self.shader:send("complete", full)
+	love.graphics.setShader(self.shader)
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.texture, self.quad[quadId], self.posX, self.posY, 0, scale, scale, 16, 16)
+	love.graphics.setShader()
+
+	love.graphics.setColor(1, 1, 1)
 	if self.state == 0 then love.graphics.setColor(0, 0, 0.05) end
 	love.graphics.draw(self.image, self.posX, self.posY, 0, scale, scale, 16, 16)
 end
@@ -129,7 +145,7 @@ end
 function IconButton:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - 16, self.posY - 16, self.width, self.height) and not self.pressed then
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - 16, self.posY - 16, self.width, self.height) and not self.pressed and self.state ~= 3 then
     self.pressed = true
   end
 end

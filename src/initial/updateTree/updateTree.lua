@@ -14,7 +14,9 @@ end
 
 function tree:update(delta)
 	self.exit:update(delta)
-	self.icons[1]:update(delta)
+	for i, v in ipairs(self.icons) do
+		v:update(delta)
+	end
 end
 
 function tree:draw()
@@ -24,32 +26,37 @@ function tree:draw()
 	love.graphics.rectangle("fill", 0, windowSize.y-50, windowSize.x, 50)
 	love.graphics.setColor(1, 1, 1)
 	self.exit:draw()
-	self.icons[1]:draw()
+	for i, v in ipairs(self.icons) do
+		if v.onScreen then v:draw() end
+	end
 end
 
 
 function tree:input(event, value)
 	self.exit:input(event, value)
+	for i, v in ipairs(self.icons) do
+		if v.onScreen then v:input(event, value) end
+	end
 end
 
 function tree:mouseMoved(x, y, dx, dy, touch)
 	self.exit:mouseMoved(x, y, dx, dy, touch)
 	for i, v in ipairs(self.icons) do
-		v:mouseMoved(x, y, dx, dy, touch)
+		if v.onScreen then v:mouseMoved(x, y, dx, dy, touch) end
 	end
 end
 
 function tree:mousePressed(x, y, button, touch, presses)
 	self.exit:mousePressed(x, y, button, touch, presses)
 	for i, v in ipairs(self.icons) do
-		v:mousePressed(x, y, button, touch, presses)
+		if v.onScreen then v:mousePressed(x, y, button, touch, presses) end
 	end
 end
 
 function tree:mouseReleased(x, y, button, touch)
 	self.exit:mouseReleased(x, y, button, touch)
 	for i, v in ipairs(self.icons) do
-		v:mouseReleased(x, y, button, touch)
+		if v.onScreen then v:mouseReleased(x, y, button, touch) end
 	end
 end
 
