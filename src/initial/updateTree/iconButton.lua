@@ -98,7 +98,7 @@ function IconButton:updateInfo()
 end
 
 function IconButton:update(delta)
-	if tools.AABB.detect(self.posX, self.posY, self.width, self.height, 0, 0, windowSize.x, windowSize.y) then
+	if tools.AABB.detect(self.posX - self.tree.posX - 32, self.posY - self.tree.posY - 32, self.width, self.height, 0, 0, windowSize.x, windowSize.y) then
 		if not self.onScreen then
 			self.onScreen = true
 			self:init()
@@ -115,14 +115,15 @@ function IconButton:update(delta)
 end
 
 function IconButton:drawLine()
-	if self.requirements == nil then return end
+	if self.requirements == nil or not self.visible then return end
 
 	for i, v in ipairs(self.requirements) do
+			local level, max = UpgradeManager:getLevelInfo(v[1], v[2], v[3])
 			local reqX, reqY = UpgradeManager:getPosition(v[1], v[2], v[3])
 			local dirX, dirY = Vector.normalize(reqX - self.posX, reqY - self.posY)
 
-			local x1, y1 = self.posX + (dirX*40), self.posY + (dirY*40)
-			local x2, y2 = reqX - (dirX*40), reqY - (dirY*40)
+			local x1, y1 = self.posX + (dirX*40) - self.tree.posX, self.posY + (dirY*40) - self.tree.posY
+			local x2, y2 = reqX - (dirX*40) - self.tree.posX, reqY - (dirY*40) - self.tree.posY
 
 			love.graphics.setLineStyle("rough")
 			love.graphics.setLineWidth(6)
@@ -130,16 +131,21 @@ function IconButton:drawLine()
 			love.graphics.line(x1, y1, x2, y2)
 			love.graphics.setLineWidth(2)
 			love.graphics.setColor(1, 1, 1)
+			if level < v[4] then
+				love.graphics.setColor(0.4, 0.3, 0.6)
+			end
+
 			love.graphics.line(x1, y1, x2, y2)
 
 	end
 end
 
 function IconButton:draw()
+	self:drawLine()
+
 	if not self.onScreen or not self.visible then
 		return
 	end
-	self:drawLine()
 
 	local quadId = 1 + self.state
 	if self.state ~= 0 and self.hover then
@@ -155,18 +161,18 @@ function IconButton:draw()
 	self.shader:send("complete", full)
 	love.graphics.setShader(self.shader)
 	love.graphics.setColor(1, 1, 1)
-	love.graphics.draw(self.texture, self.quad[quadId], self.posX, self.posY, 0, scale, scale, 16, 16)
+	love.graphics.draw(self.texture, self.quad[quadId], self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
 	love.graphics.setShader()
 
 	love.graphics.setColor(1, 1, 1)
 	if self.state == 0 then love.graphics.setColor(0, 0, 0.05) end
-	love.graphics.draw(self.image, self.posX, self.posY, 0, scale, scale, 16, 16)
+	love.graphics.draw(self.image, self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
 end
 
 function IconButton:mouseMoved(x, y, dx, dy, touch)
   local posX, posY = toGame(x, y)
 
-  self.hover = tools.AABB.detectPoint(posX, posY, self.posX - 16, self.posY - 16, self.width, self.height)
+  self.hover = tools.AABB.detectPoint(posX, posY, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height)
 end
 
 function IconButton:press()
@@ -183,7 +189,7 @@ end
 function IconButton:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - 16, self.posY - 16, self.width, self.height) and not self.pressed and self.state ~= 3 then
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height) and not self.pressed and self.state ~= 3 then
     self.pressed = true
   end
 end
@@ -191,7 +197,7 @@ end
 function IconButton:mouseReleased(x, y, button, touch)
   local tx,ty = toGame(x, y)
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - 16, self.posY - 16, self.width, self.height) and self.pressed then
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height) and self.pressed then
     self:press()
   else
     self.pressed = false

@@ -92,7 +92,7 @@ function initial:mouseMoved(x, y, dx, dy, touch)
 	elseif self.currentScreen == 2 then
 		self.daySelect:mouseMoved(x, y)
 	else
-		self.updateTree:mouseMoved(x, y)
+		self.updateTree:mouseMoved(x, y, dx, dy)
 	end
 end
 
