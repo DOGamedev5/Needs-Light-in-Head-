@@ -4,6 +4,15 @@ local data = require("tools.upgradeData")
 local IconButton = require("src.initial.updateTree.iconButton")
 
 function UpgradeManager:apply(id, property, value)
+	if data[id] == nil then
+		print(string.format("UpgradeManager: There's no ID: '%s'", id))
+		return value
+	end
+	if data[id][property] == nil then
+		print(string.format("UpgradeManager: There's no property: '%s' on ID: '%s'", property, id))
+		return value
+	end
+
 	return self:process(data[id][property], value)
 end
 
@@ -62,6 +71,12 @@ function UpgradeManager:buy(id, property, name)
 	info.level = info.level + 1
 end
 
+function UpgradeManager:getName(id, property, name)
+	local info = self:getByName(id, property, name)
+
+	return info.name
+end
+
 function UpgradeManager:getAllButtons(tree)
 	local result = {}
 
@@ -106,7 +121,7 @@ function UpgradeManager:setSave(saveData)
 				if saveData[id][property][t] == nil then saveData[id][property][t] = {} end
 				for name, d in pairs(n) do
 					if saveData[id][property][t][name] ~= nil then
-						data[id][property][t][name].level = saveData[id][property][t][name]
+						data[id][property][t][name].level = math.min(saveData[id][property][t][name], data[id][property][t][name].maxLevel)
 					end
 				end
 			end

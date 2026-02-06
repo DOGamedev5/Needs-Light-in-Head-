@@ -57,7 +57,8 @@ function EnemyClass:afterContact(otherFixture)
   if data == "light" then
     tools.erase(self.enteredLights, otherFixture)
   elseif data == "buffer" then
-    table.insert(self.enteredBuffers, 1, otherFixture)
+    tools.erase(self.enteredBuffers, otherFixture)
+
     for i, v in ipairs(otherFixture:getUserData().buffers) do
       self.buffs[v] = self.buffs[v] - 1
     end
@@ -152,7 +153,8 @@ end
 
 function EnemyClass:die()
   for k,v in pairs(self.drop) do
-    for i=1, v do
+    local amount = math.floor(UpgradeManager:apply("drop", k, v))
+    for i=1, amount do
       currentScene.ocean.dropManager:addDrop(k, self.body:getX(), self.body:getY(), love.math.random(30, 50))
     end
   end

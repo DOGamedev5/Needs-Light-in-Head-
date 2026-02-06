@@ -53,24 +53,17 @@ end
 function tree:mouseMoved(x, y, dx, dy, touch)
 	local tx, ty = toGame(x, y)
 	
+	for i, v in ipairs(self.icons) do
+		if v.onScreen then v:mouseMoved(x, y, dx, dy, touch) end
+	end
 	if ty < windowSize.y-50 then
-		for i, v in ipairs(self.icons) do
-			if v.onScreen then v:mouseMoved(x, y, dx, dy, touch) end
-		end
+		
 		if self.pressed then
-			self.posX = self.posX - dx*0.8
-			self.posY = self.posY - dy*0.8
+			self.posX = self.posX - dx*0.9
+			self.posY = self.posY - dy*0.9
 
-			if self.posX < -self.limitX then
-				self.posX = -self.limitX
-			elseif self.posX > self.limitX then
-				self.posX = self.limitX
-			end
-			if self.posY < -self.limitY then
-				self.posY = -self.limitY
-			elseif self.posY > self.limitY then
-				self.posY = self.limitY
-			end
+			self.posX = math.max(math.min(self.posX, self.limitX), -self.limitX)
+			self.posY = math.max(math.min(self.posY, self.limitY), -self.limitY)
 		end
 	else
 		self.exit:mouseMoved(x, y, dx, dy, touch)

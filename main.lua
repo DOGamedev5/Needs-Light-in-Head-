@@ -57,6 +57,17 @@ tools = {
         return i   
       end
     end
+  end,
+  quantify = function(value)
+    if value > 1000000 then
+      return string.format("%.1fm", value/1000000)
+    end
+
+    if value > 1000 then
+      return string.format("%.1fk", value/1000)
+    end
+
+    return tostring(value)
   end
 }
 

@@ -155,6 +155,7 @@ function game:changeMode(mode)
     isPaused = true
     self.results:init(info)
   else
+    
     self.initial:init()
   end
 end

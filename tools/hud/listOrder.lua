@@ -91,3 +91,14 @@ function ListOrder:mouseReleased(x, y, button, touch, presses)
 	end
 end
 
+function ListOrder:getDimentions()
+	local x, y = 0, 0
+	for i,v in ipairs(self.items) do
+		if self.items[i].getDimentions then
+			local tx, ty = self.items[i].getDimentions()
+			x, y = x + tx, y + ty
+		end
+	end
+	return x, y
+end
+

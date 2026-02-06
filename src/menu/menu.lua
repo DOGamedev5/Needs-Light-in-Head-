@@ -43,7 +43,8 @@ end
 
 function menu:draw()
   self.water:alternativeDraw(0, windowSize.y-128, windowSize.x, windowSize.y, 2.6/2, 1.6/2)
-  love.graphics.draw(self.backGround, 0, 0, 0, 2, 2)
+  local offset = math.sin(love.timer.getTime()*1.2)*8
+  love.graphics.draw(self.backGround, -10, offset-10, 0, 2.1, 2.1)
 
 
   for i, b in ipairs(self.buttons) do

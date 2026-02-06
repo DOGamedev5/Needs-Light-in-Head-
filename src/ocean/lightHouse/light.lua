@@ -19,7 +19,7 @@ light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
 
 function light:init()
   self.radius = UpgradeManager:apply("light", "size", 50)
-  self.speed = UpgradeManager:apply("light", "speed", 300)
+  self.speed = UpgradeManager:apply("light", "speed", 100)
 
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
   self.target.x, self.target.y = self.x, self.y
@@ -37,7 +37,7 @@ function light:init()
   self.damage = UpgradeManager:apply("light", "damage", 20)
 
   self.timeToDamage = 1
-  self.fuelMax = 40
+  self.fuelMax = UpgradeManager:apply("light", "oil", 80)
   self.fuel = self.fuelMax
   
   self.attackTimerMax = 2
@@ -123,7 +123,7 @@ function light:update(delta)
       self.attackTimer = self.attackTimerMax
       self:attack()
     end
-    self.fuel = self.fuel - delta
+    self.fuel = self.fuel - UpgradeManager:apply("light", "fuelUse", delta*4)
     if self.fuel <= 0 then
       self.fuel = 0
       Hud:remove(self.hud.attackBarr)

@@ -36,7 +36,7 @@ function Counter:draw()
 		self.count = self.tracker[1][self.tracker[2]]
 	end
 
-	local text = tostring(self.count)
+	local text = tools.quantify(self.count)
 
 	local wid = self.font:getWidth(text)*2
 	local _, count = string.gsub(text, "\n", "")

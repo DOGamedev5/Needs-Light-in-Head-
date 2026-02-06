@@ -2,11 +2,15 @@ local saves = {}
 
 function saves:load(menu)
 	self.buttons = {
-		Button.new("exit", windowSize.x/2 - 100, windowSize.y - 100, 200, 50, menu.exitOptions),
-		Button.new("file 1\n\n\n\n\n\n", windowSize.x/2 - 250, windowSize.y/2-200, 150, 300, menu.startGame),
-		Button.new("file 2\n\n\n\n\n\n", windowSize.x/2-75, windowSize.y/2-200, 150, 300, menu.startGame),
-		Button.new("file 3\n\n\n\n\n\n", windowSize.x/2 + 100, windowSize.y/2-200, 150, 300, menu.startGame),
+		Button.new("exit", windowSize.x/2, windowSize.y - 100, 200, 50, menu.exitOptions),
+		Button.new("", windowSize.x/2-220, windowSize.y/2-100, 200, 200, menu.startGame),
+		Button.new("", windowSize.x/2, windowSize.y/2-100, 200, 200, menu.startGame),
+		Button.new("", windowSize.x/2+220, windowSize.y/2-100, 200, 200, menu.startGame),
 	}
+	self.buttons[1].centered = true
+	self.buttons[2].centered = true
+	self.buttons[3].centered = true
+	self.buttons[4].centered = true
 	self.buttons[2]:setupArgs({1})
 	self.buttons[3]:setupArgs({2})
 	self.buttons[4]:setupArgs({3})

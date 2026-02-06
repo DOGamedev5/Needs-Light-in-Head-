@@ -63,23 +63,22 @@ function ocean:init()
   
   self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay, currentScene.save.currentWeek)
   self.enemyManager:init(self.currentDay)
+  self.counterhud = {}
   self.counterHud = ListOrder.new(5, 5, 5)
 
   self.counterList = {}
   
-  if self.already then return end
-  self.already = true
-
   for i, v in ipairs(currentScene.save.knowCollects) do
-    print(v)
     self:addCounter(v)
   end
   
+  if self.already then return end
+  self.already = true
 
 end
 
 function ocean:exit()
-  self.light:exit() 
+  self.light:exit()
 end
 
 function ocean:update(delta)
@@ -185,7 +184,7 @@ end
 function ocean:registerDrop(drop, x, y)
   if self.collects[drop] == nil then
     self:addCounter(drop)
-    if tools.find(currentScene.save.knowCollects) == nil then
+    if tools.find(drop) == nil then
       currentScene.save.knowCollects[#currentScene.save.knowCollects + 1] = drop
     end
   end

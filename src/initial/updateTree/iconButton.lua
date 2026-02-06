@@ -33,6 +33,7 @@ function IconButton.new(tree, id, property, name)
 	
 	instance.posX, instance.posY = UpgradeManager:getPosition(id, property, name)
 	instance.requirements = UpgradeManager:getRequirements(id, property, name)
+	local pName = UpgradeManager:getName(id, property, name)
 
 	instance.visible = false
 	instance.onScreen = false
@@ -41,6 +42,7 @@ function IconButton.new(tree, id, property, name)
 	instance.state = 0
 	instance.hover = false
 	instance.pressed = false
+	instance.toolTip = ToolTip.new(pName)
 
 	return instance
 end
@@ -60,7 +62,7 @@ end
 function IconButton:updateInfo()
 	self.level, self.levelMax = UpgradeManager:getLevelInfo(self.id, self.property, self.name)
 	self.prices = UpgradeManager:getPrice(self.id, self.property, self.name)
-
+	
 	self.visible = true
 	self.unlocked = true
 
@@ -156,10 +158,10 @@ function IconButton:draw()
 	local scale = 2
 	if self.pressed then scale = 1.8 end
 
-	local full = self.level / (self.levelMax+1)
+	local full = self.level / (self.levelMax)
 
 	self.shader:send("complete", full)
-	love.graphics.setShader(self.shader)
+	if self.state ~= 3 or self.hover then love.graphics.setShader(self.shader) end
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.texture, self.quad[quadId], self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
 	love.graphics.setShader()
@@ -167,12 +169,23 @@ function IconButton:draw()
 	love.graphics.setColor(1, 1, 1)
 	if self.state == 0 then love.graphics.setColor(0, 0, 0.05) end
 	love.graphics.draw(self.image, self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
+
+	if self.hover then
+		self.toolTip:setPoint(self.posX - self.tree.posX, self.posY - self.tree.posY + 50)
+		Hud:bufferDraw(self.toolTip.draw, {self.toolTip})
+	end
+
 end
 
 function IconButton:mouseMoved(x, y, dx, dy, touch)
   local posX, posY = toGame(x, y)
 
-  self.hover = tools.AABB.detectPoint(posX, posY, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height)
+  if posY > windowSize.y-50 then
+  	self.hover = false 
+  	return
+  end
+
+  self.hover = tools.AABB.detectPoint(posX, posY, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height)
 end
 
 function IconButton:press()
