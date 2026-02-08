@@ -71,7 +71,7 @@ function ocean:init()
   for i, v in ipairs(currentScene.save.knowCollects) do
     self:addCounter(v)
   end
-  
+
   if self.already then return end
   self.already = true
 
@@ -139,12 +139,24 @@ function ocean:draw()
     love.graphics.setColor(1, 1, 1, 1)
     o:draw()
   end
+
   self.dropManager:draw()
 
   love.graphics.setColor(0, 0, 0, 1-Tween.interpolate("expo", self.startTimer, 0.2, 0.4, "in"))
   love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
 
   love.graphics.setColor(1, 1, 1, 1)
+
+  love.graphics.setStencilTest("equal", 1)
+  love.graphics.setColor(0.9, 0.1, 0.2, 0.4)
+  love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
+  love.graphics.setStencilTest("gequal", 2)
+  love.graphics.setColor(0.8, 0.1, 0.7, 0.2)
+  love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
+
+  love.graphics.setStencilTest()
+
+
 end
 
 function ocean:mouseMoved(x, y, dx, dy, touch)

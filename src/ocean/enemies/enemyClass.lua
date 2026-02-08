@@ -1,6 +1,17 @@
 EnemyClass = {}
 
 EnemyClass.toDraw = {}
+EnemyClass.damageShader = love.graphics.newShader[[
+uniform vec2 scale;
+uniform float bright;
+
+vec4 effect(vec4 Color, Image texture, vec2 text_coords, vec2 screen_coords) {
+  vec4 pixelColor = Texel(texture, text_coords) * Color;
+  vec4 pixelOver = Texel(texture, text_coords) * Color;
+
+  return pixelColor + pixelOver*bright;  
+}
+]]
 
 function EnemyClass.new(x, y, prototype)
   local instance = setmetatable({}, {__index == EnemyClass})
@@ -32,6 +43,7 @@ function EnemyClass.new(x, y, prototype)
   instance.scale = 1
   instance.speed = prototype.speed or 20
   instance.health = prototype.health or 50
+
   return instance
 end
 
@@ -101,21 +113,43 @@ function EnemyClass:updateHandler(delta, x, y)
 end
 
 function EnemyClass:drawHandler(animation, texture)
-  local flip = 1
+  --[[local flip = 1
   if self.flip then
     flip = -1
   end
+
   local x, y = self.body:getX() - self.width* flip, self.body:getY() - self.height
   local ex, ey = self.body:getX() - self.width* flip*self.scale, self.body:getY() - self.height*self.scale
+  ]]
+  animation.flippedH = self.flip
 
-  --self.animations[self.currentAnimation]:draw(self.texture, x, y, 0, 2*flip, 2)
-  animation:draw(texture, x, y, 0, 2*flip, 2)
-  if #self.enteredLights > 0 then
+  local x, y = self.body:getX(), self.body:getY()
+  local ex, ey = self.body:getX(), self.body:getY()
+
+  --self.scale = 2
+  --self.damageShader:send("scale", {self.scale, 2*self.scale})
+  
+  if #self.enteredLights == 0 then
+    animation:draw(texture, x, y, 0, 2, 2, self.width/2, self.height/2)
+  else
+    if self.scale > 1 then animation:draw(texture, x, y, 0, 2, 2, self.width/2, self.height/2) end
+    --self.damageShader:send("originalColor", 1)
+
+    self.damageShader:send("bright", 2)
     love.graphics.setBlendMode("add")
-    animation:draw(texture, ex, ey, 0, 2*flip*self.scale, 2)
-    animation:draw(texture, ex, ey, 0, 2*flip*self.scale, 2)
+    love.graphics.setShader(self.damageShader)  
+    animation:draw(texture, x, y, 0, 2*self.scale, 2*self.scale, self.width/2, self.height/2)
+    love.graphics.setShader()
     love.graphics.setBlendMode("alpha")
-  end
+  end  
+  --animation:draw(texture, x, y, 0, 2, 2)
+ 
+  --[[if #self.enteredLights > 0 then
+    love.graphics.setBlendMode("add")
+    animation:draw(texture, ex, ey, 0, 2*self.scale, 2)
+    animation:draw(texture, ex, ey, 0, 2*self.scale, 2)
+    love.graphics.setBlendMode("alpha")
+  end]]
 end
 
 function EnemyClass:canDrawDetect(x, y)

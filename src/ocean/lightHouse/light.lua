@@ -18,7 +18,7 @@ light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
 
 
 function light:init()
-  self.radius = UpgradeManager:apply("light", "size", 50)
+  self.radius = UpgradeManager:apply("light", "size", 30)
   self.speed = UpgradeManager:apply("light", "speed", 100)
 
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
@@ -37,7 +37,7 @@ function light:init()
   self.damage = UpgradeManager:apply("light", "damage", 20)
 
   self.timeToDamage = 1
-  self.fuelMax = UpgradeManager:apply("light", "oil", 80)
+  self.fuelMax = UpgradeManager:apply("light", "oil", 120)
   self.fuel = self.fuelMax
   
   self.attackTimerMax = 2

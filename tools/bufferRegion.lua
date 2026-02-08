@@ -13,6 +13,7 @@ function BufferRegion.new(shape, x, y, buffers)
 	instance.fixture:setUserData(instance)
 	instance.body:isFixedRotation(true)
 	instance.body:setUserData("buffer")
+	instance.body:setActive(false)
 
 	instance.entered = {}
 
@@ -21,4 +22,8 @@ end
 
 function BufferRegion:setPosition(x, y)
 	self.body:setPosition(x, y)
+end
+
+function BufferRegion:activate(value)
+	self.body:setActive(value)
 end

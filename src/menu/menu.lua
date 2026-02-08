@@ -1,6 +1,12 @@
 local menu = {}
 
-menu.backGround = love.graphics.newImage("assets/menu/background.png")
+--menu.backGround = love.graphics.newImage("assets/menu/background.png")
+menu.lightTowerBackgroundTexture = love.graphics.newImage("assets/menu/lightTowerBackgroundAlt.png")
+menu.lightTowerWid = menu.lightTowerBackgroundTexture:getWidth()
+menu.lightTowerHei = menu.lightTowerBackgroundTexture:getHeight()
+menu.lightTowerGrid = anim8.newGrid(menu.lightTowerWid / 4, menu.lightTowerHei, menu.lightTowerWid, menu.lightTowerHei)
+menu.lightTowerAnimation = anim8.newAnimation(menu.lightTowerGrid:getFrames("1-4", 1), {0.5, 0.2, 0.5, 0.2})
+
 menu.water = require("src.ocean.effects.waterEffect")
 
 function menu:load()
@@ -29,6 +35,7 @@ end
 
 function menu:update(delta)
   self.water:update()
+  self.lightTowerAnimation:update(delta)
 
   if self.currentScreen == 0 then
     for i, b in ipairs(self.buttons) do
@@ -43,8 +50,8 @@ end
 
 function menu:draw()
   self.water:alternativeDraw(0, windowSize.y-128, windowSize.x, windowSize.y, 2.6/2, 1.6/2)
-  local offset = math.sin(love.timer.getTime()*1.2)*8
-  love.graphics.draw(self.backGround, -10, offset-10, 0, 2.1, 2.1)
+  local offset = math.sin(love.timer.getTime()*0.8)*4
+  menu.lightTowerAnimation:draw(self.lightTowerBackgroundTexture, windowSize.x - 200, offset-10, 0, 2.1, 2.1)
 
 
   for i, b in ipairs(self.buttons) do

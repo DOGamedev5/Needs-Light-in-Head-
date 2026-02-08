@@ -33,6 +33,7 @@ function enemy.new(x, y)
   instance.activaded = false
   instance.attacked = false
   instance.shieldAnimation = 0
+  instance.shieldReady = false
 
   instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
   instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
@@ -174,6 +175,7 @@ function enemy.new(x, y)
         instance.animations[7]:resume()
         
         instance.activaded = false
+        instance.shieldObj:activate(true)
       end,
       stateUpdate = function(self)
         
@@ -195,14 +197,24 @@ end
 function enemy:draw()
   self:drawHandler(self.animations[self.currentAnimation], self.texture)
   love.graphics.draw(self.particleHandler, self.body:getX(), self.body:getY(), 0, 2, 2)
-  if self.activaded then self:circleDraw() end
+  if self.activaded then
+    self:circleMask()
+    --love.graphics.stencil(function() self:circleDraw() end, "increment", 1, true)
+    --self:circleDraw()
+   end
 end
 
 function enemy:update(delta)
   local dirX, dirY = self:getDirection()
   local debuf = 1
   self.flip = dirX < 0
-  if self.activaded then self.shieldAnimation = self.shieldAnimation + delta end
+  if self.activaded then
+    self.shieldAnimation = self.shieldAnimation + delta 
+    if self.shieldAnimation >= 0.4 and not self.shieldReady then 
+      self.shieldObj:activate(true)
+      self.shieldReady = true
+    end
+  end
 
   local x, y = self.body:getX() - self.width, self.body:getY() - self.height
   self:updateHandler(delta, x, y)
@@ -230,6 +242,17 @@ function enemy:circleDraw()
   love.graphics.setColor(0.9, 0.1, 0.2, 0.4)
   love.graphics.circle("line", x, y, rad)
 
+end
+
+function enemy:circleMask()
+  local x, y = self.body:getPosition()
+  local rad = self.shieldRadius * (1-Tween.interpolate("expo", self.shieldAnimation, 0, 0.4, "out"))
+  if self.shieldAnimation < 0.4 then 
+    love.graphics.setColor(0.8, 0.1, 0.7, 0.1 + 0.3*(1-Tween.interpolate("sine", self.shieldAnimation, 0, 0.4, "in")))
+    love.graphics.circle("fill", x, y, rad)
+  end
+  love.graphics.stencil(function() love.graphics.circle("fill", x, y, rad) end, "increment", 1, true)
+  love.graphics.stencil(function() love.graphics.circle("fill", x, y, rad-4) end, "increment", 1, true)
 end
 
 return enemy
