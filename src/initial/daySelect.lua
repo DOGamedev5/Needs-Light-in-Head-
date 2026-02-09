@@ -1,10 +1,10 @@
 local daySelect = {}
 
 
-daySelect.exit = Button.new("exit", 20, 20, 1, 1, function()
+daySelect.exit = Button.new(TranslateManager.newReference("menu", "exit"), 20, 20, 1, 1, function()
 	currentScene.initial.currentScreen = 1
 end)
-daySelect.start = Button.new("start", 0, 0, 1, 1, function()
+daySelect.start = Button.new(TranslateManager.newReference("initial", "start"), 0, 0, 1, 1, function()
 	daySelect.started = true
 end)
 daySelect.buttonList = ListOrder.new(windowSize.x/2, windowSize.y/2+10, 10, "x")
@@ -38,7 +38,7 @@ function daySelect:draw()
 	self.buttonList:draw()
 	
 	love.graphics.setFont(fonts.normal)
-	local text = string.format("Week %d - Day %d of 6", currentScene.save.currentWeek, currentScene.save.currentDay)
+	local text = string.format(TranslateManager:getReference("initial", "dayStatus"), currentScene.save.currentWeek, currentScene.save.currentDay)
 	local wid = fonts.normal:getWidth(text)
   	local _, count = string.gsub(text, "\n", "")
   	local hei = fonts.normal:getHeight(text)*(count+1)

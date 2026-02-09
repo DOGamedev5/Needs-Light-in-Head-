@@ -35,8 +35,8 @@ ocean.timeCounter = {
       scale = 1 + scale + 1*(remain - seconds)
     end
     
-    local text = string.format("%ds", seconds)
-    local dayText = string.format("Day %d - %d", currentScene.save.currentDay, currentScene.save.currentWeek)
+    local text = string.format(TranslateManager:getReference("ocean", "timeFormat"), seconds)
+    local dayText = string.format(TranslateManager:getReference("ocean", "day"), currentScene.save.currentDay, currentScene.save.currentWeek)
     local wid = fonts.normal:getWidth(text)*scale
     local dayWid = fonts.normal:getWidth(dayText)*2
     local dayHei = fonts.normal:getHeight(dayText)*2
@@ -194,27 +194,29 @@ function ocean:afterContact(a, b, col)
 end
 
 function ocean:registerDrop(drop, x, y)
+  local tag = collectsID[drop]
+
   if self.collects[drop] == nil then
     self:addCounter(drop)
-    if tools.find(drop) == nil then
-      currentScene.save.knowCollects[#currentScene.save.knowCollects + 1] = drop
+
+    if tools.find(currentScene.save.knowCollects, drop) == nil then
+      table.insert(currentScene.save.knowCollects, drop)
     end
   end
 
   self.collects[drop] = self.collects[drop] + 1
 
-  self.counterList[drop]:updateCounter(self.collects[drop])
-  Hud:addToHud(self.visualCollect.new(self.counterList[drop].image, x, y, self.counterList[drop].posX, self.counterList[drop].posY))
+  Hud:addToHud(self.visualCollect.new(drop, x, y, self.counterList[tag].posX, self.counterList[tag].posY))
 
 end
 
 function ocean:addCounter(drop)
   self.collects[drop] = 0
-  local image = string.gsub("src/ocean/drops/$d/$dIcon.png", "$d", drop)
-  self.counterList[drop] = self.counter.new(
-    love.graphics.newImage(image)
-  )
-  self.counterHud:addToList(self.counterList["darkEssence"])
+  self.counterList[collectsID[drop]] = self.counter.new(drop)
+  self.counterList[collectsID[drop]]:valueTracker(self.collects, drop)
+  self.counterList[collectsID[drop]].autoTracker = true
+
+  self.counterHud:addToList(self.counterList[collectsID[drop]])
 end
 
 return ocean

@@ -77,6 +77,12 @@ function UpgradeManager:getName(id, property, name)
 	return info.name
 end
 
+function UpgradeManager:getDescription(id, property, name)
+	local info = self:getByName(id, property, name)
+
+	return info.desc
+end
+
 function UpgradeManager:getAllButtons(tree)
 	local result = {}
 

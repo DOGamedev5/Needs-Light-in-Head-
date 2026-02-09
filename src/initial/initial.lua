@@ -39,9 +39,8 @@ function initial:init( )
 	self.collects = ListOrder.new(5, 5, 5)
 
 	for k, v in pairs(currentScene.save.collects) do
-		local path = string.gsub("src/ocean/drops/$a/$aIcon.png", "$a", k)
-
-		local count = counter.new(love.graphics.newImage(path))
+		print(k)
+		local count = counter.new(k)
 
 		count:valueTracker(currentScene.save.collects, k)
 		count.autoTracker = true

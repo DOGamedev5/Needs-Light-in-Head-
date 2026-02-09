@@ -24,6 +24,10 @@ function ButtonBase.construct(instance)
   instance.timer = Timer.new()
   instance.args = {}
   instance.centered = false
+  instance.anchorRight = false
+  instance.anchorDown = false
+  instance.disabled = false
+
 
   return instance
 end
@@ -60,6 +64,7 @@ function ButtonBase:press()
 end
 
 function ButtonBase:mousePressed(x, y, button, touch, presses)
+  if self.disabled then return end
   local tx,ty = toGame(x, y)
   local oX, oY = 0, 0
   
@@ -73,6 +78,7 @@ function ButtonBase:mousePressed(x, y, button, touch, presses)
 end
 
 function ButtonBase:mouseReleased(x, y, button, touch)
+  if self.disabled then return end
   local tx,ty = toGame(x, y)
   local oX, oY = 0, 0
   
@@ -88,6 +94,7 @@ function ButtonBase:mouseReleased(x, y, button, touch)
 end
 
 function ButtonBase:input(event, value)
+  if self.disabled then return end
   if event == Input.CONFIRM_INPUT and self.selected and not self.pressed then
     self:press()
   end
@@ -114,10 +121,21 @@ function ButtonBase.draw(self)
   end
 
   love.graphics.setColor(1, 1, 1, 1)
+  if self.disabled then 
+    love.graphics.setColor(0.3, 0.1, 0.2, 1)
+  end
+
 
   local tx, ty = self.posX, self.posY
   if self.centered then
     tx, ty = tx - self.width/2, ty - self.height/2
+  else
+    if self.anchorRight then
+      tx = tx - self.width
+    end
+    if self.anchorDown then
+      ty = ty - self.height
+    end
   end
 
   lovepatch.draw(self.textures.menu[imageId], tx, ty, self.width, self.height, 2, 2)
@@ -156,18 +174,34 @@ function Button:draw()
   ButtonBase.draw(self)
 
   love.graphics.setColor(0, 0, 0)
+   if self.disabled then 
+    love.graphics.setColor(0.5, 0.3, 0.4, 1)
+  end
   love.graphics.setFont(self.font)
-  local wid = self.font:getWidth(self.text)
-  local _, count = string.gsub(self.text, "\n", "")
-  local hei = self.font:getHeight(self.text)*(count+1)
+  
+  local text = self.text
+  if type(text) == "table" then
+    text = text:getText()
+  end
+
+  local wid = self.font:getWidth(text)
+  local _, count = string.gsub(text, "\n", "")
+  local hei = self.font:getHeight(text)*(count+1)
 
   local tx, ty = self.posX, self.posY
   if self.centered then
     tx, ty = tx - self.width/2, ty - self.height/2
+  else
+    if self.anchorRight then
+      tx = tx - self.width
+    end
+    if self.anchorDown then
+      ty = ty - self.height
+    end
   end
 
 
-  love.graphics.print(self.text, self.font,
+  love.graphics.print(text, self.font,
     tx + self.width/2 - wid/2,
     ty + self.height/2 - hei/2
   )
@@ -182,9 +216,14 @@ function Button:getDimentions()
 end
 
 function Button:updateSize()
-  local wid = self.font:getWidth(self.text) + 25
-  local _, count = string.gsub(self.text, "\n", "")
-  local hei = self.font:getHeight(self.text)*(count+1) + 10
+  local text = self.text
+  if type(text) == "table" then
+    text = text:getText()
+  end
+
+  local wid = self.font:getWidth(text) + 25
+  local _, count = string.gsub(text, "\n", "")
+  local hei = self.font:getHeight(text)*(count+1) + 10
 
   if self.width < wid then self.width = wid end
   if self.height < hei then self.height = hei end

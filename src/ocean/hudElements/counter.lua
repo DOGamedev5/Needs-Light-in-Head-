@@ -3,17 +3,16 @@ local Counter ={}
 --Counter.font = love.graphics.newFont("assets/fonts/BoldPixels.ttf", 8, "normal")
 Counter.font = fonts.small
 
-function Counter.new(image)
+function Counter.new(id)
 	local instance = setmetatable({}, {__index=Counter})
 
 	instance.autoTracker = false
 	instance.tracker = nil
-	instance.image = image
+	instance.image = currentScene.collectsIcon[id]
 	instance.count = 0
 	instance.posX = 0
 	instance.posY = 0
-	instance.imageWidth, instance.imageHeight = image:getDimensions()
-
+	instance.imageWidth, instance.imageHeight = instance.image:getDimensions()
 
 	return instance
 end

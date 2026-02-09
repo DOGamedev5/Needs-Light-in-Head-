@@ -2,17 +2,8 @@ local options = {}
 options.file = "configuration.lua"
 
 function options:load(menu)
-	self.conf = {}
-	self.conf.languege = "en"
-	self.conf.version = "v0.1"
-	
-	if not FileSystem.fileExist(self.file) then
-		FileSystem.writeFile(self.file, self.conf)
-	else
-		self.conf = FileSystem.loadFile(self.file)
-	end
 
-	self.buttons = Button.new("exit", windowSize.x/2 - 100, windowSize.y - 100, 200, 50, menu.exitOptions)
+	self.buttons = Button.new(TranslateManager.newReference("menu", "exit"), windowSize.x/2 - 100, windowSize.y - 100, 200, 50, menu.exitOptions)
 end
 
 function options:update(delta)

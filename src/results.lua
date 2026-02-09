@@ -8,10 +8,10 @@ results.counters = {
 
 }
 results.buttons = {
-	repeatPhase = Button.new("Retry", windowSize.x/2 - 200, windowSize.y-110, 200, 50, function()
+	repeatPhase = Button.new(TranslateManager.newReference("results", "retry"), windowSize.x/2 - 200, windowSize.y-110, 200, 50, function()
 		currentScene:changeMode("ocean")
 	end),
-	continue = Button.new("continue", windowSize.x/2 - 100, windowSize.y-110, 200, 50, function()
+	continue = Button.new(TranslateManager.newReference("results", "continue"), windowSize.x/2 - 100, windowSize.y-110, 200, 50, function()
 		currentScene:changeMode("initial")
 	end),
 }
@@ -32,7 +32,7 @@ function results:setupInfo(info)
 		self.counters[#self.counters+1] = {
 			k,
 			v,
-			info.counters[k].image
+			currentScene.collectsIcon[k]
 		}
 	end
 
@@ -62,11 +62,12 @@ end
 function results:title()
 	love.graphics.setFont(self.titleFont)
 	love.graphics.setColor(1, 1, 1)
-	local wid = self.titleFont:getWidth("results screen")
+	local text = TranslateManager:getReference("results", "title")
+	local wid = self.titleFont:getWidth(text)
 	local porc = Tween.interpolate("sine", self.timeAnim, 2.55, 0.4, "out")
 	local offset = (windowSize.x/2 + wid) * porc
 
-	love.graphics.print("results screen", windowSize.x/2-wid - offset, 40, 0, 2, 2)
+	love.graphics.print(text, windowSize.x/2-wid - offset, 40, 0, 2, 2)
 end
 
 function results:values()
@@ -93,7 +94,7 @@ function results:beatedDraw()
 
 	local porc = 1-Tween.interpolate("expo", self.timeAnim, 4, 0.8, "out")
 	love.graphics.setFont(self.valueFont)
-	local text = "YOU DID IT :D !!!"
+	local text = TranslateManager:getReference("results", "beated")
 	local offset = math.cos(love.timer.getTime()*2.1)*2
 	local offset2 = math.cos(love.timer.getTime()*1.6+10)*2
 	local scale = 0.1 + math.cos(love.timer.getTime()*2.8)*0.2

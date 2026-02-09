@@ -12,8 +12,14 @@ function game:load()
   self.saveDirPath = "file".. tostring(currentGameFile) .. "/"
   if FileSystem.fileExist(self.saveDirPath .."save.lua") then
     self.save = FileSystem.loadFile(self.saveDirPath .."save.lua")
-    if self.save.version ~= 2 then
+
+    if self.save.version < 2 then
       self.save = self:newSave()
+      self:writeSave()
+    elseif self.save.version == 2 or self.save.version < 3.1 then
+      self.save.knowCollects = {1}
+      self.save.collects = {[1] = self.save.collects["darkEssence"]}      
+      self.save.version = 3.1
       self:writeSave()
     end
     
@@ -22,7 +28,13 @@ function game:load()
     self.save = self:newSave()
     self:writeSave()
   end
-  
+
+  self.collectsIcon = {}
+  for i, v in ipairs(collectsID) do
+    local image = string.gsub("src/ocean/drops/$d/$dIcon.png", "$d", v)
+
+    self.collectsIcon[i] = love.graphics.newImage(image)
+  end
 
   self:changeMode("initial")
 end
@@ -110,13 +122,13 @@ end
 
 function game:newSave()
   return {
-    version = 2,
+    version = 3.1,
     currentDay = 1,
     currentWeek = 1,
     collects = {
-      ["darkEssence"] = 0
+      [1] = 0
     },
-    knowCollects = {"darkEssence"},
+    knowCollects = {1},
     upgrades = UpgradeManager:getSave()
   }
 end

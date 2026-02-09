@@ -6,7 +6,7 @@ fonts = {
 		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
 	small = love.graphics.newImageFont(
 		"assets/fonts/smolFont.png",
-		" abcdefghijklmnopqrstuvwxyz0123456789.," , 1)
+		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúàèìòùâêîôû0123456789.," , 1)
 }
 
 world = nil
@@ -29,6 +29,7 @@ require("tools.hud.listOrder")
 require("tools.tween")
 require("tools.bufferRegion")
 require("tools.upgradeManager")
+require("tools.translateManager")
 require("tools.hud.tooltip")
 require("tools.hud.button")
 

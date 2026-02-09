@@ -1,6 +1,6 @@
 local waterEffect = {}
 
-waterEffect.waterShader = love.graphics.newShader("src/ocean/water.glsl")
+waterEffect.waterShader = love.graphics.newShader("src/ocean/effects/water.glsl")
 waterEffect.waterTexture = love.graphics.newImage("assets/wave.png")
 waterEffect.waterNormal = love.graphics.newImage("assets/normalTest.png")
 waterEffect.waterGlow = love.graphics.newImage("assets/glowEffect.png")

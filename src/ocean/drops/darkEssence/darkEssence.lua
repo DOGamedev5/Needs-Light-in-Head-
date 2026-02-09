@@ -6,6 +6,7 @@ darkEssence.width = 10
 darkEssence.height = 10
 darkEssence.grid = anim8.newGrid(darkEssence.width, darkEssence.height, darkEssence.textureWidth, darkEssence.height)
 darkEssence.name = "darkEssence"
+darkEssence.id = 1
 
 function darkEssence.new(x, y, sizeEx)
 	local instance = setmetatable(DropClass.new(x, y, {size = sizeEx, shape = love.physics.newCircleShape(4)}), {__index  = darkEssence})

@@ -2,7 +2,7 @@ local saves = {}
 
 function saves:load(menu)
 	self.buttons = {
-		Button.new("exit", windowSize.x/2, windowSize.y - 100, 200, 50, menu.exitOptions),
+		Button.new(TranslateManager.newReference("menu", "exit"), windowSize.x/2, windowSize.y - 100, 200, 50, menu.exitOptions),
 		Button.new("", windowSize.x/2-220, windowSize.y/2-100, 200, 200, menu.startGame),
 		Button.new("", windowSize.x/2, windowSize.y/2-100, 200, 200, menu.startGame),
 		Button.new("", windowSize.x/2+220, windowSize.y/2-100, 200, 200, menu.startGame),

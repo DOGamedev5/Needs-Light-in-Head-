@@ -44,7 +44,7 @@ function DropClass:physics(delta)
 end
 
 function DropClass:collect()
-  currentScene.ocean:registerDrop(self.name, self.body:getX(), self.body:getY())
+  currentScene.ocean:registerDrop(self.id, self.body:getX(), self.body:getY())
   self.fixture:destroy()
   self.fixture:release()
   self.body:release()

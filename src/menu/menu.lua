@@ -19,9 +19,9 @@ function menu:load()
   self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})
 
   self.buttons = {}
-  self.buttons[1] = Button.new("play", 40, 40, 200, 50, self.playPressed)
-  self.buttons[2] = Button.new("options", 40, 90, 200, 50, self.optionsPressed)
-  self.buttons[3] = Button.new("exit", 40, 140, 200, 50, self.exitPressed)
+  self.buttons[1] = Button.new(TranslateManager.newReference("menu", "play"), 40, 40, 200, 50, self.playPressed)
+  self.buttons[2] = Button.new(TranslateManager.newReference("menu", "options"), 40, 90, 200, 50, self.optionsPressed)
+  self.buttons[3] = Button.new(TranslateManager.newReference("menu", "exit"), 40, 140, 200, 50, self.exitPressed)
 
   self.buttons[1]:setNextUI(nil, self.buttons[2])
   self.buttons[2]:setNextUI(self.buttons[1], self.buttons[3])

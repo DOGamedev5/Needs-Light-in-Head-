@@ -5,6 +5,8 @@ windowSize = {
   y = 500
 }
 
+confFile = "configuration.lua"
+
 tools = {
 	AABB = require("tools.aabbDetect"),
 	WF = require("plugins.windfield"),
@@ -18,7 +20,12 @@ tools = {
     end
   end,
   lerp = function (n1, n2, l)
-    return n1 + (n2-n1)*l
+    local diff = (n2-n1) 
+    if math.abs(diff) < 0.001 then
+      return n2
+    end
+
+    return n1 + diff*l
   end,
   ysort = function (a, b)
     local AsortOffset = a.sortOffset or 0
@@ -83,8 +90,12 @@ pading = {
 }
 currentGameFile = 1
 isPaused = false
+device = ""
+control = ""
 
-local screenBlacked = 0.1
+collectsID = {
+  "darkEssence"
+}
 
 function love.load()
 
@@ -95,6 +106,26 @@ function love.load()
 
   local ww, wh = love.graphics.getDimensions()
   resizeWindow(ww, wh)
+
+  conf = {}
+  conf.languege = "en"
+  conf.version = "v0.1"
+  
+  if not FileSystem.fileExist(confFile) then
+    FileSystem.writeFile(confFile, conf)
+  else
+    conf = FileSystem.loadFile(confFile)
+  end
+
+  local OS = love.system.getOS() 
+  if OS == "Android" or OS == "iOS" then
+    device = "mobile"
+  else
+    device = "desktop"
+  end
+
+  TranslateManager:loadLanguege(conf.languege)
+
   sceneManager.changeScene(1)
 end
 
@@ -106,7 +137,6 @@ function love.update(delta)
   if not isPaused then
     World:update(delta)
   end
-
 
   sceneManager.update(delta)
 end
@@ -154,11 +184,17 @@ function love.mousemoved(x, y, dx, dy, touch)
   lastMousePosition.y = y
 end
 
-function love.keyboardpressed(key, scancode, presses)
+function love.keypressed(key, scancode, presses)
   Input.keyboardPress(key, scancode, presses)
+  print(key)
+  print(scancode)
+  if key == "f11" then
+    local full, _ = love.window.getFullscreen()
+    print(love.window.setFullscreen(not full))
+  end
 end
 
-function love.keyboardreleased(key, scancode)
+function love.keyreleased(key, scancode)
   Input.keyboardRelease(key, scancode)
 end
 

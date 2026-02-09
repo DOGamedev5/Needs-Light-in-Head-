@@ -33,8 +33,11 @@ function IconButton.new(tree, id, property, name)
 	
 	instance.posX, instance.posY = UpgradeManager:getPosition(id, property, name)
 	instance.requirements = UpgradeManager:getRequirements(id, property, name)
-	local pName = UpgradeManager:getName(id, property, name)
+	instance.pname = UpgradeManager:getName(id, property, name)
+	instance.description = UpgradeManager:getDescription(id, property, name)
 
+	instance.fullTarget = 0
+	instance.full = nil
 	instance.visible = false
 	instance.onScreen = false
 	instance.unlocked = false
@@ -42,7 +45,7 @@ function IconButton.new(tree, id, property, name)
 	instance.state = 0
 	instance.hover = false
 	instance.pressed = false
-	instance.toolTip = ToolTip.new(pName)
+	instance.toolTip = ToolTip.new(instance.pname)
 
 	return instance
 end
@@ -55,6 +58,7 @@ function IconButton:init()
 		else
 			self.image = self.defaltIcon
 		end
+
 	end
 	self:updateInfo()
 end
@@ -65,6 +69,9 @@ function IconButton:updateInfo()
 	
 	self.visible = true
 	self.unlocked = true
+
+	self.fullTarget = self.level / (self.levelMax)
+	if self.full == nil then self.full = self.fullTarget end
 
 	if self.requirements ~= nil then
 		self.visible = false
@@ -106,13 +113,15 @@ function IconButton:update(delta)
 			self:init()
 		end
 
-		if self.pressed and not love.mouse.isDown(1) then
-    		self.pressed = false
-  		end
-	else
-		if self.onScreen then
-			self.onScreen = false
+		if self.full ~= nil then
+			self.full = tools.lerp(self.full, self.fullTarget, 4*delta)
 		end
+
+		if self.pressed and not love.mouse.isDown(1) then
+    	self.pressed = false
+  	end
+	else
+		self.onScreen = false
 	end
 end
 
@@ -153,14 +162,16 @@ function IconButton:draw()
 	if self.state ~= 0 and self.hover then
 
 		quadId = quadId + 3
-	end
+	end 
+
 		
 	local scale = 2
 	if self.pressed then scale = 1.8 end
 
-	local full = self.level / (self.levelMax)
+	--local full = self.level / (self.levelMax)
 
-	self.shader:send("complete", full)
+	self.shader:send("complete", self.full)
+
 	if self.state ~= 3 or self.hover then love.graphics.setShader(self.shader) end
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(self.texture, self.quad[quadId], self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
@@ -170,7 +181,7 @@ function IconButton:draw()
 	if self.state == 0 then love.graphics.setColor(0, 0, 0.05) end
 	love.graphics.draw(self.image, self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
 
-	if self.hover then
+	if self.hover and device == "desktop" then
 		self.toolTip:setPoint(self.posX - self.tree.posX, self.posY - self.tree.posY + 50)
 		Hud:bufferDraw(self.toolTip.draw, {self.toolTip})
 	end
@@ -180,23 +191,33 @@ end
 function IconButton:mouseMoved(x, y, dx, dy, touch)
   local posX, posY = toGame(x, y)
 
-  if posY > windowSize.y-50 then
+  if posY > windowSize.y-self.tree.pad then
   	self.hover = false 
   	return
   end
-
-  self.hover = tools.AABB.detectPoint(posX, posY, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height)
+  local hovered = tools.AABB.detectPoint(posX, posY, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height)
+  if self.hover ~= hovered then 
+  	self.hover = hovered
+  	if hovered then
+  		self.tree:setSelect(self)
+  	elseif self.tree.select == self then
+  		self.tree:setSelect(nil)
+  	end
+  end 
 end
 
 function IconButton:press()
 	if self.state == 2 then
-		for k, v in pairs(self.prices) do
-			currentScene.save.collects[k] = currentScene.save.collects[k] - v 
-			UpgradeManager:buy(self.id, self.property, self.name)
-		end
-		self.tree:updateInfo()
+		self:buy()
 	end
- 	self.pressed = false
+end
+
+function IconButton:buy()
+	for k, v in pairs(self.prices) do
+		currentScene.save.collects[k] = currentScene.save.collects[k] - v 
+		UpgradeManager:buy(self.id, self.property, self.name)
+	end
+	self.tree:updateInfo()
 end
 
 function IconButton:mousePressed(x, y, button, touch, presses)
@@ -209,12 +230,25 @@ end
 
 function IconButton:mouseReleased(x, y, button, touch)
   local tx,ty = toGame(x, y)
+  local inside = tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height) and self.pressed
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height) and self.pressed then
-    self:press()
-  else
-    self.pressed = false
-  end
+  if inside then
+    if touch then
+    	local oldHover = self.hover 
+    	self.hover = true
+    	if self.hover ~= oldHover then 
+		  		self.tree:setSelect(self)
+		  end 
+    else
+    	self:press()
+  	end
+  elseif touch then
+  	if self.tree.select == self then
+  		self.tree:setSelect(nil)
+  	end
+ 	end
+  self.pressed = false
+
 end
 
 return IconButton

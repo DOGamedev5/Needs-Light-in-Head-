@@ -1,8 +1,8 @@
 local visualCollect = {}
 
-function visualCollect.new(image, posX, posY, destinationX, destinationY)
+function visualCollect.new(id, posX, posY, destinationX, destinationY)
 	local instance = setmetatable({}, {__index=visualCollect})
-	instance.image = image
+	instance.image = currentScene.collectsIcon[id]
 	instance.posX = posX
 	instance.posY = posY
 	instance.destinationX = destinationX
