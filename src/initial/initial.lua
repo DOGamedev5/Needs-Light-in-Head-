@@ -36,10 +36,9 @@ function initial:init( )
 	--self.water:updateOverColor({134/255*1.2, 178/255*1.2, 189/255*1.2, 0.75})
 	self.water:updateOverColor({1, 1, 1, 0.75})
 
-	self.collects = ListOrder.new(5, 5, 5)
+	self.collects = ListOrder.new(10, 10, 5)
 
 	for k, v in pairs(currentScene.save.collects) do
-		print(k)
 		local count = counter.new(k)
 
 		count:valueTracker(currentScene.save.collects, k)
@@ -68,20 +67,26 @@ function initial:draw()
 	self.boatLight:draw()	
 	self.animationOver:draw(self.piler, windowSize.x/2, windowSize.y/2+32, 0, 2, 2, self.pilerWidth/4, self.pilerHeight/4)
 
-	self.collects:draw()
 
 	if self.currentScreen == 2 then
 		self.daySelect:draw()
 	elseif self.currentScreen == 3 then
 		self.updateTree:draw()
 	end
-
+	self:drawCollects()
 
 	local alpha = Tween.interpolate("expo", self.time, 0.1, 0.75, "out")
 
 	love.graphics.setColor(0, 0, 0, alpha)
 	love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
 
+end
+
+function initial:drawCollects()
+	local sizeX, sizeY = self.collects:getDimentions()
+	love.graphics.setColor(0, 0, 0, 0.6)
+	love.graphics.rectangle("fill", 6, 6, math.max(sizeX+4, 80), math.max(sizeY+4, 30), 4, 4)
+	self.collects:draw()
 end
 
 function initial:mouseMoved(x, y, dx, dy, touch)

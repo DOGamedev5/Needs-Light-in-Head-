@@ -48,7 +48,14 @@ function Counter:draw()
 end
 
 function Counter:getDimentions()
-	return self.imageWidth*2, self.imageHeight*2
+	local sx, xy = self.imageWidth*2, self.imageHeight*2
+	if self.autoTracker and self.tracker then
+		self.count = self.tracker[1][self.tracker[2]]
+	end
+
+	sx = sx + self.font:getWidth(tools.quantify(self.count))*2 + 5
+	
+	return sx, xy
 end
 
 return Counter

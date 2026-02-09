@@ -186,11 +186,9 @@ end
 
 function love.keypressed(key, scancode, presses)
   Input.keyboardPress(key, scancode, presses)
-  print(key)
-  print(scancode)
   if key == "f11" then
     local full, _ = love.window.getFullscreen()
-    print(love.window.setFullscreen(not full))
+    love.window.setFullscreen(not full, "desktop")
   end
 end
 

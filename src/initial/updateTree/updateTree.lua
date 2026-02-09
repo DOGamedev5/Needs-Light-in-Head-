@@ -22,6 +22,8 @@ function tree:init()
 	self.icons = UpgradeManager:getAllButtons(self)
 	self.select = nil
 	self.pad = 50
+	self.padMin = 50
+	self.padMax = 130
 end
 
 function tree:update(delta)
@@ -31,9 +33,9 @@ function tree:update(delta)
 	end
 
 	if self.select ~= nil then
-		self.pad = tools.lerp(self.pad, 120, 10*delta)
+		self.pad = tools.lerp(self.pad, self.padMax, 10*delta)
 	else
-		self.pad = tools.lerp(self.pad, 50, 5*delta)
+		self.pad = tools.lerp(self.pad, self.padMin, 5*delta)
 	end
 end
 
@@ -116,24 +118,34 @@ end
 function tree:setSelect(icon)
 	self.select = icon
 	if icon then
-		self.buy = icon.state ~= 2
+		self.buy.dissabled = icon.state ~= 2
 	end
 end
 
 function tree:drawSelect()
-	if self.pad < 60 or self.select == nil then return end
+	if self.pad <= self.padMin+5 or self.select == nil then return end
+
+	local a = (self.pad-self.padMin-5)/(self.padMax-self.padMin-5)
 
 	local name = TranslateManager:getReference("upgrades", self.select.pname)
 	local desc =  TranslateManager:getReference("upgradesDesc", self.select.description)
 	
 	love.graphics.setFont(fonts.normal)
+	love.graphics.setColor(0.45, 0.1, 0.1, a*0.8)
+	love.graphics.print(name, 10, windowSize.y - self.pad+7, 0, 2, 2)
+	love.graphics.setColor(0.8, 0.7, 0.1, a)
 	love.graphics.print(name, 10, windowSize.y - self.pad+5, 0, 2, 2)
+
 	local offset = fonts.normal:getWidth(name) - 45
 	love.graphics.setFont(fonts.small)
+	love.graphics.setColor(0.3, 0.3, 0.4, a*0.8)
+	love.graphics.print(desc, 10, windowSize.y - self.pad+7+offset, 0, 2, 2)
+	love.graphics.setColor(1, 1, 1, a)
 	love.graphics.print(desc, 10, windowSize.y - self.pad+5+offset, 0, 2, 2)
 
 	if device == "mobile" then
-		self.buy.posY = windowSize.y - self.pad + 10
+		local offset2 = (self.padMax - self.padMin)/2
+		self.buy.posY = windowSize.y - self.pad + offset2 - 30
 		self.buy:draw()
 	end
 end
