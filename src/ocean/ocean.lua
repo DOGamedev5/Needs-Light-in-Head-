@@ -63,6 +63,7 @@ function ocean:init()
   
   self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay, currentScene.save.currentWeek)
   self.enemyManager:init(self.currentDay)
+  self.dropManager:init(self.currentDay)
   self.counterhud = {}
   self.counterHud = ListOrder.new(5, 5, 5)
 

@@ -96,12 +96,14 @@ function ListOrder:getDimentions()
 	for i,v in ipairs(self.items) do
 		if self.items[i].getDimentions then
 			local tx, ty = self.items[i]:getDimentions()
-			x, y = x + tx, y + ty
+
 			if self.axis == "y" then 
-				y = y + self.separator
+				y = ty + y + self.separator
+				x = math.max(tx, x)
 			end
 			if self.axis == "x" then 
-				x = x + self.separator
+				x = tx + x + self.separator
+				y = math.max(ty, y)				
 			end
 		end
 	end

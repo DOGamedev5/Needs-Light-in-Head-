@@ -6,7 +6,7 @@ fonts = {
 		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
 	small = love.graphics.newImageFont(
 		"assets/fonts/smolFont.png",
-		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúàèìòùâêîôû0123456789.," , 1)
+		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúàèìòùâêîôû0123456789.,%+-" , 1)
 }
 
 world = nil

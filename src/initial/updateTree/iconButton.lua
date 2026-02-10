@@ -45,7 +45,7 @@ function IconButton.new(tree, id, property, name)
 	instance.state = 0
 	instance.hover = false
 	instance.pressed = false
-	instance.toolTip = ToolTip.new(instance.pname)
+	--instance.toolTip = ToolTip.new(instance.pname)
 
 	return instance
 end
@@ -74,7 +74,7 @@ function IconButton:updateInfo()
 	if self.full == nil then self.full = self.fullTarget end
 
 	if self.requirements ~= nil then
-		self.visible = false
+		--self.visible = false
 		for k, v in ipairs(self.requirements) do
 			local level, max = UpgradeManager:getLevelInfo(v[1], v[2], v[3])
 			if level < v[4] then
@@ -133,8 +133,16 @@ function IconButton:drawLine()
 			local reqX, reqY = UpgradeManager:getPosition(v[1], v[2], v[3])
 			local dirX, dirY = Vector.normalize(reqX - self.posX, reqY - self.posY)
 
-			local x1, y1 = self.posX + (dirX*40) - self.tree.posX, self.posY + (dirY*40) - self.tree.posY
-			local x2, y2 = reqX - (dirX*40) - self.tree.posX, reqY - (dirY*40) - self.tree.posY
+			local offsetX = dirX*40
+			local offsetY = dirY*40
+			if math.abs(dirY) > math.abs(dirX) then
+				offsetY = tools.sign(dirY)*32
+			elseif math.abs(dirX) > math.abs(dirY) then
+				offsetX = tools.sign(dirX)*32
+			end
+
+			local x1, y1 = self.posX + offsetX - self.tree.posX, self.posY + offsetY - self.tree.posY
+			local x2, y2 = reqX - offsetX - self.tree.posX, reqY - offsetY - self.tree.posY
 
 			love.graphics.setLineStyle("rough")
 			love.graphics.setLineWidth(6)
@@ -168,8 +176,6 @@ function IconButton:draw()
 	local scale = 2
 	if self.pressed then scale = 1.8 end
 
-	--local full = self.level / (self.levelMax)
-
 	self.shader:send("complete", self.full)
 
 	if self.state ~= 3 or self.hover then love.graphics.setShader(self.shader) end
@@ -180,11 +186,6 @@ function IconButton:draw()
 	love.graphics.setColor(1, 1, 1)
 	if self.state == 0 then love.graphics.setColor(0, 0, 0.05) end
 	love.graphics.draw(self.image, self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
-
-	if self.hover and device == "desktop" then
-		self.toolTip:setPoint(self.posX - self.tree.posX, self.posY - self.tree.posY + 50)
-		Hud:bufferDraw(self.toolTip.draw, {self.toolTip})
-	end
 
 end
 
@@ -223,14 +224,14 @@ end
 function IconButton:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height) and not self.pressed and self.state ~= 3 then
+  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height) and not self.pressed and self.state ~= 3 then
     self.pressed = true
   end
 end
 
 function IconButton:mouseReleased(x, y, button, touch)
   local tx,ty = toGame(x, y)
-  local inside = tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-16, self.posY - self.tree.posY-16, self.width, self.height) and self.pressed
+  local inside = tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height) and self.pressed
 
   if inside then
     if touch then
@@ -249,6 +250,17 @@ function IconButton:mouseReleased(x, y, button, touch)
  	end
   self.pressed = false
 
+end
+
+function IconButton:getDescription()
+	local result = TranslateManager:getReference("upgradesDesc", self.description)
+	local name = TranslateManager:getReference("misc", self.id)
+	local property = TranslateManager:getReference("properties", self.property)
+	local value = UpgradeManager:getNextValue(self.id, self.property, self.name)
+
+	result = string.gsub(string.gsub(string.gsub(result, "$name", name), "$property", property), "$value", value)
+
+	return result
 end
 
 return IconButton

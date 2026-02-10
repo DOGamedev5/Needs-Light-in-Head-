@@ -15,6 +15,7 @@ function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
     speed = 20,
     health = 50,
+    damage = 3,
     shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {
@@ -73,7 +74,7 @@ function enemy:update(delta)
       self.currentState = 1
 
       for _, o in ipairs(self.attacking) do
-        o:getUserData():damage(5)  
+        o:getUserData():damage(self.damage)  
       end
     end
 

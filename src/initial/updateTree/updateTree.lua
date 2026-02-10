@@ -1,6 +1,6 @@
 local tree = {}
 
-tree.exit = Button.new(TranslateManager.newReference("menu", "exit"), windowSize.x/2, windowSize.y-25, 20, 20, function()
+tree.exit = Button.new(TranslateManager.newReference("menu", "exit"), windowSize.x/2, windowSize.y-30, 100, 30, function()
 	currentScene.initial.currentScreen = 1
 end) 
 tree.buy = Button.new(TranslateManager.newReference("initial", "buy"), windowSize.x - 20, windowSize.y-25, 100, 60, function()
@@ -22,8 +22,8 @@ function tree:init()
 	self.icons = UpgradeManager:getAllButtons(self)
 	self.select = nil
 	self.pad = 50
-	self.padMin = 50
-	self.padMax = 130
+	self.padMin = 60
+	self.padMax = 150
 end
 
 function tree:update(delta)
@@ -72,9 +72,9 @@ function tree:mouseMoved(x, y, dx, dy, touch)
 	local tx, ty = toGame(x, y)
 	
 	for i, v in ipairs(self.icons) do
-		if v.onScreen then v:mouseMoved(x, y, dx, dy, touch) end
+		if v.onScreen and v.visible then v:mouseMoved(x, y, dx, dy, touch) end
 	end
-	if ty < windowSize.y-50 then
+	if ty < windowSize.y-self.pad then
 		
 		if self.pressed then
 			self.posX = self.posX - dx*0.9
@@ -94,7 +94,7 @@ function tree:mousePressed(x, y, button, touch, presses)
 	if ty < windowSize.y-self.pad then
 		self.pressed = true
 		for i, v in ipairs(self.icons) do
-			if v.onScreen then v:mousePressed(x, y, button, touch, presses) end
+			if v.onScreen and v.visible then v:mousePressed(x, y, button, touch, presses) end
 		end
 	else
 		self.exit:mousePressed(x, y, button, touch, presses)
@@ -111,15 +111,21 @@ function tree:mouseReleased(x, y, button, touch)
 	end
 	self.pressed = false
 	for i, v in ipairs(self.icons) do
-		if v.onScreen then v:mouseReleased(x, y, button, touch) end
+		if v.onScreen and v.visible then v:mouseReleased(x, y, button, touch) end
 	end
 end
 
 function tree:setSelect(icon)
-	self.select = icon
 	if icon then
 		self.buy.dissabled = icon.state ~= 2
+		self.select = icon
 	end
+	
+	if device == "mobile" then
+		return
+	end
+	
+	self.select = icon
 end
 
 function tree:drawSelect()
@@ -128,7 +134,7 @@ function tree:drawSelect()
 	local a = (self.pad-self.padMin-5)/(self.padMax-self.padMin-5)
 
 	local name = TranslateManager:getReference("upgrades", self.select.pname)
-	local desc =  TranslateManager:getReference("upgradesDesc", self.select.description)
+	local desc = self.select:getDescription()
 	
 	love.graphics.setFont(fonts.normal)
 	love.graphics.setColor(0.45, 0.1, 0.1, a*0.8)
@@ -136,12 +142,39 @@ function tree:drawSelect()
 	love.graphics.setColor(0.8, 0.7, 0.1, a)
 	love.graphics.print(name, 10, windowSize.y - self.pad+5, 0, 2, 2)
 
-	local offset = fonts.normal:getWidth(name) - 45
+	local offset = fonts.normal:getHeight(name)*2
 	love.graphics.setFont(fonts.small)
 	love.graphics.setColor(0.3, 0.3, 0.4, a*0.8)
 	love.graphics.print(desc, 10, windowSize.y - self.pad+7+offset, 0, 2, 2)
 	love.graphics.setColor(1, 1, 1, a)
 	love.graphics.print(desc, 10, windowSize.y - self.pad+5+offset, 0, 2, 2)
+
+	offset = offset + fonts.small:getHeight(desc)*2
+
+	local baseX = 10
+	for i, v in pairs(self.select.prices) do
+		local text = tools.quantify(v)
+		local Iwid, Ihei = currentScene.collectsIcon[i]:getDimensions()
+		local Twid, Thei = fonts.small:getWidth(text), fonts.small:getHeight(text)
+		
+		local wid = fonts.small:getWidth(text)*2
+		local hei = fonts.small:getHeight(text)*2-8
+		local ioff = 0
+		local toff = Ihei*2-hei
+		
+		if hei > Ihei*2 then
+			ioff = hei - Ihei*2
+			toff = 0
+		end
+		love.graphics.setColor(0.3, 0.3, 0.4, a*0.8)
+		love.graphics.print(text, baseX + Iwid*2+5, windowSize.y - self.pad+7+offset+toff/2, 0, 2, 2)
+
+		love.graphics.setColor(1, 1, 1, a)
+		love.graphics.print(text, baseX + Iwid*2+5, windowSize.y - self.pad+5+offset+toff/2, 0, 2, 2)
+		
+		love.graphics.draw(currentScene.collectsIcon[i], baseX, windowSize.y - self.pad+10+offset+ioff/2, 0, 2, 2)
+		baseX = baseX + Iwid*2 + Twid*2 + 5
+	end
 
 	if device == "mobile" then
 		local offset2 = (self.padMax - self.padMin)/2

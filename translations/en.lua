@@ -22,7 +22,8 @@ return {
 	properties = {
 		["damage"] = "damage",
 		["size"] = "size",
-		["speed"] = "speed"
+		["speed"] = "speed",
+		["darkEssence"] = "of Dark Essence"
 	},
 	misc = {
 		["darkEssence"] = "Dark Essence",
@@ -34,18 +35,19 @@ return {
 	upgrades = {
 		["basicDamage"] = "Basic Damage",
 		["moreDamage"] = "More Damage",
-		["sharpLight"] = "light Sharpy",
+		["sharpLight"] = "Light Sharpy",
 		["visorLight"] = "Visor of Light",
 		["brightLight"] = "Bright Light",
+		["littleMovement"] = "More Movement",
 		["fastMovement"] = "Fast Movement",
 		["longLasting"] = "Longer Lasting",
 		["burnOtimized"] = "Otimized Burn",
 		["betterCatch"] = "Better Catch",
 	},
 	upgradesDesc = {
-		["add"] = "Increases the $name $property by %d ",
-		["sub"] = "Reduces the $name $property by %d",
-		["multiply"] = "Increases the $name $property by %d%%",
-		["decrease"] = "Decrease the $name $property by %d%%",
+		["add"] = "Increases the $name $property by +$value ",
+		["sub"] = "Reduces the $name $property by $value",
+		["multiply"] = "Increases the $name $property by $value%",
+		["decrease"] = "Decrease the $name $property by $value%",
 	}
 }

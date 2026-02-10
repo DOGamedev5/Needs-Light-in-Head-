@@ -65,6 +65,12 @@ function UpgradeManager:getPrice(id, property, name)
 	return info:getPrice()
 end
 
+function UpgradeManager:getNextValue(id, property, name)
+	local info = self:getByName(id, property, name)
+
+	return info:getNextValue()
+end
+
 function UpgradeManager:buy(id, property, name)
 	local info = self:getByName(id, property, name)
 

@@ -43,6 +43,7 @@ function EnemyClass.new(x, y, prototype)
   instance.scale = 1
   instance.speed = prototype.speed or 20
   instance.health = prototype.health or 50
+  instance.damage = prototype.damage or 0
 
   return instance
 end
@@ -113,21 +114,10 @@ function EnemyClass:updateHandler(delta, x, y)
 end
 
 function EnemyClass:drawHandler(animation, texture)
-  --[[local flip = 1
-  if self.flip then
-    flip = -1
-  end
-
-  local x, y = self.body:getX() - self.width* flip, self.body:getY() - self.height
-  local ex, ey = self.body:getX() - self.width* flip*self.scale, self.body:getY() - self.height*self.scale
-  ]]
   animation.flippedH = self.flip
 
   local x, y = self.body:getX(), self.body:getY()
   local ex, ey = self.body:getX(), self.body:getY()
-
-  --self.scale = 2
-  --self.damageShader:send("scale", {self.scale, 2*self.scale})
   
   if #self.enteredLights == 0 then
     animation:draw(texture, x, y, 0, 2, 2, self.width/2, self.height/2)
@@ -142,14 +132,6 @@ function EnemyClass:drawHandler(animation, texture)
     love.graphics.setShader()
     love.graphics.setBlendMode("alpha")
   end  
-  --animation:draw(texture, x, y, 0, 2, 2)
- 
-  --[[if #self.enteredLights > 0 then
-    love.graphics.setBlendMode("add")
-    animation:draw(texture, ex, ey, 0, 2*self.scale, 2)
-    animation:draw(texture, ex, ey, 0, 2*self.scale, 2)
-    love.graphics.setBlendMode("alpha")
-  end]]
 end
 
 function EnemyClass:canDrawDetect(x, y)

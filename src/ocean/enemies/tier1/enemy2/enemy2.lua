@@ -13,8 +13,9 @@ enemy.offsetSpawn = 24
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 35,
+    speed = 40,
     health = 30,
+    damage = 2,
     shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {
@@ -37,7 +38,7 @@ function enemy.new(x, y)
   instance.particleHandler:setSpinVariation(1)
   instance.particleHandler:setSpeed(30)
 
-  instance.drop = {["darkEssence"] = 3}
+  instance.drop = {["darkEssence"] = 1}
 
   return instance
 end
@@ -74,7 +75,7 @@ function enemy:update(delta)
       self.currentState = 1
 
       for _, o in ipairs(self.attacking) do
-        o:getUserData():damage(3)  
+        o:getUserData():damage(self.damage)  
       end
     end
 

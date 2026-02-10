@@ -26,36 +26,44 @@ function Counter:valueTracker(tab, key)
 end
 
 function Counter:draw()
+	local text = tools.quantify(self.count)
+
+	local wid = self.font:getWidth(text)*2
+	local _, count = string.gsub(text, "\n", "")
+	local hei = self.font:getHeight(text)*(count+1)*2
+	local ioff = 0
+	local toff = self.imageHeight*2-hei
+	if hei > self.imageHeight*2 then
+		ioff = hei - self.imageHeight*2
+		toff = 0
+	end
 
 	love.graphics.setColor(1, 1, 1)
-	love.graphics.draw(self.image, self.posX, self.posY, 0, 2, 2)
+	love.graphics.draw(self.image, self.posX, self.posY + ioff/2, 0, 2, 2)
 	love.graphics.setFont(self.font)
 	
 	if self.autoTracker and self.tracker then
 		self.count = self.tracker[1][self.tracker[2]]
 	end
 
-	local text = tools.quantify(self.count)
-
-	local wid = self.font:getWidth(text)*2
-	local _, count = string.gsub(text, "\n", "")
-	local hei = self.font:getHeight(text)*(count+1)*2
-
 	love.graphics.print(text, self.font,
 		self.posX + self.imageWidth*2 + 5,
-		self.posY + (self.imageHeight*2-hei), 0, 2, 2
+		self.posY + toff/2, 0, 2, 2
 	)
 end
 
 function Counter:getDimentions()
-	local sx, xy = self.imageWidth*2, self.imageHeight*2
+	local sx, sy = self.imageWidth*2, self.imageHeight*2
 	if self.autoTracker and self.tracker then
 		self.count = self.tracker[1][self.tracker[2]]
 	end
 
+	local text = tools.quantify(self.count)
 	sx = sx + self.font:getWidth(tools.quantify(self.count))*2 + 5
+	local hei = self.font:getHeight(text)*2
+	sy = math.max(hei, sy)
 	
-	return sx, xy
+	return sx, sy
 end
 
 return Counter
