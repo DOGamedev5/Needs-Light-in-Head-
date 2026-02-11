@@ -28,6 +28,7 @@ end
 
 function tree:update(delta)
 	self.exit:update(delta)
+	self.buy:update(delta)
 	for i, v in ipairs(self.icons) do
 		v:update(delta)
 	end
@@ -63,6 +64,9 @@ end
 
 function tree:input(event, value)
 	self.exit:input(event, value)
+	if device == "mobile" then 
+		self.buy:input(event, value)
+	end
 	for i, v in ipairs(self.icons) do
 		if v.onScreen then v:input(event, value) end
 	end
@@ -85,6 +89,9 @@ function tree:mouseMoved(x, y, dx, dy, touch)
 		end
 	else
 		self.exit:mouseMoved(x, y, dx, dy, touch)
+		if device == "mobile" then
+			self.buy:mouseMoved(x, y, dx, dy, touch)
+		end
 	end
 end
 
@@ -133,7 +140,7 @@ function tree:drawSelect()
 
 	local a = (self.pad-self.padMin-5)/(self.padMax-self.padMin-5)
 
-	local name = TranslateManager:getReference("upgrades", self.select.pname)
+	local name = TranslateManager:getReference("upgrades", self.select.pname) .. string.format(" %d/%d", self.select.level, self.select.levelMax)
 	local desc = self.select:getDescription()
 	
 	love.graphics.setFont(fonts.normal)

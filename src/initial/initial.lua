@@ -24,7 +24,7 @@ local counter = require("src.ocean.hudElements.counter")
 
 function initial:init( )
 	self.currentScreen = 1
-  	setBloomConfig(0.8, 1.5, 1.2)
+  	setBloomConfig(0.5, 1.9, 1.0)
 
 	currentScene:writeSave()
 	self.boatShop:init(self)

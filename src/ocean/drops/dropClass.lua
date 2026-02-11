@@ -16,8 +16,11 @@ function DropClass.new(x, y, prototype)
   instance.fixture:setCategory(1)
   instance.fixture:setMask(1)
   instance.fixture:setUserData(instance)
+  instance.scale = 0.2
+  instance.lifetime = prototype.lifetime or 12
 
   instance.toCollect = false
+  instance.toRemove = false
 
   instance.enteredLights = {}
 
@@ -25,6 +28,13 @@ function DropClass.new(x, y, prototype)
 end
 
 function DropClass:physics(delta)
+  if self.lifetime > 1 then
+    self.scale = tools.lerp(self.scale, 1.0, delta*6)
+  else
+    self.scale = tools.lerp(self.scale, 0.0, delta*6)
+  end
+  self.lifetime = self.lifetime - delta
+
 	self.body:setX(self.body:getX() + self.velX*delta)
 	self.body:setY(self.body:getY() + self.velY*delta)
 
@@ -41,6 +51,17 @@ function DropClass:physics(delta)
   elseif self.body:getX() < 0 then
     self.body:setX(0)
   end
+
+  if self.lifetime <= 0 then
+    self.toRemove = true
+  end
+end
+
+function DropClass:getAlphaLifetime()
+  if self.lifetime < 6 then
+    return 0.5 + math.cos(self.lifetime*12.0)*0.25
+  end
+  return 1
 end
 
 function DropClass:collect()

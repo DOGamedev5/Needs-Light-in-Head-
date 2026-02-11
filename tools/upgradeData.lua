@@ -60,7 +60,7 @@ local addStrategy = setmetatable({
 local multiplyStrategy = setmetatable({
 	new = function (multiValue, maxLevel, name, price, pos, requirements, desc)
 		if desc == nil then
-			if multiValue < 0 then
+			if multiValue < 1 then
 				desc = "decrease"
 			else
 				desc = "multiply"
@@ -104,45 +104,57 @@ return {
 				more = addStrategy.new(10, 4, "moreDamage", createPrice(1, 20, 10), {-100, -40}, {{"light", "damage", "basic", 4}}),
 			},
 			mul = {
-				sharp = multiplyStrategy.new(1.05, 5, "sharpLight", createPrice(1, 25, 50), {100, -70}, {{"light", "damage", "basic", 2}})
+				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {100, -70}, {{"light", "damage", "basic", 2}})
 			}
 		},
 		size = {
 			add = {
-				visor = addStrategy.new(1.00, 5, "visorLight", createPrice(1, 10, 10), {-150, -140}, {{"light", "damage", "basic", 2}}),
+				visor = addStrategy.new(1.50, 5, "visorLight", createPrice(1, 10, 10), {-150, -140}, {{"light", "damage", "basic", 2}}),
 				
 			},
 			mul = {
-				bright = multiplyStrategy.new(1.10, 3, "brightLight", createPrice(1, 100, 250), {-300, -140}, {{"light", "size", "visor", 5}})
+				bright = multiplyStrategy.new(1.10, 3, "brightLight", createPrice(1, 90, 50), {-300, -140}, {{"light", "size", "visor", 5}})
 			}
 		},
 		speed = {
 			add = {
-				little = addStrategy.new(2, 10, "littleMovement", createPrice(1,  3, 7), {20, -180}, {{"light", "damage", "basic", 1}}),
-				fast = addStrategy.new(10, 10, "fastMovement", createPrice(1,  35, 20), {-250, -220}, {{"light", "size", "visor", 2}}),
+				little = addStrategy.new(1.5, 5, "littleMovement", createPrice(1,  3, 5), {20, -180}, {{"light", "damage", "basic", 1}}),
+				fast = addStrategy.new(3, 6, "fastMovement", createPrice(1,  5, 15), {-250, -220}, {{"light", "size", "visor", 2}}),
 			},
 		},
 		oil = {
 			add = {
-				lasting = addStrategy.new(1.50, 2, "longLasting", createPrice(1, 20, 40), {-20, 60}, {{"light", "damage", "basic", 1}, {"light", "damage", "more", 1}}),
+				lasting = addStrategy.new(6.00, 4, "longLasting", createPrice(1, 20, 20), {-20, 60}, {{"light", "damage", "basic", 1}, {"light", "damage", "more", 1}}),
 			},
 
 		},
 		fuelUse = {
 			mul = {
-				otimize = multiplyStrategy.new(0.95, 2, "burnOtimized", createPrice(1,  10, 30), {0, 170}, {{"light", "oil", "lasting", 1}}),
+				otimize = multiplyStrategy.new(0.95, 3, "burnOtimized", createPrice(1,  10, 30), {0, 170}, {{"light", "oil", "lasting", 1}}),
+			}
+		},
+		attackCooldown = {
+			add = {
+				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15, 25), {210, -70}, {{"light", "damage", "sharp", 2}})
 			}
 		},
 		damageResist = {
 			mul = {
-
+				lightShield = multiplyStrategy.new(0.90, 5, "lightShield", createPrice(1, 20, 40), {160, 90}, {{"drop", "darkEssence", "betterCatch", 2}})
 			}
 		}
 	},
 	drop = {
 		darkEssence = {
 			add = {
-				betterCath = addStrategy.new(1, 5, "betterCatch", createPrice(1, 4, 8), {70, 50}, {{"light", "damage", "basic", 1}}),
+				betterCatch = addStrategy.new(1, 5, "betterCatch", createPrice(1, 4, 8), {70, 50}, {{"light", "damage", "basic", 1}}),
+			}
+		}
+	},
+	collect = {
+		darkEssence = {
+			mul = {
+				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 30, 30), {120, -230}, {{"light", "speed", "little", 2}})
 			}
 		}
 	}

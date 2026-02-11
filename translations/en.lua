@@ -23,7 +23,11 @@ return {
 		["damage"] = "damage",
 		["size"] = "size",
 		["speed"] = "speed",
-		["darkEssence"] = "of Dark Essence"
+		["darkEssence"] = "of Dark Essence",
+		["damageResist"] = "damage taken",
+		["attackCooldown"] = "attack cooldown",
+		["fuelUse"] = "fuel burn",
+		["collect"] = "collect"
 	},
 	misc = {
 		["darkEssence"] = "Dark Essence",
@@ -43,6 +47,9 @@ return {
 		["longLasting"] = "Longer Lasting",
 		["burnOtimized"] = "Otimized Burn",
 		["betterCatch"] = "Better Catch",
+		["agilityAtk"] = "Agile Attack",
+		["lightShield"] = "Light Shield",
+		["whatLuck"] = "What a Luck!"
 	},
 	upgradesDesc = {
 		["add"] = "Increases the $name $property by +$value ",

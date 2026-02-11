@@ -3,7 +3,7 @@ love.graphics.setDefaultFilter("nearest", "nearest")
 fonts = {
 	normal = love.graphics.newImageFont(
 		"assets/fonts/SimpleFont.png", 
-		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=", 1),
+		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/\\:,;=!.", 1),
 	small = love.graphics.newImageFont(
 		"assets/fonts/smolFont.png",
 		" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúàèìòùâêîôû0123456789.,%+-" , 1)

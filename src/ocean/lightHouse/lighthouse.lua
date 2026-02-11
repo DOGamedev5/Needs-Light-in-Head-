@@ -55,7 +55,7 @@ function lightHouse:draw()
 end
 
 function lightHouse:damage(dmg)
-  self.light:damageFuel(dmg)
+  self.light:damageFuel(UpgradeManager:apply("light", "damageResist", dmg))
 end
 
 return lightHouse

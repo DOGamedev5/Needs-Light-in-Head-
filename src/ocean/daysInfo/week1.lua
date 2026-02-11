@@ -19,16 +19,19 @@ return {
 		amount = {1, 3},
 
 		dropRules = {
+			drops = {1},
 			spawn = {[1] = {2, 90}},
 			percent = {
 				{90, {[1] = 1}}, -- timeTrigger, spawn percentage
 			},
 			groupPerc = {
 				{10, 5},
-				{20, 10}, -- timeTrigger, percentage
-				{50, 20},
+				{20, 30}, -- timeTrigger, percentage
+				{50, 50},
+				{90, 70},
 			},
-			frequency = 0.8
+			frequency = 1.2,
+			amount = {2, 9},
 		}
 	},
 	{

@@ -49,7 +49,7 @@ ocean.timeCounter = {
 
 
 function ocean:init()
-  setBloomConfig(1.2, 0.85, 0.8)
+  setBloomConfig(1.5, 0.85, 0.9)
 
   self.startStatus = 0
   self.startTimer = 0
@@ -121,6 +121,10 @@ function ocean:update(delta)
 end
  
 function ocean:finished(beat)
+  for i, v in pairs(self.collects) do
+    self.collects[i] = math.floor(UpgradeManager:apply("collect", collectsID[i], v))
+  end
+
   currentScene:finish({
     beated = beat,
     collects = self.collects,

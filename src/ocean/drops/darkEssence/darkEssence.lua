@@ -17,8 +17,8 @@ function darkEssence.new(x, y, sizeEx)
 end
 
 function darkEssence:draw()
-	love.graphics.setColor(1, 1, 1, 1)
-	self.animation:draw(self.image, self.body:getX()-8, self.body:getY()-8, 0, 2, 2)
+	love.graphics.setColor(1, 1, 1, self:getAlphaLifetime())
+	self.animation:draw(self.image, self.body:getX(), self.body:getY(), 0, 2*self.scale, 2*self.scale, 5, 5)
 end
 
 function darkEssence:update(delta)
