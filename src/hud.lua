@@ -22,6 +22,8 @@ function Hud:remove(object)
 end
 
 function Hud:draw()
+	love.graphics.setCanvas(canvasUI)
+
 	if self.hidden then return end
 	for i, o in ipairs(self.items) do
 		if o.draw then
@@ -35,6 +37,7 @@ function Hud:draw()
 	end
 
 	self.buffer = {}
+	love.graphics.setCanvas(canvas)
 end
 
 function Hud:bufferDraw(draw, args)

@@ -51,12 +51,14 @@ function results:update(delta)
 end
 
 function results:draw()
+	love.graphics.setCanvas(canvasUI)
 	love.graphics.setColor(0.02, 0.01, 0.07, self.alpha)
 	love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
 	self:title()
 	self:values()
 	self:buttonsDraw()
 	self:beatedDraw()
+	love.graphics.setCanvas(canvas)
 end
 
 function results:title()

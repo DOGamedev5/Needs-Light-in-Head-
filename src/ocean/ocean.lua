@@ -49,6 +49,8 @@ ocean.timeCounter = {
 
 
 function ocean:init()
+  setBloomConfig(1.2, 0.85, 0.8)
+
   self.startStatus = 0
   self.startTimer = 0
   Hud.hidden = true

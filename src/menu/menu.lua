@@ -11,10 +11,8 @@ menu.water = require("src.ocean.effects.waterEffect")
 
 function menu:load()
   self.currentScreen = 0
+  setBloomConfig(1.0, 1.0, 1.1)
 
-  --[[self.water:setWaterColor({3/255, 2/255, 6/255})
-  self.water:updateOverColor({9/255*1.2, 18/255*1.2, 59/255*1.2, 0.75})
-  ]]
   self.water:setWaterColor({5/255, 4/255, 8/255})
   self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})
 
@@ -53,7 +51,7 @@ function menu:draw()
   local offset = math.sin(love.timer.getTime()*0.8)*4
   menu.lightTowerAnimation:draw(self.lightTowerBackgroundTexture, windowSize.x - 200, offset-10, 0, 2.1, 2.1)
 
-
+  love.graphics.setCanvas(canvasUI)
   for i, b in ipairs(self.buttons) do
     b:draw()
   end
@@ -62,6 +60,7 @@ function menu:draw()
   elseif self.currentScreen == 2 then
     self.saves:draw()
   end
+  love.graphics.setCanvas(canvas)
 end
 
 function menu:input(event, value)

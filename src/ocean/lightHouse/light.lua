@@ -135,16 +135,18 @@ end
 
 function light:draw()
   if self.fuel > 0 then
-    love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.25*self.force)
+    love.graphics.setBlendMode("add")
+    love.graphics.setColor(236*3/255*self.force, 201*3/255*self.force, 64*2/255*self.force, 0.2*self.force)
     love.graphics.circle("fill", self.x, self.y, self.radius)
-    love.graphics.setColor(236*2/255, 201*2/255, 64*2/255, 0.2*self.force)
+    love.graphics.setColor(236*3/255*self.force, 201*3/255*self.force, 64*2/255*self.force, 0.35*self.force)
 
     local poligon = self:rayLight()
     love.graphics.polygon("fill", unpack(poligon))
   
-    love.graphics.setColor(1, 1, 1, 0.2)
+    love.graphics.setColor(1, 1, 1, 0.5)
     love.graphics.circle("line", self.x, self.y, self.radius)
     love.graphics.polygon("line", unpack(poligon))
+    love.graphics.setBlendMode("alpha")
   end
   
 end

@@ -205,6 +205,7 @@ function Button:draw()
     tx + self.width/2 - wid/2,
     ty + self.height/2 - hei/2
   )
+
 end
 
 function Button:changeText(text)

@@ -24,6 +24,8 @@ local counter = require("src.ocean.hudElements.counter")
 
 function initial:init( )
 	self.currentScreen = 1
+  	setBloomConfig(0.8, 1.5, 1.2)
+
 	currentScene:writeSave()
 	self.boatShop:init(self)
 	self.daySelect:init(self)
@@ -67,19 +69,21 @@ function initial:draw()
 	self.boatLight:draw()	
 	self.animationOver:draw(self.piler, windowSize.x/2, windowSize.y/2+32, 0, 2, 2, self.pilerWidth/4, self.pilerHeight/4)
 
-
+	love.graphics.setCanvas(canvasUI)
+	love.graphics.setColor(1, 1, 1)
 	if self.currentScreen == 2 then
 		self.daySelect:draw()
 	elseif self.currentScreen == 3 then
 		self.updateTree:draw()
 	end
+
 	self:drawCollects()
 
 	local alpha = Tween.interpolate("expo", self.time, 0.1, 0.75, "out")
 
 	love.graphics.setColor(0, 0, 0, alpha)
 	love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
-
+	love.graphics.setCanvas(canvas)
 end
 
 function initial:drawCollects()

@@ -1,5 +1,7 @@
 main = {}
 
+bloom = nil
+
 windowSize = {
   x = 800,
   y = 500
@@ -98,6 +100,17 @@ collectsID = {
 }
 
 function love.load()
+  bloom = love.graphics.newShader("src/shaders/bloom.glsl")
+  bloom:send("gamma", 1.0)
+  setBloomConfig(1.0, 0.9, 1.2)
+  canvas = love.graphics.newCanvas()
+  canvasUI = love.graphics.newCanvas()
+  --[[love.graphics.setCanvas(canvasUI)
+  love.graphics.setBlendMode("alpha")
+    love.graphics.translate(pading.x, pading.y)
+    love.graphics.scale(gameScale, gameScale)
+  love.graphics.setCanvas()
+  ]]
 
   World = love.physics.newWorld(0 , 0, true)
   World:setCallbacks(worldBegincontact, worldAftercontact)
@@ -150,19 +163,40 @@ function toGame(x, y)
 end
 
 function love.draw()
+  love.graphics.setCanvas(canvasUI)
+    love.graphics.clear()
+    love.graphics.setBlendMode("alpha")
+    --love.graphics.translate(pading.x, pading.y)
+    --love.graphics.scale(gameScale, gameScale)
+  love.graphics.setCanvas()
+
+  love.graphics.setCanvas({canvas, stencil=true})
+  love.graphics.clear()
   love.graphics.setBackgroundColor(0, 0, 0, 1)   
   
   love.graphics.setBackgroundColor(0, 0, 0, 1)
   
   love.graphics.push()
+  love.graphics.setBlendMode("alpha")
   
   love.graphics.translate(pading.x, pading.y)
   love.graphics.scale(gameScale, gameScale)
   
   love.graphics.setColor(1, 1, 1)
+
   sceneManager.draw()
 
   love.graphics.pop()
+  love.graphics.setCanvas()
+  
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.setBlendMode("alpha", "premultiplied")
+
+  love.graphics.setShader(bloom)
+  love.graphics.draw(canvas, 0, 0)
+  love.graphics.setShader()
+  love.graphics.draw(canvasUI, 0, 0)
+
   love.graphics.setColor(0, 0, 0, 1)
   love.graphics.rectangle("fill", 0, 0, pading.x, love.graphics.getHeight())
   love.graphics.rectangle("fill", love.graphics.getWidth() - pading.x, 0, pading.x, love.graphics.getHeight() + pading.y)
@@ -231,9 +265,17 @@ end
 
 function love.resize(w, h)
   resizeWindow(w, h)
+  canvas = love.graphics.newCanvas()
+  canvasUI = love.graphics.newCanvas()
 end
 
 function resizeWindow(w, h)
   gameScale = h / windowSize.y   
   pading.x = (w - (gameScale * windowSize.x))/2
+end
+
+function setBloomConfig(size, exposition, intensity)
+    bloom:send("bloomSize", size)
+    bloom:send("exposition", exposition)
+    bloom:send("intensity", intensity)
 end

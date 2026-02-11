@@ -15,7 +15,7 @@ local strategy = {
 		end
 		instance.getPrice = function (self)
 			if self.level == self.maxLevel then
-				return nil
+				return {}
 			end
 
 			local prices = {}
