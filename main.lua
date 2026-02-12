@@ -96,7 +96,8 @@ device = ""
 control = ""
 
 collectsID = {
-  "darkEssence"
+  "darkEssence",
+  "corruptEssence"
 }
 
 function love.load()

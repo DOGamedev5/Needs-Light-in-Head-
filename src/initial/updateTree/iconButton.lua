@@ -114,7 +114,7 @@ function IconButton:update(delta)
 		end
 
 		if self.full ~= nil then
-			self.full = tools.lerp(self.full, self.fullTarget, 4*delta)
+			self.full = tools.lerp(self.full, self.fullTarget, 6*delta)
 		end
 
 		if self.pressed and not love.mouse.isDown(1) then

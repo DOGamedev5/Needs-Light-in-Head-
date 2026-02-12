@@ -1,7 +1,8 @@
 local dropManager = {}
 
 dropManager.dropsInst = {
-	["darkEssence"] = require("src.ocean.drops.darkEssence.darkEssence")
+	require("src.ocean.drops.darkEssence.darkEssence"),
+	require("src.ocean.drops.corruptEssence.corruptEssence")
 }
 dropManager.drops = {}
 dropManager.rules = {}
@@ -117,7 +118,7 @@ function dropManager:getDrop()
 
 	if amount == 0 then return end
 	local choosen = possible[love.math.random(1, amount)]
-	return collectsID[choosen]
+	return choosen
 end
 
 return dropManager

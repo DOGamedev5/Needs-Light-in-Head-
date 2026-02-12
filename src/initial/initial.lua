@@ -40,13 +40,18 @@ function initial:init( )
 
 	self.collects = ListOrder.new(10, 10, 5)
 
-	for k, v in pairs(currentScene.save.collects) do
-		local count = counter.new(k)
 
-		count:valueTracker(currentScene.save.collects, k)
+	--for k, v in pairs(currentScene.save.collects) do
+	for i=1, #collectsID do
+		if currentScene.save.collects[i] == nil then goto continue end
+
+		local count = counter.new(i)
+
+		count:valueTracker(currentScene.save.collects,i)
 		count.autoTracker = true
 
 		self.collects:addToList(count)
+		::continue::
 	end
 end
 

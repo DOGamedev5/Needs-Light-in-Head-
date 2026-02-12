@@ -21,7 +21,8 @@ local strategy = {
 			local prices = {}
 
 			for k, v in pairs(self.priceRule.price) do
-				prices[k] = v + self.priceRule.addRule * self.level 
+
+				prices[k] = self.priceRule:getCurrentPrice(k, self.level)
 			end
 
 			return prices
@@ -89,8 +90,18 @@ local function createPrice(id, value, addRule)
 		newPrice.price = id
 		newPrice.addRule = value
 	else
+
 		newPrice.price = {[id] = value}
 		newPrice.addRule = addRule
+
+	end
+
+	newPrice.getCurrentPrice = function(self, ID, level)
+		if type(self.addRule) == "table" then
+			return self.price[ID] + self.addRule[ID] * level 
+		end
+		
+		return self.price[ID] + self.addRule * level 	
 	end
 
 	return newPrice
@@ -100,16 +111,16 @@ return {
 	light = {
 		damage = {
 			add = {
-				basic = addStrategy.new(2, 5, "basicDamage", createPrice(1, 1, 3), {0, -40}),
-				more = addStrategy.new(10, 4, "moreDamage", createPrice(1, 20, 10), {-100, -40}, {{"light", "damage", "basic", 4}}),
+				basic = addStrategy.new(2, 5, "basicDamage", createPrice(1, 1, 3), {70, 50}, {{"collect", "darkEssence", "betterCatch", 1}}),
+				more = addStrategy.new(10, 4, "moreDamage", createPrice(1, 20, 10), {-100, -40}, {{"collect", "darkEssence", "betterCatch", 4}}),
 			},
 			mul = {
-				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {100, -70}, {{"light", "damage", "basic", 2}})
+				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {100, -70}, {{"collect", "darkEssence", "betterCatch", 2}})
 			}
 		},
 		size = {
 			add = {
-				visor = addStrategy.new(1.50, 5, "visorLight", createPrice(1, 10, 10), {-150, -140}, {{"light", "damage", "basic", 2}}),
+				visor = addStrategy.new(1.50, 5, "visorLight", createPrice(1, 10, 10), {-150, -140}, {{"collect", "darkEssence", "betterCatch", 2}}),
 				
 			},
 			mul = {
@@ -118,13 +129,14 @@ return {
 		},
 		speed = {
 			add = {
-				little = addStrategy.new(1.5, 5, "littleMovement", createPrice(1,  3, 5), {20, -180}, {{"light", "damage", "basic", 1}}),
+				little = addStrategy.new(1.5, 5, "littleMovement", createPrice(1,  3, 5), {20, -180}, {{"collect", "darkEssence", "betterCatch", 1}}),
 				fast = addStrategy.new(3, 6, "fastMovement", createPrice(1,  5, 15), {-250, -220}, {{"light", "size", "visor", 2}}),
 			},
 		},
 		oil = {
 			add = {
-				lasting = addStrategy.new(6.00, 4, "longLasting", createPrice(1, 20, 20), {-20, 60}, {{"light", "damage", "basic", 1}, {"light", "damage", "more", 1}}),
+				lasting = addStrategy.new(9.00, 8, "longLasting", createPrice(1, 7, 15), {-20, 60}, {{"collect", "darkEssence", "betterCatch", 1}}),
+				littleTank = addStrategy.new(12, 5, "littleTank", createPrice(2, 1, 3), {-190, 10}, {{"light", "damage", "more", 2}})
 			},
 
 		},
@@ -140,21 +152,31 @@ return {
 		},
 		damageResist = {
 			mul = {
-				lightShield = multiplyStrategy.new(0.90, 5, "lightShield", createPrice(1, 20, 40), {160, 90}, {{"drop", "darkEssence", "betterCatch", 2}})
-			}
-		}
-	},
-	drop = {
-		darkEssence = {
-			add = {
-				betterCatch = addStrategy.new(1, 5, "betterCatch", createPrice(1, 4, 8), {70, 50}, {{"light", "damage", "basic", 1}}),
+				lightShield = multiplyStrategy.new(0.90, 5, "lightShield", createPrice(1, 20, 40), {160, 90}, {{"light", "damage", "basic", 2}})
 			}
 		}
 	},
 	collect = {
 		darkEssence = {
+			add = {
+				betterCatch = addStrategy.new(1, 5, "betterCatch", createPrice(1, 4, 8), {0, -40}, nil, "collectAmount"),
+			}
+		},
+		corruptEssence = {
+			add = {
+				badLuck = addStrategy.new(1, 5, "badLuck", createPrice({[1] = 150, [2] = 4}, {[1] = 75, [2] = 6}), {-50, -280}, {{"light", "speed", "little", 1}}, "collectAmount"),
+			}
+		}
+	},
+	result = {
+		darkEssence = {
 			mul = {
-				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 30, 30), {120, -230}, {{"light", "speed", "little", 2}})
+				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 10, 30), {120, -230}, {{"light", "speed", "little", 1}}, "resultAmount")
+			}
+		},
+		corruptEssence = {
+			mul = {
+				whatBadLuck = multiplyStrategy.new(1.20, 5, "whatBadLuck", createPrice({[1] = 80, [2] = 20}, {[1] = 80, [2] = 10}), {260, 60}, {{"light", "damageResist", "lightShield", 1}}, "resultAmount")
 			}
 		}
 	}

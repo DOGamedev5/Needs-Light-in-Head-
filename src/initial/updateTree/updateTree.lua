@@ -180,7 +180,7 @@ function tree:drawSelect()
 		love.graphics.print(text, baseX + Iwid*2+5, windowSize.y - self.pad+5+offset+toff/2, 0, 2, 2)
 		
 		love.graphics.draw(currentScene.collectsIcon[i], baseX, windowSize.y - self.pad+10+offset+ioff/2, 0, 2, 2)
-		baseX = baseX + Iwid*2 + Twid*2 + 5
+		baseX = baseX + Iwid*2 + Twid*2 + 20
 	end
 
 	if device == "mobile" then

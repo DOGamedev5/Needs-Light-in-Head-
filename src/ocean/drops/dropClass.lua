@@ -31,7 +31,7 @@ function DropClass:physics(delta)
   if self.lifetime > 1 then
     self.scale = tools.lerp(self.scale, 1.0, delta*6)
   else
-    self.scale = tools.lerp(self.scale, 0.0, delta*6)
+    self.scale = Tween.interpolate("expo", self.lifetime, 0, 1, "in")
   end
   self.lifetime = self.lifetime - delta
 

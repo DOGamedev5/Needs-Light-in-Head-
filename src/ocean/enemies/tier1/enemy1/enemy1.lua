@@ -38,7 +38,7 @@ function enemy.new(x, y)
   instance.particleHandler:setSpinVariation(1)
   instance.particleHandler:setSpeed(30)
 
-  instance.drop = {["darkEssence"] = 2}
+  instance.drop = {[1] = 2}
 
   return instance
 end

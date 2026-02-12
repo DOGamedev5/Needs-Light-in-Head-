@@ -47,7 +47,7 @@ function enemy.new(x, y)
 
   instance.shieldObj = BufferRegion.new(love.physics.newCircleShape(instance.shieldRadius), x, y, {"shield1"})
   
-  instance.drop = {["darkEssence"] = 5}
+  instance.drop = {[1] = 5, [2] = 2}
 
   instance.stateMachine = StateMachine.new({
   	["IDLE"] = {

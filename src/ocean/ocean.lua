@@ -57,7 +57,6 @@ function ocean:init()
 
   self.water:setWaterColor({5/255, 4/255, 8/255})
   self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})
-
   
   self.collects = {}
   self.light:init()
@@ -67,7 +66,7 @@ function ocean:init()
   self.enemyManager:init(self.currentDay)
   self.dropManager:init(self.currentDay)
   self.counterhud = {}
-  self.counterHud = ListOrder.new(5, 5, 5)
+  self.counterHud = ListOrder.new(5, 5, 1)
 
   self.counterList = {}
   
@@ -122,7 +121,7 @@ end
  
 function ocean:finished(beat)
   for i, v in pairs(self.collects) do
-    self.collects[i] = math.floor(UpgradeManager:apply("collect", collectsID[i], v))
+    self.collects[i] = math.floor(UpgradeManager:apply("result", collectsID[i], v))
   end
 
   currentScene:finish({
@@ -162,8 +161,6 @@ function ocean:draw()
   love.graphics.rectangle("fill", 0, 0, windowSize.x, windowSize.y)
 
   love.graphics.setStencilTest()
-
-
 end
 
 function ocean:mouseMoved(x, y, dx, dy, touch)
@@ -211,7 +208,7 @@ function ocean:registerDrop(drop, x, y)
     end
   end
 
-  self.collects[drop] = self.collects[drop] + 1
+  self.collects[drop] = self.collects[drop] + math.floor(UpgradeManager:apply("collect", tag, 1))
 
   Hud:addToHud(self.visualCollect.new(drop, x, y, self.counterList[tag].posX, self.counterList[tag].posY))
 

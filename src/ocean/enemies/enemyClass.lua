@@ -26,7 +26,7 @@ function EnemyClass.new(x, y, prototype)
   instance.fixture:setUserData(instance)
   instance.damageTimer = Timer.new()
   instance.currentState = 1
-  instance.attackTime = 1
+  instance.attackTime = prototype.attackTime or 1
   
   instance.enteredLights = {}
   instance.attacking = {}
@@ -169,7 +169,7 @@ end
 
 function EnemyClass:die()
   for k,v in pairs(self.drop) do
-    local amount = math.floor(UpgradeManager:apply("drop", k, v))
+    local amount = v
     for i=1, amount do
       currentScene.ocean.dropManager:addDrop(k, self.body:getX(), self.body:getY(), love.math.random(30, 50))
     end

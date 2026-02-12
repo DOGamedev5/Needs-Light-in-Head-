@@ -2,90 +2,127 @@ return {
 	{
 		enemies = {"1-1", "1-2"},
 		rules = {
-			spawn = {["1-1"] = {2, 90}, ["1-2"] = {20, 90}},
+			spawn = {["1-1"] = {2, 90}},
 			percent = {
-				{30, {["1-1"] = 4, ["1-2"] = 1}}, -- timeTrigger, spawn percentage
-				{50, {["1-1"] = 3, ["1-2"] = 2}}				
+				{30, {["1-1"] = 4, ["1-2"] = 0}},
+				{50, {["1-1"] = 4, ["1-2"] = 2}},
+				{90, {["1-1"] = 4, ["1-2"] = 3}}, -- timeTrigger, spawn percentage
 			},
 			groupPerc = {
 				{10, 5},
-				{20, 10}, -- timeTrigger, percentage
-				{50, 40},
+				{15, 15}, -- timeTrigger, percentage
+				{90, 30},
 			},
 		},
 		sides = {"down", "up"},
-		time = 90,
 		frequency = 1.8,
-		amount = {1, 3},
-
+		amount = {1, 4},
+		time = 90,
+		dropRules = {
+			drops = {1},
+			spawn = {[1] = {0, 90}},
+			percent = {
+				{90, {[1] = 1}}, -- timeTrigger, spawn percentage
+			},
+			groupPerc = {
+				{10, 5},
+				{15, 20}, -- timeTrigger, percentage
+				{90, 30},
+			},
+			frequency = 0.8,
+			amount = {3, 8},
+		}
+	},
+	{
+		enemies = {"1-1", "1-2", "1-3"},
+		rules = {
+			spawn = {["1-1"] = {2, 90}, ["1-2"] = {20, 70}, ["1-3"] = {35, 90}},
+			percent = {
+				{20, {["1-1"] = 2, ["1-2"] = 3}}, -- timeTrigger, spawn percentage
+				{50, {["1-1"] = 4, ["1-2"] = 3, ["1-3"] = 1}},
+				{90, {["1-1"] = 3, ["1-2"] = 5, ["1-3"] = 3}}
+			},
+			groupPerc = {
+				{20, 30}, -- timeTrigger, percentage
+				{40, 40},
+			}
+		},
+		sides = {"right", "up"},
+		frequency = 1.9,
+		amount = {2, 5},
+		time = 90,
+		dropRules = {
+			drops = {1},
+			spawn = {[1] = {0, 90}, [2] = {40, 90}},
+			percent = {
+				{50, {[1] = 4, [2] = 1}}, -- timeTrigger, spawn percentage
+				{90, {[1] = 3, [2] = 2}}, -- timeTrigger, spawn percentage
+			},
+			groupPerc = {
+				{10, 15},
+				{20, 30}, -- timeTrigger, percentage
+				{90, 40},
+			},
+			frequency = 1.0,
+			amount = {5, 12},
+		}
+	},
+	{
+		enemies = {"1-1", "1-2", "1-3"},
+		rules = {
+			spawn = {["1-1"] = {0, 90}, ["1-2"] = {20, 90}, ["1-3"] = {40, 75}},
+			percent = {
+				{20, {["1-1"] = 4, ["1-2"] = 2, ["1-3"] = 1}}, -- timeTrigger, spawn percentage
+				{50, {["1-1"] = 4, ["1-2"] = 6, ["1-3"] = 3}}				,
+				{90, {["1-1"] = 5, ["1-2"] = 3, ["1-3"] = 4}}				
+			},
+			groupPerc = {
+				{20, 28}, -- timeTrigger, percentage
+				{50, 35},
+				{90, 40},
+			}
+		},
+		sides = {"right", "up", "left"},
+		frequency = 2.1,
+		amount = {3, 5},
+		time = 90,
 		dropRules = {
 			drops = {1},
 			spawn = {[1] = {2, 90}},
 			percent = {
-				{90, {[1] = 1}}, -- timeTrigger, spawn percentage
+				{50, {[1] = 4, [2] = 2}}, 
+				{90, {[1] = 3, [2] = 3}}, 
 			},
 			groupPerc = {
-				{10, 5},
+				{10, 20},
 				{20, 30}, -- timeTrigger, percentage
-				{50, 50},
-				{90, 70},
+				{50, 35},
 			},
-			frequency = 1.2,
-			amount = {2, 9},
+			frequency = 1.6,
+			amount = {10, 18}
 		}
 	},
 	{
-		enemies = {"1-1", "1-2"},
+		enemies = {"1-1", "1-2", "1-3"},
 		rules = {
-			spawn = {["1-1"] = {2, 90}, ["1-2"] = {14, 90}, ["1-3"] = {30, 90}},
-			percent = {
-				{20, {["1-1"] = 4, ["1-2"] = 2}}, -- timeTrigger, spawn percentage
-				{30, {["1-1"] = 4, ["1-2"] = 3, ["1-3"] = 1}},
-				{60, {["1-1"] = 3, ["1-2"] = 5, ["1-3"] = 3}}
-			},
-			groupPerc = {
-				{20, 30}, -- timeTrigger, percentage
-				{50, 50},
-			}
-		},
-		sides = {"right", "up"},
-		time = 90,
-		frequency = 1.9,
-		amount = {1, 3},
-		groupsPerc = 40,
-
-		dropRules = {
-			spawn = {[1] = {2, 90}},
-			percent = {
-				{90, {[1] = 1}}, -- timeTrigger, spawn percentage
-			},
-			groupPerc = {
-				{10, 10},
-				{20, 15}, -- timeTrigger, percentage
-				{50, 30},
-			},
-			frequency = 0.8
-		}
-	},
-	{
-		enemies = {"1-1", "1-2"},
-		rules = {
-			spawn = {["1-1"] = {0, 90}, ["1-2"] = {2, 90}, ["1-3"] = {12, 75}},
+			spawn = {["1-1"] = {0, 60}, ["1-2"] = {20, 90}, ["1-3"] = {40, 75}},
 			percent = {
 				{20, {["1-1"] = 4, ["1-2"] = 2, ["1-3"] = 1}}, -- timeTrigger, spawn percentage
-				{50, {["1-1"] = 4, ["1-2"] = 6, ["1-3"] = 3}}				
+				{50, {["1-1"] = 4, ["1-2"] = 6, ["1-3"] = 2}}				,
+				{90, {["1-1"] = 1, ["1-2"] = 3, ["1-3"] = 2}}				
 			},
 			groupPerc = {
 				{20, 30}, -- timeTrigger, percentage
-				{50, 50},
+				{60, 45},
+				{90, 65},
 			}
 		},
-		sides = {"right", "up"},
+		sides = {"right", "down", "left"},
+		frequency = 2.3,
+		amount = {3, 5},
 		time = 90,
-		frequency = 1.9,
-		amount = {1, 3},
-		groupsPerc = 40,
 		dropRules = {
+			drops = {1},
 			spawn = {[1] = {2, 90}},
 			percent = {
 				{90, {[1] = 1}}, -- timeTrigger, spawn percentage
@@ -95,7 +132,8 @@ return {
 				{20, 30}, -- timeTrigger, percentage
 				{50, 35},
 			},
-			frequency = 0.9
+			frequency = 1.7,
+			amount = {10, 18}
 		}
-	}
+	},
 }

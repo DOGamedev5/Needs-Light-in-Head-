@@ -37,7 +37,7 @@ function light:init()
   self.damage = UpgradeManager:apply("light", "damage", 20)
 
   self.timeToDamage = 1
-  self.fuelMax = UpgradeManager:apply("light", "oil", 120)
+  self.fuelMax = UpgradeManager:apply("light", "oil", 100)
   self.fuel = self.fuelMax
   
   self.attackTimerMax = UpgradeManager:apply("light", "attackCooldown", 2)
@@ -123,7 +123,7 @@ function light:update(delta)
       self.attackTimer = self.attackTimerMax
       self:attack()
     end
-    self.fuel = self.fuel - UpgradeManager:apply("light", "fuelUse", delta*4)
+    self.fuel = self.fuel - UpgradeManager:apply("light", "fuelUse", delta*5)
     if self.fuel <= 0 then
       self.fuel = 0
       Hud:remove(self.hud.attackBarr)
@@ -136,17 +136,18 @@ end
 function light:draw()
   if self.fuel > 0 then
     love.graphics.setBlendMode("add")
-    love.graphics.setColor(236*2/255*self.force, 201*2/255*self.force, 64*2/255*self.force, 0.35*self.force)
+    love.graphics.setColor(236*2/255*self.force, 201*2/255*self.force, 64*2/255*self.force, 0.3*self.force)
     love.graphics.circle("fill", self.x, self.y, self.radius)
 
     local poligon = self:rayLight()
     love.graphics.setColor(236/255*self.force, 201/255*self.force, 64/255*self.force, 0.4*self.force)
     love.graphics.polygon("fill", unpack(poligon))
   
-    --love.graphics.setColor(1, 1, 1, 0.5)
-    --love.graphics.circle("line", self.x, self.y, self.radius)
-    --love.graphics.polygon("line", unpack(poligon))
     love.graphics.setBlendMode("alpha")
+    --[[love.graphics.setLineWidth(4)
+    love.graphics.setColor(0, 0, 0, 0.2)
+    love.graphics.circle("line", self.x, self.y, self.radius)
+    love.graphics.polygon("line", unpack(poligon))]]
   end
   
 end

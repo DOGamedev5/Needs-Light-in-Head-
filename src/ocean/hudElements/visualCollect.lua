@@ -31,7 +31,7 @@ function visualCollect:draw()
 	local y = self.posY - distanceY*Tween.interpolate("expo", self.counter, 0.1, 0.75, "in")
 
 	love.graphics.draw(self.image, x, y, 0, scale, scale)
-	if math.abs(x) < 10 and math.abs(y) < 10 then
+	if self.counter > 0.76 then
 		self.toRemove = true
 	end
 end

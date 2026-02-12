@@ -83,7 +83,6 @@ function results:values()
 	for i,v in ipairs(self.counters) do
 		local text = tostring(self.counters[i][2])
 		local textPosX = windowSize.x/2 + 100 - self.valueFont:getWidth(text) * (2 + 8*(1-porc))
-		
 
 		love.graphics.draw(self.counters[i][3], posX, posY, math.rad(155)*(1-porc), 2 + 4*(1-porc), 2 + 4*(1-porc))
 		love.graphics.print(text, textPosX, posY - (self.valueFont:getHeight(text) * (2 + 8*(1-porc)))/4, 0, 2 + 8*(1-porc), 2 + 8*(1-porc))
