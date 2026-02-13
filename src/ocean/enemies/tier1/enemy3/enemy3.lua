@@ -15,7 +15,7 @@ enemy.shieldRadius = 140
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 7.5,
+    speed = 13,
     health = 40,
     shape = love.physics.newCircleShape(16)
   }), {__index = enemy})

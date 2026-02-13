@@ -10,14 +10,14 @@ oil.id = 1
 local cooldownMax = 3.0
 
 function oil.new()
-	local x = love.math.random(-200, 200) + windowSize.x/2
-	local y = love.math.random(-200, 200) + windowSize.y/2
 
-	local instance = setmetatable(DropClass.new(x, y, {
+	local instance = setmetatable(DropClass.new(0, 0, {
 		size = 0,
 		shape = love.physics.newCircleShape(14),
 		special = true
 	}), {__index  = oil})
+	
+	instance:setPosition()
 	
   	instance.animation = anim8.newAnimation(oil.grid:getFrames("1-6", 1), 0.2)
   	instance.cooldown = cooldownMax
@@ -46,12 +46,17 @@ function oil:collect()
 		return
 	end
 	currentScene.ocean.light:refil(UpgradeManager:apply("oil", "oilAmount", 13))
-	local x = love.math.random(-200, 200) + windowSize.x/2
-	local y = love.math.random(-200, 200) + windowSize.y/2
+
 	self.cooldown = cooldownMax
 	self.scale = 0.0
-	self.body:setX(x)
-	self.body:setY(y)
+	self:setPosition()
+end
+
+function oil:setPosition()
+	local dir = math.rad(love.math.random(0, 360))
+
+	self.body:setX(math.cos(dir)*150 + windowSize.x/2)
+	self.body:setY(math.sin(dir)*150 + windowSize.y/2)
 end
 
 return oil

@@ -1,16 +1,5 @@
 TO DO
 
-stateMachineClass
-	stateClass
-
-upgrades system
-	button
-	system
-	ui
-
-particleSystem
-	spawn system
-
 Menu
 	options
 pause menu

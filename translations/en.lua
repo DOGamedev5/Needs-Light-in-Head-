@@ -29,7 +29,7 @@ return {
 		["attackCooldown"] = "attack cooldown",
 		["fuelUse"] = "fuel burn",
 		["collect"] = "collect",
-		["oil"] = "Oil Drop",
+		["oil"] = "Oil tank",
 		["oilAmount"] = "recharge"
 	},
 	misc = {
@@ -48,6 +48,7 @@ return {
 		["littleMovement"] = "More Movement.",
 		["fastMovement"] = "Fast Movement.",
 		["longLasting"] = "Longer Lasting.",
+		["littleTank"] = "Little Tank.",
 		["burnOtimized"] = "Otimized Burn.",
 		["betterCatch"] = "Better Catch.",
 		["agilityAtk"] = "Agile Attack.",
@@ -55,8 +56,10 @@ return {
 		["whatLuck"] = "What a Luck!",
 		["badLuck"] = "oh... Bad Luck.",
 		["whatBadLuck"] = "What a... Bad Luck?!",
+		["noWast"] = "No Wasting!",
 		["recharge"] = "Recharge!",
 		["towerUp"] = "Light the Lighthouse!",
+		["beauty"] = "What a beauty."
 	},
 	upgradesDesc = {
 		["add"] = "Increases the $name $property by +$value",

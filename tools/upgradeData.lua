@@ -109,50 +109,50 @@ end
 
 return {
 	light = {
-		damage = {
-			add = {
-				basic = addStrategy.new(2, 5, "basicDamage", createPrice(1, 1, 3), {70, 50}, {{"collect", "darkEssence", "betterCatch", 1}}),
-				more = addStrategy.new(10, 4, "moreDamage", createPrice(1, 20, 10), {-100, -40}, {{"collect", "darkEssence", "betterCatch", 4}}),
-			},
-			mul = {
-				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {200, -90}, {{"oil", "spawn", "recharge", 3}})
-			}
-		},
 		size = {
 			add = {
-				visor = addStrategy.new(1.50, 5, "visorLight", createPrice(1, 10, 10), {-150, -140}, {{"collect", "darkEssence", "betterCatch", 2}}),
+				visor = addStrategy.new(1.50, 5, "visorLight", createPrice(1, 10, 10), {-130, -110}, {{"collect", "darkEssence", "betterCatch", 2}}),
 				
 			},
 			mul = {
-				bright = multiplyStrategy.new(1.10, 3, "brightLight", createPrice(1, 90, 50), {-300, -140}, {{"light", "size", "visor", 5}})
+				bright = multiplyStrategy.new(1.10, 3, "brightLight", createPrice(1, 90, 50), {-260, -70}, {{"light", "size", "visor", 3}})
 			}
 		},
 		speed = {
 			add = {
-				little = addStrategy.new(1.5, 5, "littleMovement", createPrice(1,  3, 5), {20, -180}, {{"collect", "darkEssence", "betterCatch", 1}}),
-				fast = addStrategy.new(3, 6, "fastMovement", createPrice(1,  5, 15), {-250, -220}, {{"light", "size", "visor", 2}}),
+				little = addStrategy.new(1.5, 5, "littleMovement", createPrice(1,  3, 5), {-210, -180}, {{"light", "size", "visor", 2}}),
+				fast = addStrategy.new(3, 6, "fastMovement", createPrice(1,  5, 15), {-320, -200}, {{"light", "speed", "little", 2}}),
 			},
 		},
 		oil = {
 			add = {
-				lasting = addStrategy.new(15.00, 8, "longLasting", createPrice(1, 7, 15), {-20, 60}, {{"collect", "darkEssence", "betterCatch", 1}}),
-				littleTank = addStrategy.new(12, 5, "littleTank", createPrice(2, 1, 3), {-190, 10}, {{"light", "damage", "more", 2}})
+				littleTank = addStrategy.new(10, 5, "littleTank", createPrice(1, 20, 20), {80, 40}, {{"collect", "darkEssence", "betterCatch", 1}}),
+				lasting = addStrategy.new(20, 5, "longLasting", createPrice(2, 1, 3), {270, 100}, {{"light", "fuelUse", "otimize", 2}}),
 			},
 
 		},
 		fuelUse = {
 			mul = {
-				otimize = multiplyStrategy.new(0.975, 5, "burnOtimized", createPrice(1,  10, 30), {0, 170}, {{"light", "oil", "lasting", 1}}),
+				otimize = multiplyStrategy.new(0.975, 5, "burnOtimized", createPrice(1,  10, 30), {170, 80}, {{"light", "oil", "littleTank", 1}}),
+			}
+		},
+		damage = {
+			add = {
+				basic = addStrategy.new(3, 5, "basicDamage", createPrice(1, 1, 3), {-40, 80}, {{"collect", "darkEssence", "betterCatch", 1}}),
+				more = addStrategy.new(10, 4, "moreDamage", createPrice(1, 20, 10), {-80, 190}, {{"light", "damage", "basic", 3}}),
+			},
+			mul = {
+				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {-140, 290}, {{"light", "damage", "more", 3}})
 			}
 		},
 		attackCooldown = {
 			add = {
-				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15, 25), {310, -130}, {{"light", "damage", "sharp", 2}})
+				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15, 25), {20, 210}, {{"light", "damage", "basic", 2}})
 			}
 		},
 		damageResist = {
 			mul = {
-				lightShield = multiplyStrategy.new(0.90, 5, "lightShield", createPrice(1, 20, 40), {160, 90}, {{"light", "damage", "basic", 2}})
+				lightShield = multiplyStrategy.new(0.95, 5, "lightShield", createPrice(1, 20, 40), {-160, 90}, {{"light", "damage", "basic", 2}})
 			}
 		}
 	},
@@ -160,35 +160,38 @@ return {
 		darkEssence = {
 			add = {
 				betterCatch = addStrategy.new(1, 5, "betterCatch", createPrice(1, 4, 8), {0, -40}, nil, "collectAmount"),
+				noWast = addStrategy.new(5, 5, "noWast", createPrice(1, 30, 20), {0, -160}, {{"collect", "darkEssence", "betterCatch", 2}}, "collectAmount")
 			}
 		},
 		corruptEssence = {
 			add = {
-				badLuck = addStrategy.new(1, 5, "badLuck", createPrice({[1] = 150, [2] = 4}, {[1] = 75, [2] = 6}), {-50, -280}, {{"light", "speed", "little", 1}}, "collectAmount"),
+				badLuck = addStrategy.new(1, 5, "badLuck", createPrice({[1] = 150, [2] = 4}, {[1] = 75, [2] = 6}), {-50, -280}, {{"collect", "darkEssence", "noWast", 1}}, "collectAmount"),
 			}
 		}
 	},
 	result = {
 		darkEssence = {
 			mul = {
-				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 10, 30), {120, -230}, {{"light", "speed", "little", 1}}, "resultAmount")
+				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 10, 30), {120, -230}, {{"collect", "darkEssence", "noWast", 1}}, "resultAmount")
 			}
 		},
 		corruptEssence = {
 			mul = {
-				whatBadLuck = multiplyStrategy.new(1.20, 5, "whatBadLuck", createPrice({[1] = 80, [2] = 20}, {[1] = 80, [2] = 10}), {260, 60}, {{"light", "damageResist", "lightShield", 1}}, "resultAmount")
+				whatBadLuck = multiplyStrategy.new(1.20, 5, "whatBadLuck", createPrice({[1] = 80, [2] = 20}, {[1] = 80, [2] = 10}), {-150, -350},
+					{{"collect", "corruptEssence", "badLuck", 1}}, "resultAmount")
 			}
 		}
 	},
 	oil = {
 		spawn = {
-			add = {recharge = addStrategy.new(1, 3, "recharge", createPrice(1, 15, 15), {100, -60}, {{"collect", "darkEssence", "betterCatch", 2}})}
+			add = {recharge = addStrategy.new(1, 3, "recharge", createPrice(1, 15, 15), {140, -50}, {{"light", "oil", "littleTank", 1}})}
 		},
 		oilAmount = {
 			add = {
-				towerUp = addStrategy.new(3, 5, "towerUp", createPrice({[1] = 200, [2] = 10}, {[1] = 80, [2] = 5}), {200, -10}, {{"oil", "spawn", "recharge", 3}})
+				towerUp = addStrategy.new(2.5, 5, "towerUp", createPrice({[1] = 200, [2] = 10}, {[1] = 250, [2] = 30}), {240, -70}, {{"oil", "spawn", "recharge", 3}})
 			},
 			mul = {
+				beauty = multiplyStrategy.new(1.08, 6, "beauty", createPrice({[1] = 400, [2] = 50}, {[1] = 300, [2] = 60}), {340, -90}, {{"oil", "oilAmount", "towerUp", 4}})
 			}
 		}
 	}
