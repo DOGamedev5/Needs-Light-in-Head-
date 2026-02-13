@@ -27,3 +27,11 @@ end
 function BufferRegion:activate(value)
 	self.body:setActive(value)
 end
+
+function BufferRegion:exit()
+	self.fixture:destroy()
+ 	self.fixture:release()
+	self.body:destroy()
+	self.body:release()
+	self.shape:release()
+end

@@ -13,7 +13,7 @@ function EnemySpawner:load()
 	self.timeAlive = 0.0
 	self.timeMax = 90
 	self.frequency = 1
-	self.spawnTimer = 2
+	self.spawnTimer = 10
 	self.rules = {}
 	self.enemiesInst ={
 		["1-1"] = require("src.ocean.enemies.tier1.enemy1.enemy1"),
@@ -42,7 +42,7 @@ function EnemySpawner:init(dayInfo)
 	self.timeAlive = 0
 	self.timeMax = dayInfo.time or 90
 	self.frequency = dayInfo.frequency
-	self.spawnTimer = 7
+	self.spawnTimer = 10
 	self.amount = dayInfo.amount
 	self.groupPerc = self.rules.groupPerc[1][2]
 	self.spawnPerc = self.rules.percent[1][2]
@@ -154,7 +154,7 @@ function EnemySpawner:getEnemySpawn()
 end
 
 function EnemySpawner:setTimer()
-	self.spawnTimer = love.math.random(12, 15) - self.frequency
+	self.spawnTimer = love.math.random(14, 20)
 end
 
 return EnemySpawner

@@ -4,10 +4,19 @@ dropManager.dropsInst = {
 	require("src.ocean.drops.darkEssence.darkEssence"),
 	require("src.ocean.drops.corruptEssence.corruptEssence")
 }
+dropManager.specialInst = {
+	require("src.ocean.misc.oil.oil")
+}
 dropManager.drops = {}
 dropManager.rules = {}
 local dropTimerMax = 5
 local dropTimer = dropTimerMax
+
+local specialID = {
+	[1] = "oil"
+}
+
+dropManager.specialAmount = {}
 
 function dropManager:init(dayInfo)
 	for i=#self.drops, 1, -1 do
@@ -25,12 +34,20 @@ function dropManager:init(dayInfo)
 	self.amount = self.rules.amount
 	self.groupPerc = self.rules.groupPerc[1][2]
 	self.spawnPerc = self.rules.percent[1][2]
-
+	for i=1, #self.specialInst do
+		for a=1, UpgradeManager:apply(specialID[i], "spawn", 0) do
+			self:addSpecial(i)
+		end
+	end
 end
 
 function dropManager:addDrop(drop, x, y, sizeExplo)
 	self.drops[#self.drops + 1] = self.dropsInst[drop].new(x, y, sizeExplo)
 	--print(drop)
+end
+
+function dropManager:addSpecial(drop)
+	self.drops[#self.drops + 1] = self.specialInst[drop].new()
 end
 
 function dropManager:update(delta)
@@ -46,7 +63,7 @@ function dropManager:update(delta)
 	for i=#self.drops, 1, -1 do
     	if self.drops[i].toCollect then
         	self.drops[i]:collect()
-      		table.remove(self.drops, i)
+      		if not self.drops[i].special then table.remove(self.drops, i) end
     	elseif self.drops[i].toRemove then
         	self.drops[i]:remove()
       		table.remove(self.drops, i)
@@ -86,8 +103,7 @@ function dropManager:generateDrop()
 	local amount = self.amount[1]-1
 	if porc <= self.groupPerc then amount = love.math.random(self.amount[1], self.amount[2]-1) end
 
-	local function spawn()
-		local drop = self:getDrop()
+	local function spawn(drop)
 		if drop == null then
 			return 
 		end
@@ -99,8 +115,9 @@ function dropManager:generateDrop()
 		--self.instances[#self.instances + 1] = drop.new(posX, posY)
 	end
 	for i=0, amount do
-		spawn()
+		spawn(self:getDrop())
 	end
+	
 end
 
 function dropManager:getDrop()

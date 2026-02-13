@@ -99,7 +99,7 @@ function IconButton:updateInfo()
 
 	self.state = 2
 	for k, v in pairs(self.prices) do
-		if currentScene.save.collects[k] < v then
+		if (currentScene.save.collects[k] or 0) < v then
 			self.state = 1
 			break
 		end

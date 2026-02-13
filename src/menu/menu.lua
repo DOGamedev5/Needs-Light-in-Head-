@@ -11,8 +11,7 @@ menu.water = require("src.ocean.effects.waterEffect")
 
 function menu:load()
   self.currentScreen = 0
-  setBloomConfig(1.5, 0.85, 0.9)
-
+  setBloomConfig(1.75, 0.85, 0.9)
 
   self.water:setWaterColor({5/255, 4/255, 8/255})
   self.water:updateOverColor({9/255*1.4, 18/255*1.4, 59/255*1.2, 0.9})

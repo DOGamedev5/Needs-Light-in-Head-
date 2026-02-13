@@ -6,7 +6,7 @@ enemy.width = 32
 enemy.height = enemy.texture:getHeight() 
 enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.height)
 
-enemy.sortOffset = enemy.height
+enemy.sortOffset = 16
 enemy.toDie = false
 enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
 enemy.offsetSpawn = 32
@@ -15,8 +15,8 @@ enemy.shieldRadius = 140
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 10,
-    health = 75,
+    speed = 7.5,
+    health = 40,
     shape = love.physics.newCircleShape(16)
   }), {__index = enemy})
   instance.animations = {
@@ -254,5 +254,12 @@ function enemy:circleMask()
   love.graphics.stencil(function() love.graphics.circle("fill", x, y, rad) end, "increment", 1, true)
   love.graphics.stencil(function() love.graphics.circle("fill", x, y, rad-4) end, "increment", 1, true)
 end
+
+function enemy:remove()
+  EnemyClass.remove(self)
+
+  self.shieldObj:exit()
+end
+
 
 return enemy

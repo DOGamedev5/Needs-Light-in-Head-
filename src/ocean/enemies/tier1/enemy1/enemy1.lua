@@ -13,8 +13,8 @@ enemy.offsetSpawn = 24
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 20,
-    health = 50,
+    speed = 10,
+    health = 40,
     damage = 3,
     shape = love.physics.newCircleShape(14)
   }), {__index = enemy})

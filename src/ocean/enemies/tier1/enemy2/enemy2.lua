@@ -13,8 +13,8 @@ enemy.offsetSpawn = 24
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 50,
-    health = 30,
+    speed = 30,
+    health = 35,
     damage = 2,
     attackTime = 0.7,
     shape = love.physics.newCircleShape(14)
@@ -39,7 +39,7 @@ function enemy.new(x, y)
   instance.particleHandler:setSpinVariation(1)
   instance.particleHandler:setSpeed(30)
 
-  instance.drop = {[1] = 1, [2] = 1}
+  instance.drop = {[1] = 3, [2] = 1}
 
   return instance
 end

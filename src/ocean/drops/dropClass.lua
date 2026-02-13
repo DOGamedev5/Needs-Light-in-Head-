@@ -10,6 +10,7 @@ function DropClass.new(x, y, prototype)
   
   instance.body = love.physics.newBody(World, x + 0.5*instance.velX, y + 0.5*instance.velY, "dynamic")
   instance.body:setUserData("drop")
+  instance.body:setActive(false)
   instance.shape =  prototype.shape
 
   instance.fixture = love.physics.newFixture(instance.body, instance.shape, 1)
@@ -17,7 +18,9 @@ function DropClass.new(x, y, prototype)
   instance.fixture:setMask(1)
   instance.fixture:setUserData(instance)
   instance.scale = 0.2
+  instance.special = prototype.special or false
   instance.lifetime = prototype.lifetime or 12
+  instance.lifetime = instance.lifetime + love.math.random(-10, 23)/10
 
   instance.toCollect = false
   instance.toRemove = false
@@ -28,13 +31,17 @@ function DropClass.new(x, y, prototype)
 end
 
 function DropClass:physics(delta)
-  if self.lifetime > 1 then
+  if self.lifetime > 1 or self.special then
     self.scale = tools.lerp(self.scale, 1.0, delta*6)
   else
     self.scale = Tween.interpolate("expo", self.lifetime, 0, 1, "in")
   end
-  self.lifetime = self.lifetime - delta
 
+  self.body:setActive(self.scale > 0.8)
+
+  if self.special then return end
+
+  self.lifetime = self.lifetime - delta
 	self.body:setX(self.body:getX() + self.velX*delta)
 	self.body:setY(self.body:getY() + self.velY*delta)
 

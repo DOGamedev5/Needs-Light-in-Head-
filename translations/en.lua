@@ -28,14 +28,16 @@ return {
 		["damageResist"] = "damage taken",
 		["attackCooldown"] = "attack cooldown",
 		["fuelUse"] = "fuel burn",
-		["collect"] = "collect"
+		["collect"] = "collect",
+		["oil"] = "Oil Drop",
+		["oilAmount"] = "recharge"
 	},
 	misc = {
 		["darkEssence"] = "Dark Essence",
 		["light"] = "Towerlight",
 		["result"] = "total collected",
 		["oil"] = "oil fuel",
-		["fuelUse"] = "oil burn"
+		["fuelUse"] = "oil burn",
 	},
 	upgrades = {
 		["basicDamage"] = "Basic Damage.",
@@ -52,7 +54,9 @@ return {
 		["lightShield"] = "Light Shield.",
 		["whatLuck"] = "What a Luck!",
 		["badLuck"] = "oh... Bad Luck.",
-		["whatBadLuck"] = "What a... Bad Luck?!"
+		["whatBadLuck"] = "What a... Bad Luck?!",
+		["recharge"] = "Recharge!",
+		["towerUp"] = "Light the Lighthouse!",
 	},
 	upgradesDesc = {
 		["add"] = "Increases the $name $property by +$value",

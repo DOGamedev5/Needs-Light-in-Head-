@@ -93,7 +93,7 @@ function EnemyClass:damagedHandler(d)
 
   self.scale = 1.2
   if self.buffs.shield1 >= 1 then
-    d = d * 0.4
+    d = d * 0.2
   end
 
   self.health = self.health - d
@@ -175,9 +175,5 @@ function EnemyClass:die()
     end
   end
 
-  self.fixture:destroy()
-  self.fixture:release()
-  self.body:release()
-  self.shape:release()
-  self:removeToDraw()
+  self:remove()
 end

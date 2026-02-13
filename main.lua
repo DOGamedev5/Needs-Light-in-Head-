@@ -100,6 +100,8 @@ collectsID = {
   "corruptEssence"
 }
 
+screenShake = {x = 0, y = 0}
+
 function love.load()
   bloom = love.graphics.newShader("src/shaders/bloom.glsl")
   bloom:send("gamma", 1.0)
@@ -116,7 +118,6 @@ function love.load()
   World = love.physics.newWorld(0 , 0, true)
   World:setCallbacks(worldBegincontact, worldAftercontact)
   require("startup")
-  love.math.setRandomSeed(love.timer.getTime())
 
   local ww, wh = love.graphics.getDimensions()
   resizeWindow(ww, wh)
@@ -144,7 +145,8 @@ function love.load()
 end
 
 function love.update(delta)
-  love.graphics.setDefaultFilter("nearest", "nearest")
+  screenShake.x = tools.lerp(screenShake.x, 0, delta*7)
+  screenShake.y = tools.lerp(screenShake.y, 0, delta*7)
 
   resizeWindow(love.graphics.getDimensions())
   
@@ -194,7 +196,7 @@ function love.draw()
   love.graphics.setBlendMode("alpha", "premultiplied")
 
   love.graphics.setShader(bloom)
-  love.graphics.draw(canvas, 0, 0)
+  love.graphics.draw(canvas, screenShake.x, screenShake.y)
   love.graphics.setShader()
   love.graphics.draw(canvasUI, 0, 0)
 

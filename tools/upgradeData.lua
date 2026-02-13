@@ -115,7 +115,7 @@ return {
 				more = addStrategy.new(10, 4, "moreDamage", createPrice(1, 20, 10), {-100, -40}, {{"collect", "darkEssence", "betterCatch", 4}}),
 			},
 			mul = {
-				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {100, -70}, {{"collect", "darkEssence", "betterCatch", 2}})
+				sharp = multiplyStrategy.new(1.025, 5, "sharpLight", createPrice(1, 15, 20), {200, -90}, {{"oil", "spawn", "recharge", 3}})
 			}
 		},
 		size = {
@@ -135,19 +135,19 @@ return {
 		},
 		oil = {
 			add = {
-				lasting = addStrategy.new(9.00, 8, "longLasting", createPrice(1, 7, 15), {-20, 60}, {{"collect", "darkEssence", "betterCatch", 1}}),
+				lasting = addStrategy.new(15.00, 8, "longLasting", createPrice(1, 7, 15), {-20, 60}, {{"collect", "darkEssence", "betterCatch", 1}}),
 				littleTank = addStrategy.new(12, 5, "littleTank", createPrice(2, 1, 3), {-190, 10}, {{"light", "damage", "more", 2}})
 			},
 
 		},
 		fuelUse = {
 			mul = {
-				otimize = multiplyStrategy.new(0.95, 3, "burnOtimized", createPrice(1,  10, 30), {0, 170}, {{"light", "oil", "lasting", 1}}),
+				otimize = multiplyStrategy.new(0.975, 5, "burnOtimized", createPrice(1,  10, 30), {0, 170}, {{"light", "oil", "lasting", 1}}),
 			}
 		},
 		attackCooldown = {
 			add = {
-				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15, 25), {210, -70}, {{"light", "damage", "sharp", 2}})
+				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15, 25), {310, -130}, {{"light", "damage", "sharp", 2}})
 			}
 		},
 		damageResist = {
@@ -177,6 +177,18 @@ return {
 		corruptEssence = {
 			mul = {
 				whatBadLuck = multiplyStrategy.new(1.20, 5, "whatBadLuck", createPrice({[1] = 80, [2] = 20}, {[1] = 80, [2] = 10}), {260, 60}, {{"light", "damageResist", "lightShield", 1}}, "resultAmount")
+			}
+		}
+	},
+	oil = {
+		spawn = {
+			add = {recharge = addStrategy.new(1, 3, "recharge", createPrice(1, 15, 15), {100, -60}, {{"collect", "darkEssence", "betterCatch", 2}})}
+		},
+		oilAmount = {
+			add = {
+				towerUp = addStrategy.new(3, 5, "towerUp", createPrice({[1] = 200, [2] = 10}, {[1] = 80, [2] = 5}), {200, -10}, {{"oil", "spawn", "recharge", 3}})
+			},
+			mul = {
 			}
 		}
 	}
