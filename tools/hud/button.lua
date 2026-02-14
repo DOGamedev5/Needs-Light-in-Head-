@@ -41,6 +41,13 @@ function ButtonBase:mouseMoved(x, y, dx, dy, touch)
   local oX, oY = 0, 0
   if self.centered then
     oX, oY = self.width/2, self.height/2
+  else
+    if self.anchorRight then
+      oX = self.width
+    end
+    if self.anchorDown then
+      oY = self.height
+    end
   end
 
   self.hover = tools.AABB.detectPoint(posX, posY, self.posX - oX, self.posY - oY, self.width, self.height)
@@ -70,6 +77,13 @@ function ButtonBase:mousePressed(x, y, button, touch, presses)
   
   if self.centered then
     oX, oY = self.width/2, self.height/2
+  else
+    if self.anchorRight then
+      oX = self.width
+    end
+    if self.anchorDown then
+      oY = self.height
+    end
   end
 
   if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - oX, self.posY - oY, self.width, self.height) and not self.pressed then
@@ -84,6 +98,13 @@ function ButtonBase:mouseReleased(x, y, button, touch)
   
   if self.centered then
     oX, oY = self.width/2, self.height/2
+  else
+    if self.anchorRight then
+      oX = self.width
+    end
+    if self.anchorDown then
+      oY = self.height
+    end
   end
 
   if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - oX, self.posY - oY, self.width, self.height) and self.pressed then
