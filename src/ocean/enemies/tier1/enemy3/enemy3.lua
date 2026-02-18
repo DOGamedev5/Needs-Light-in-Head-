@@ -6,7 +6,7 @@ enemy.width = 32
 enemy.height = enemy.texture:getHeight() 
 enemy.grid = anim8.newGrid(enemy.width, enemy.height, enemy.textureWidth, enemy.height)
 
-enemy.sortOffset = 16
+enemy.sortOffset = 32
 enemy.toDie = false
 enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
 enemy.offsetSpawn = 32

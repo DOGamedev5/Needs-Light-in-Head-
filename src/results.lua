@@ -81,7 +81,12 @@ function results:values()
 	posY = posY + (windowSize.y -100) * (1-porc)
 
 	for i,v in ipairs(self.counters) do
-		local text = tostring(self.counters[i][2])
+		local text = tools.quantify(self.counters[i][2])
+		local percent = UpgradeManager:apply("result", collectsID[self.counters[i][1]], 1)
+		if percent > 1 then
+			text = string.format("%.2fx = ", percent) .. text
+		end
+
 		local textPosX = windowSize.x/2 + 100 - self.valueFont:getWidth(text) * (2 + 8*(1-porc))
 
 		love.graphics.draw(self.counters[i][3], posX, posY, math.rad(155)*(1-porc), 2 + 4*(1-porc), 2 + 4*(1-porc))

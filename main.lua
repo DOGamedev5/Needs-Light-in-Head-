@@ -108,12 +108,6 @@ function love.load()
   setBloomConfig(1.0, 0.9, 1.2)
   canvas = love.graphics.newCanvas()
   canvasUI = love.graphics.newCanvas()
-  --[[love.graphics.setCanvas(canvasUI)
-  love.graphics.setBlendMode("alpha")
-    love.graphics.translate(pading.x, pading.y)
-    love.graphics.scale(gameScale, gameScale)
-  love.graphics.setCanvas()
-  ]]
 
   World = love.physics.newWorld(0 , 0, true)
   World:setCallbacks(worldBegincontact, worldAftercontact)
@@ -169,8 +163,7 @@ function love.draw()
   love.graphics.setCanvas(canvasUI)
     love.graphics.clear()
     love.graphics.setBlendMode("alpha")
-    --love.graphics.translate(pading.x, pading.y)
-    --love.graphics.scale(gameScale, gameScale)
+
   love.graphics.setCanvas()
 
   love.graphics.setCanvas({canvas, stencil=true})

@@ -5,7 +5,7 @@ light.y = 0
 light.direction = 0
 light.target = {x = 0, y = 0}
 light.reference = "light"
-light.sortOffset = light.radius
+light.sortOffset = 0
 light.entered = {}
 light.attackHandler = nil
 light.force = 1
@@ -19,6 +19,7 @@ light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
 
 function light:init()
   self.radius = UpgradeManager:apply("light", "size", 30)
+  self.sortOffset = self.radius
   self.speed = UpgradeManager:apply("light", "speed", 150)
 
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
@@ -145,10 +146,6 @@ function light:draw()
     love.graphics.polygon("fill", unpack(poligon))
   
     love.graphics.setBlendMode("alpha")
-    --[[love.graphics.setLineWidth(4)
-    love.graphics.setColor(0, 0, 0, 0.2)
-    love.graphics.circle("line", self.x, self.y, self.radius)
-    love.graphics.polygon("line", unpack(poligon))]]
   end
   
 end
@@ -204,10 +201,13 @@ function light:attack()
   end
   for i, e in ipairs(self.entered) do
     local enemy = e:getUserData()
+
     if enemy.toDie then
       tools.erase(self.entered, e)
+
     elseif enemy.damaged then
       enemy:damaged(self.damage)
+
     end
   end
 end

@@ -4,22 +4,21 @@ local lightHouse = {}
 lightHouse.texture = love.graphics.newImage("src/ocean/lightHouse/boat.png")
 lightHouse.sortOffset = 15
 lightHouse.light = nil
-
+lightHouse.texturewidth, lightHouse.textureheight = lightHouse.texture:getDimensions()
+lightHouse.texturegrid= anim8.newGrid(lightHouse.texturewidth / 4, lightHouse.textureheight/3, lightHouse.texturewidth, lightHouse.textureheight)
+lightHouse.animations = {
+  anim8.newAnimation(lightHouse.texturegrid('1-4', 1), 0.3),
+  anim8.newAnimation(lightHouse.texturegrid('1-4', 2), 0.2, "pauseAtEnd"),
+  anim8.newAnimation(lightHouse.texturegrid('1-1', 3), 1, "pauseAtEnd"),
+}
+lightHouse.width = lightHouse.texturewidth/4
+lightHouse.height = lightHouse.textureheight/3
 
 function lightHouse:init(light)
   self.light = light
-  self.texturewidth, self.textureheight = self.texture:getDimensions()
-  self.texturegrid= anim8.newGrid(self.texturewidth / 4, self.textureheight/3, self.texturewidth, self.textureheight)
-  self.animations = {
-    anim8.newAnimation(self.texturegrid('1-4', 1), 0.3),
-    anim8.newAnimation(self.texturegrid('1-4', 2), 0.2, "pauseAtEnd"),
-    anim8.newAnimation(self.texturegrid('1-1', 3), 1, "pauseAtEnd"),
-  }
+  
   self.currentAnimation = 1
-  self.width = self.texturewidth/4
-  self.height = self.textureheight/3
 
-  --local wx, wy = love.graphics.getDimensions()
   self.x = windowSize.x/2
   self.y = windowSize.y/2
 

@@ -123,7 +123,6 @@ function EnemyClass:drawHandler(animation, texture)
     animation:draw(texture, x, y, 0, 2, 2, self.width/2, self.height/2)
   else
     if self.scale > 1 then animation:draw(texture, x, y, 0, 2, 2, self.width/2, self.height/2) end
-    --self.damageShader:send("originalColor", 1)
 
     self.damageShader:send("bright", 2)
     love.graphics.setBlendMode("add")
@@ -148,6 +147,7 @@ end
 function EnemyClass:remove()
   self.fixture:destroy()
   self.fixture:release()
+  self.body:destroy()
   self.body:release()
   self.shape:release()
   self:removeToDraw()
