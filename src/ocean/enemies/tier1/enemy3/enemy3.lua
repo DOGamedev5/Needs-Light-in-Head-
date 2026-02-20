@@ -13,41 +13,51 @@ enemy.offsetSpawn = 32
 enemy.minimunDistance = 180
 enemy.shieldRadius = 140
 
+local animations = {
+  anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.0),
+  anim8.newAnimation(enemy.grid:getFrames("3-3", 1), 0.1, "pauseAtEnd"),
+  anim8.newAnimation(enemy.grid:getFrames("4-5", 1), 1.0),
+  anim8.newAnimation(enemy.grid:getFrames("6-6", 1), 0.1, "pauseAtEnd"),
+  anim8.newAnimation(enemy.grid:getFrames("7-8", 1), 1.0),
+  anim8.newAnimation(enemy.grid:getFrames("9-10", 1), 0.2, "pauseAtEnd"),
+  anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.12, "pauseAtEnd"),
+}
+
+local particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
+particleHandler:setEmissionArea("normal", enemy.width/4, enemy.height/4)
+particleHandler:setParticleLifetime(0.3, 0.9)
+particleHandler:setLinearAcceleration(0, 10, 0, 30)
+particleHandler:setColors(1, 1, 1, 0.8, 1, 1, 1, 0)
+particleHandler:setRelativeRotation(true)
+particleHandler:setSpread(3.14*2)
+particleHandler:setSpinVariation(1)
+particleHandler:setSpeed(30)
+
+enemy.drop = {[1] = 5, [2] = 2}
+
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
     speed = 13,
-    health = 40,
+    health = 60,
     shape = love.physics.newCircleShape(16)
   }), {__index = enemy})
   instance.animations = {
-    anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.0),
-    anim8.newAnimation(enemy.grid:getFrames("3-3", 1), 0.1, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("4-5", 1), 1.0),
-    anim8.newAnimation(enemy.grid:getFrames("6-6", 1), 0.1, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("7-8", 1), 1.0),
-    anim8.newAnimation(enemy.grid:getFrames("9-10", 1), 0.2, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.12, "pauseAtEnd"),
+    animations[1]:clone(),
+    animations[2]:clone(),
+    animations[3]:clone(),
+    animations[4]:clone(),
+    animations[5]:clone(),
+    animations[6]:clone(),
+    animations[7]:clone()
   }
 
   instance.currentAnimation = 1
   instance.activaded = false
-  instance.attacked = false
   instance.shieldAnimation = 0
   instance.shieldReady = false
 
-  instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
-  instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
-  instance.particleHandler:setParticleLifetime(0.3, 0.9)
-  instance.particleHandler:setLinearAcceleration(0, 10, 0, 30)
-  instance.particleHandler:setColors(1, 1, 1, 0.8, 1, 1, 1, 0)
-  instance.particleHandler:setRelativeRotation(true)
-  instance.particleHandler:setSpread(3.14*2)
-  instance.particleHandler:setSpinVariation(1)
-  instance.particleHandler:setSpeed(30)
-
+  instance.particleHandler = particleHandler:clone() 
   instance.shieldObj = BufferRegion.new(love.physics.newCircleShape(instance.shieldRadius), x, y, {"shield1"})
-  
-  instance.drop = {[1] = 5, [2] = 2}
 
   instance.stateMachine = StateMachine.new({
   	["IDLE"] = {
@@ -55,15 +65,13 @@ function enemy.new(x, y)
   		enter = function(self)
   			if instance.activaded then 
   				instance.currentAnimation = 3
-  			else
-          if instance.currentAnimation == 4 then
-            instance.animations[4].status = "paused"
-            instance.animations[2].timer = instance.animations[4].timer
-            instance.animations[2].status = "playing"
-          else
-  				  instance.currentAnimation = 1
-          end
-  			end
+  			elseif instance.currentAnimation == 4 then
+          instance.animations[4].status = "paused"
+          instance.animations[2].timer = instance.animations[4].timer
+          instance.animations[2].status = "playing"
+        else
+				  instance.currentAnimation = 1
+        end
   		end,
   		stateUpdate = function(self)
   			if instance.health <= 0 then

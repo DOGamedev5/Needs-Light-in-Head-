@@ -1,17 +1,10 @@
 EnemyClass = {}
 
 EnemyClass.toDraw = {}
-EnemyClass.damageShader = love.graphics.newShader[[
-uniform vec2 scale;
-uniform float bright;
-
-vec4 effect(vec4 Color, Image texture, vec2 text_coords, vec2 screen_coords) {
-  vec4 pixelColor = Texel(texture, text_coords) * Color;
-  vec4 pixelOver = Texel(texture, text_coords) * Color;
-
-  return pixelColor + pixelOver*bright;  
+EnemyClass.damageShader = love.graphics.newShader("src/shaders/damageEffect.glsl")
+local buffsValues = {
+  shield1 = 0.4
 }
-]]
 
 function EnemyClass.new(x, y, prototype)
   local instance = setmetatable({}, {__index == EnemyClass})
@@ -30,9 +23,12 @@ function EnemyClass.new(x, y, prototype)
   
   instance.enteredLights = {}
   instance.attacking = {}
-  instance.buffs = {
-    shield1 = 0
-  }
+  instance.buffs = {}
+
+  for k, _ in pairs(buffsValues) do
+    instance.buffs[k] = 0
+  end
+
   instance.enteredBuffers = {
 
   }
@@ -79,6 +75,7 @@ function EnemyClass:afterContact(otherFixture)
 end
 
 function EnemyClass:addToDraw()
+  self.drawID = love.timer.getTime()
   table.insert(EnemyClass.toDraw, 1, self)
 end
 
@@ -86,17 +83,24 @@ function EnemyClass:removeToDraw()
   tools.erase(EnemyClass.toDraw, self)
 end
 
-function EnemyClass:damagedHandler(d)
-   if self.health <= 0 then
+function EnemyClass:applyBuffs(damage)
+  for k, v in pairs(buffsValues) do
+    if self.buffs[k] > 0 then
+      damage = damage * (1.0 - v)
+    end
+  end
+
+  return damage
+end
+
+function EnemyClass:damagedHandler(damage)
+  if self.health <= 0 then
     return
   end
 
   self.scale = 1.2
-  if self.buffs.shield1 >= 1 then
-    d = d * 0.2
-  end
 
-  self.health = self.health - d
+  self.health = self.health - self:applyBuffs(damage)
   self.attacked = true
   self.damageTimer:clear()
 

@@ -214,8 +214,10 @@ end
 
 function light:damageFuel(dmg)
   self.fuel = self.fuel - dmg
-  screenShake.x = love.math.random(-2, 2)
-  screenShake.y = love.math.random(-2, 2)
+  local sx, sy = Vector.normalize(love.math.random(-2, 2), love.math.random(-2, 2))
+
+  screenShake.x = sx*2
+  screenShake.y = sy*2
   if self.fuel < 0 then
     self.fuel = 0
     Hud:remove(self.hud.attackBarr)

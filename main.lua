@@ -11,7 +11,6 @@ confFile = "configuration.lua"
 
 tools = {
 	AABB = require("tools.aabbDetect"),
-	WF = require("plugins.windfield"),
   sign = function (n)
     if n < 0 then
       return -1
@@ -39,9 +38,21 @@ tools = {
     if bY == nil and b.body then
       bY = b.body:getY()
     end
-    local AhudTag = a.hud or false
-    local BhudTag = b.hud or false
-    
+
+    if aY + AsortOffset == bY + BsortOffset then
+      local aDID = a.drawID
+      if a.drawID == nil then
+        a.drawID = -1
+        aDID = -1
+      end
+      local bDID = b.drawID
+      if a.drawID == nil then
+        b.drawID = -2
+        bDID = -2
+      end
+      return aDID < bDID
+    end
+
     return aY + AsortOffset < bY + BsortOffset
   end,
   erase = function (t, value, all)
@@ -198,6 +209,7 @@ function love.draw()
   love.graphics.rectangle("fill", love.graphics.getWidth() - pading.x, 0, pading.x, love.graphics.getHeight() + pading.y)
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), pading.y)
   love.graphics.rectangle("fill", 0, love.graphics.getHeight() - pading.y, love.graphics.getWidth(), pading.y)
+  showDebugInfo()
 end
 
 function love.mousepressed(x, y, button, touch, presses)
@@ -274,4 +286,15 @@ function setBloomConfig(size, exposition, intensity)
     bloom:send("bloomSize", size)
     bloom:send("exposition", exposition)
     bloom:send("intensity", intensity)
+end
+
+function showDebugInfo()
+  local info = love.graphics.getStats()
+  love.graphics.setColor(1, 1, 1, 0.5)
+  love.graphics.setFont(fonts.normal)
+  love.graphics.print("Drawcalls: " .. info.drawcalls, 20, 20, 0, 1, 1)
+  love.graphics.print("Texture memory: " .. tools.quantify(info.texturememory) .. "b", 20, 32, 0, 1, 1)
+  love.graphics.print("Images loaded: " .. info.images, 20, 44, 0, 1, 1)
+  love.graphics.print("Drawcalls batched: " .. info.drawcallsbatched, 20, 56, 0, 1, 1)
+  love.graphics.print("Fps: " .. tostring(love.timer.getFPS()), 20, 68, 0, 1, 1)
 end

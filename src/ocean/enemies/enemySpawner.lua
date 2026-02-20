@@ -19,6 +19,7 @@ function EnemySpawner:load()
 		["1-1"] = require("src.ocean.enemies.tier1.enemy1.enemy1"),
 		["1-2"] = require("src.ocean.enemies.tier1.enemy2.enemy2"),
 		["1-3"] = require("src.ocean.enemies.tier1.enemy3.enemy3"),
+		["1-4"] = require("src.ocean.enemies.tier1.enemy4.enemy4"),
 	}
 
 end
@@ -99,24 +100,28 @@ function EnemySpawner:spawnEnemy()
 			return 
 		end
 
+		local offsetSpawn = enemy.offsetSpawn + love.math.random(96)
+
 		local posX = 0
 		local posY = 0 
 		if side == "up" or side == "down" then
 			posX = love.math.random(windowSize.x)
 			if side == "down" then
-				posY = windowSize.y + (enemy.offsetSpawn or 0)
+				posY = windowSize.y + (offsetSpawn or 0)
 			else
-				posY = 0 - (enemy.offsetSpawn or 0)
+				posY = 0 - (offsetSpawn or 0)
 			end
 		elseif side == "right" or side == "left" then
 			posY = love.math.random(windowSize.y)
 			if side == "right" then
-				posX = windowSize.x + (enemy.offsetSpawn or 0)
+				posX = windowSize.x + (offsetSpawn or 0)
 			else
-				posX = 0 - (enemy.offsetSpawn or 0)
+				posX = 0 - (offsetSpawn or 0)
 			end
 		end
-		self.instances[#self.instances + 1] = enemy.new(posX, posY)
+		
+		table.insert(self.instances, enemy.new(posX, posY))
+		--self.instances[#self.instances + 1] = enemy.new(posX, posY)
 	end
 	for i=0, amount do
 		spawn()

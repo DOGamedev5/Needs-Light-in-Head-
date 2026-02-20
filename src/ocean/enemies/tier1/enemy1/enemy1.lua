@@ -10,6 +10,25 @@ enemy.sortOffset = enemy.height
 
 enemy.effectTexture = love.graphics.newImage("src/ocean/enemies/effect.png")
 enemy.offsetSpawn = 24
+enemy.drop = {[1] = 2}
+
+local particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
+particleHandler:setEmissionArea("normal", enemy.width/4, enemy.height/4)
+particleHandler:setParticleLifetime(0.3, 0.9)
+particleHandler:setLinearAcceleration(0, 10, 0, 30)
+particleHandler:setColors(1, 1, 1, 0.8, 1, 1, 1, 0)
+particleHandler:setRelativeRotation(true)
+particleHandler:setSpread(3.14*2)
+particleHandler:setSpinVariation(1)
+particleHandler:setSpeed(30)
+
+local animations = {
+  anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
+  anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
+  anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
+  anim8.newAnimation(enemy.grid:getFrames("7-10", 1), 0.1, "pauseAtEnd"),
+  anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.15, "pauseAtEnd"),
+}
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
@@ -19,26 +38,15 @@ function enemy.new(x, y)
     shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {
-    anim8.newAnimation(enemy.grid:getFrames("1-2", 1), 1.4),
-    anim8.newAnimation(enemy.grid:getFrames("3-4", 1), 1.4),
-    anim8.newAnimation(enemy.grid:getFrames("5-6", 1), 0.2, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("7-10", 1), 0.1, "pauseAtEnd"),
-    anim8.newAnimation(enemy.grid:getFrames("11-14", 1), 0.15, "pauseAtEnd"),
+    animations[1]:clone(),
+    animations[2]:clone(),
+    animations[3]:clone(),
+    animations[4]:clone(),
+    animations[5]:clone(),
   }
 
   instance.currentAnimation = 1
-  
-  instance.particleHandler = love.graphics.newParticleSystem(enemy.effectTexture, 1000)
-  instance.particleHandler:setEmissionArea("normal", instance.width/4, instance.height/4)
-  instance.particleHandler:setParticleLifetime(0.3, 0.9)
-  instance.particleHandler:setLinearAcceleration(0, 10, 0, 30)
-  instance.particleHandler:setColors(1, 1, 1, 0.8, 1, 1, 1, 0)
-  instance.particleHandler:setRelativeRotation(true)
-  instance.particleHandler:setSpread(3.14*2)
-  instance.particleHandler:setSpinVariation(1)
-  instance.particleHandler:setSpeed(30)
-
-  instance.drop = {[1] = 2}
+  instance.particleHandler = particleHandler:clone()
 
   return instance
 end

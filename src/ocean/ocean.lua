@@ -96,7 +96,6 @@ function ocean:update(delta)
     self.startStatus = 2
   end
 
-
   self.water:update()
   if self.startStatus > 0 then self.enemyManager:update(delta) end
   self.dropManager:update(delta)
@@ -137,8 +136,13 @@ function ocean:draw()
    local drawObjects = {
     self.lighthouse,
     self.light,
-    unpack(EnemyClass.toDraw),
   }
+  for _, v in ipairs(EnemyClass.toDraw) do
+    table.insert(drawObjects, v)
+  end
+  for _, v in ipairs(self.entities) do
+    table.insert(drawObjects, v)
+  end
 
   table.sort(drawObjects, tools.ysort)
   for i, o in ipairs(drawObjects) do
@@ -221,6 +225,11 @@ function ocean:addCounter(drop)
   self.counterList[collectsID[drop]].autoTracker = true
 
   self.counterHud:addToList(self.counterList[collectsID[drop]])
+end
+
+function ocean:addEntity(entity)
+  entity.drawID = love.timer.getTime()
+  table.insert(self.entities, entity)
 end
 
 return ocean

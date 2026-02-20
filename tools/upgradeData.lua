@@ -100,9 +100,6 @@ local function createPrice(id, value, power)
 	end
 
 	newPrice.getCurrentPrice = function(self, ID, level)
-		--if type(self.addRule) == "table" then
-		--	return self.price[ID] + self.addRule[ID] * level 
-		--end
 		
 		return self.price[ID] * self.power ^ level 	
 	end
@@ -173,13 +170,13 @@ return {
 				
 			},
 			mul = {
-				bright = multiplyStrategy.new(1.05, 3, "brightLight", createPrice(1, 90), {-260, -70}, {{"light", "size", "visor", 2}})
+				bright = multiplyStrategy.new(1.05, 3, "brightLight", createPrice(1, 380, 3), {-260, -70}, {{"light", "size", "visor", 2}})
 			}
 		},
 		speed = {
 			add = {
 				little = addStrategy.new(1.5, 5, "littleMovement", createPrice(1, 3), {-210, -180}, {{"light", "size", "visor", 2}}),
-				fast = addStrategy.new(3, 6, "fastMovement", createPrice(1, 5), {-320, -200}, {{"light", "speed", "little", 2}}),
+				fast = addStrategy.new(3, 6, "fastMovement", createPrice(1, 30), {-320, -200}, {{"light", "speed", "little", 2}}),
 			},
 		},
 		oil = {
@@ -191,7 +188,7 @@ return {
 		},
 		fuelUse = {
 			mul = {
-				otimize = multiplyStrategy.new(0.975, 5, "burnOtimized", createPrice(1,  40), {170, 80}, {{"light", "oil", "littleTank", 1}}),
+				otimize = multiplyStrategy.new(0.975, 5, "burnOtimized", createPrice(1,  90), {170, 80}, {{"light", "oil", "littleTank", 1}}),
 			}
 		},
 		damage = {
@@ -205,12 +202,13 @@ return {
 		},
 		attackCooldown = {
 			add = {
-				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15), {20, 210}, {{"light", "damage", "basic", 2}})
+				agilityAtk = addStrategy.new(-0.1, 5, "agilityAtk", createPrice(1,  15), {20, 210}, {{"light", "damage", "basic", 2}}),
+				berserk = addStrategy.new(-0.3, 5, "berserk", createPrice(2, 270, 3), {40, 320}, {{"light", "attackCooldown", "agilityAtk", 5}})
 			}
 		},
 		damageResist = {
 			mul = {
-				lightShield = multiplyStrategy.new(0.95, 5, "lightShield", createPrice(1, 20), {-160, 90}, {{"light", "damage", "basic", 2}})
+				lightShield = multiplyStrategy.new(0.95, 5, "lightShield", createPrice(1, 100), {-160, 90}, {{"light", "damage", "basic", 2}})
 			}
 		}
 	},
@@ -218,31 +216,30 @@ return {
 		darkEssence = {
 			add = {
 				betterCatch = addStrategy.new(1, 5, "betterCatch", createPrice(1, 4), {0, -40}, nil, "collectAmount"),
-				noWast = addStrategy.new(5, 5, "noWast", createPrice(1, 30), {0, -160}, {{"collect", "darkEssence", "betterCatch", 1}}, "collectAmount")
+				noWast = addStrategy.new(5, 5, "noWast", createPrice(1, 35, 3), {0, -160}, {{"collect", "darkEssence", "betterCatch", 1}}, "collectAmount")
 			}
 		},
 		corruptEssence = {
 			add = {
-				badLuck = addStrategy.new(1, 5, "badLuck", createPrice({[1] = 150, [2] = 4}), {-50, -280}, {{"collect", "darkEssence", "noWast", 2}}, "collectAmount"),
+				badLuck = addStrategy.new(1, 5, "badLuck", createPrice({[1] = 300, [2] = 6}, 3.5), {-50, -280}, {{"collect", "darkEssence", "noWast", 2}}, "collectAmount"),
 			}
 		}
 	},
 	result = {
 		darkEssence = {
 			mul = {
-				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 80), {120, -230}, {{"collect", "darkEssence", "noWast", 1}}, "resultAmount")
+				whatLuck = multiplyStrategy.new(1.15, 4, "whatLuck", createPrice(1, 190, 3.5), {120, -230}, {{"collect", "darkEssence", "noWast", 1}}, "resultAmount")
 			}
 		},
 		corruptEssence = {
 			mul = {
-				whatBadLuck = multiplyStrategy.new(1.20, 5, "whatBadLuck", createPrice({[1] = 80, [2] = 20}), {-150, -350},
-					{{"collect", "corruptEssence", "badLuck", 1}}, "resultAmount")
+				whatBadLuck = multiplyStrategy.new(1.10, 5, "whatBadLuck", createPrice({[1] = 300, [2] = 20}, 2.5), {-150, -350}, {{"collect", "corruptEssence", "badLuck", 1}}, "resultAmount")
 			}
 		}
 	},
 	oil = {
 		spawn = {
-			add = {recharge = addStrategy.new(1, 3, "recharge", createPrice(1, 15), {140, -50}, {{"light", "oil", "littleTank", 1}})}
+			add = {recharge = addStrategy.new(1, 3, "recharge", createPrice(1, 50), {140, -50}, {{"light", "oil", "littleTank", 1}})}
 		},
 		oilAmount = {
 			add = {
