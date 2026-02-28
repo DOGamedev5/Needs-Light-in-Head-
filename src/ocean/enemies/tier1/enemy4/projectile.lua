@@ -4,8 +4,8 @@ projectile.texture = love.graphics.newImage("src/ocean/enemies/tier1/enemy4/proj
 projectile.particleTexture = love.graphics.newImage("src/ocean/enemies/tier1/enemy4/particle.png")
 projectile.damage = 10
 
-local grid = anim8.newGrid(9, 192, 36, 192)
-local animation = anim8.newAnimation(grid:getFrames("2-4", 1), {0.06, 0.06, 0.06}, "pauseAtEnd")
+local grid = anim8.newGrid(9, 192, 27, 192)
+local animation = anim8.newAnimation(grid:getFrames("1-3", 1), {0.06, 0.06, 0.06}, "pauseAtEnd")
 
 local ps = love.graphics.newParticleSystem(projectile.particleTexture, 8)
 ps:setDirection(math.rad(-90))
@@ -35,12 +35,13 @@ ps:setQuads(
 	particleQuads[3]
 )
 
+projectile.sortOffset = 40
 
 function projectile.new(x, y)
 	local instance = setmetatable({}, {__index=projectile})
 
 	instance.x = x
-	instance.y = y+40
+	instance.y = y
 	instance.particleHandler = ps:clone()
 	instance.particleImpactHandler = ps:clone()
 	instance.particleHandler:emit(12)
@@ -74,17 +75,14 @@ function projectile:update(delta)
 end
 
 function projectile:draw()
-	love.graphics.draw(self.particleHandler, self.x, self.y-48, 0, 2, 2)
-	love.graphics.draw(self.particleImpactHandler, self.x, self.y-48, 0, 2, 2)
-	--if self.animation.status ~= "paused" and self.state == 0 then
-	if self.state < 2 then self.animation:draw(self.texture, self.x, self.y-48, 0, 2, 2, 4.5, 192) end
-	--elseif self.state == 1 then
-	--	self.animation:draw(self.texture, 0, -48, 0, 2, 2, 4.5, 192)
-	--end
+	love.graphics.draw(self.particleHandler, self.x, self.y-8, 0, 2, 2)
+	love.graphics.draw(self.particleImpactHandler, self.x, self.y-8, 0, 2, 2)
+	if self.state < 2 then self.animation:draw(self.texture, self.x, self.y-8, 0, 2, 2, 4.5, 192) end
 end
 
 function projectile:die()
-
+	self.particleHandler:release()
+	self.particleImpactHandler:release()
 end
 
 return projectile

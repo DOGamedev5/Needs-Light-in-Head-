@@ -31,12 +31,13 @@ particleHandler:setSpinVariation(1)
 particleHandler:setSpeed(30)
 
 function enemy.new(x, y)
+  local shape = love.physics.newCircleShape(14)
   local instance = setmetatable(EnemyClass.new(x, y, {
     speed = 30,
     health = 35,
     damage = 2,
     attackTime = 0.7,
-    shape = love.physics.newCircleShape(14)
+    shape = shape
   }), {__index = enemy})
   instance.animations = {
     animations[1]:clone(),

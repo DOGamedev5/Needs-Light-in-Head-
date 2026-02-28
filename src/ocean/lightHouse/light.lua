@@ -207,7 +207,9 @@ function light:attack()
 
     elseif enemy.damaged then
       enemy:damaged(self.damage)
-
+      if enemy.toDie then
+        tools.erase(self.entered, e)
+      end
     end
   end
 end

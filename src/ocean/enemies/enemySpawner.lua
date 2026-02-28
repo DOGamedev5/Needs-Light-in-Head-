@@ -147,6 +147,7 @@ function EnemySpawner:getEnemySpawn()
 
 		if self.timeAlive >= v[1] and self.timeAlive <= v[2] then
 			for i=1, self.spawnPerc[k] do
+
 				possible[#possible+1] = k
 				amount = amount + 1
 			end

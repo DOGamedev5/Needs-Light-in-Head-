@@ -113,7 +113,7 @@ function enemy.new(x, y)
   				instance.animations[4]:pauseAtStart()
           if instance.currentAnimation == 2 then
             instance.animations[2].status = "paused"
-            instance.animations[4].timer = self.animations[2].timer
+            instance.animations[4].timer = instance.animations[2].timer
             instance.animations[4].status = "playing"
           end
 
