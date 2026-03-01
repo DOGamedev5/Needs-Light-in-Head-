@@ -14,7 +14,7 @@ ocean.already = false
 ocean.entities = {}
 ocean.dayManager = require("src.ocean.daysManager")
 ocean.enemyManager = require("src.ocean.enemies.enemySpawner")
-ocean.enemyManager:load()
+--ocean.enemyManager:load()
 ocean.dropManager = require("src.ocean.dropManager")
 ocean.counter = require("src.ocean.hudElements.counter")
 ocean.counterList = {}
@@ -26,7 +26,7 @@ ocean.timeCounter = {
   draw = function(self)
     love.graphics.setColor(1, 1, 1, 0.7)
     love.graphics.setFont(fonts.normal)
-    local scale = 2
+   --[[ local scale = 2
     local remain = ocean.enemyManager.timeMax - ocean.enemyManager.timeAlive 
     local seconds = math.floor(remain)
 
@@ -36,13 +36,15 @@ ocean.timeCounter = {
     end
     
     local text = string.format(TranslateManager:getReference("ocean", "timeFormat"), seconds)
-    local dayText = string.format(TranslateManager:getReference("ocean", "day"), currentScene.save.currentDay, currentScene.save.currentWeek)
     local wid = fonts.normal:getWidth(text)*scale
+    ]]
+
+    local dayText = string.format(TranslateManager:getReference("ocean", "day"), currentScene.save.currentDay, currentScene.save.currentWeek)
     local dayWid = fonts.normal:getWidth(dayText)*2
     local dayHei = fonts.normal:getHeight(dayText)*2
 
+    --love.graphics.print(text, windowSize.x - wid - 10, dayHei + 2, 0, scale, scale)
     love.graphics.print(dayText, windowSize.x - dayWid - 10, 5, 0, 2, 2)
-    love.graphics.print(text, windowSize.x - wid - 10, dayHei + 2, 0, scale, scale)
 
   end
 }
@@ -113,7 +115,7 @@ function ocean:update(delta)
   self.lighthouse:update(delta)
   self.light:update(delta)
 
-  if self.enemyManager.timeAlive >= self.currentDay.time and self.light.fuel > 0 then
+  if self.enemyManager.beated then
     self:finished(true)
   end
 end

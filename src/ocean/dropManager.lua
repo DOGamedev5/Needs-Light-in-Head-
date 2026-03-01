@@ -23,17 +23,22 @@ function dropManager:init(dayInfo)
 		self.drops[i]:remove()
 		table.remove(self.drops, i)
 	end
+	dropTimer = dropTimerMax
 
+	--[[
 	self.rules = dayInfo.dropRules
-
+	
 	self.dropsID = self.rules.drops
 	self.timeAlive = 0
 	self.timeMax = dayInfo.time or 90
 	self.frequency = self.rules.frequency
-	dropTimer = dropTimerMax
 	self.amount = self.rules.amount
 	self.groupPerc = self.rules.groupPerc[1][2]
 	self.spawnPerc = self.rules.percent[1][2]
+	]]
+
+	self.rules = dayInfo.dropInfo
+
 	for i=1, #self.specialInst do
 		for a=1, UpgradeManager:apply(specialID[i], "spawn", 0) do
 			self:addSpecial(i)
@@ -42,18 +47,19 @@ function dropManager:init(dayInfo)
 end
 
 function dropManager:addDrop(drop, x, y, sizeExplo)
-	self.drops[#self.drops + 1] = self.dropsInst[drop].new(x, y, sizeExplo)
-	--print(drop)
+	--self.drops[#self.drops + 1] = self.dropsInst[drop].new(x, y, sizeExplo)
+	table.insert(self.drops, self.dropsInst[drop].new(x, y, sizeExplo))
 end
 
 function dropManager:addSpecial(drop)
-	self.drops[#self.drops + 1] = self.specialInst[drop].new()
+	--self.drops[#self.drops + 1] = self.specialInst[drop].new()
+	table.insert(self.drops, self.specialInst[drop].new())
 end
 
 function dropManager:update(delta)
-	dropTimer = dropTimer - delta * self.frequency
-	self.timeAlive = self.timeAlive + delta
-	self:updateRules()
+	dropTimer = dropTimer - delta * self.rules.frequency
+	--self.timeAlive = self.timeAlive + delta
+	--self:updateRules()
 
 	if dropTimer <= 0 then
 		dropTimer = dropTimerMax
@@ -99,9 +105,10 @@ function dropManager:updateRules()
 end
 
 function dropManager:generateDrop()
-	local porc = love.math.random(1, 100)
-	local amount = self.amount[1]-1
-	if porc <= self.groupPerc then amount = love.math.random(self.amount[1], self.amount[2]-1) end
+	--local porc = love.math.random(0, 10000)/100
+	--local amount = self.amount[1]-1
+	--if porc <= self.groupPerc then amount = love.math.random(self.amount[1], self.amount[2]-1) end
+	local amount = love.math.random(self.rules.amountInterval[1], self.rules.amountInterval[2]) - 1
 
 	local function spawn(drop)
 		if drop == null then
@@ -112,7 +119,6 @@ function dropManager:generateDrop()
 		local posY = love.math.random(5, windowSize.y-5)
 		
 		self:addDrop(drop, posX, posY, 2)
-		--self.instances[#self.instances + 1] = drop.new(posX, posY)
 	end
 	for i=0, amount do
 		spawn(self:getDrop())
@@ -123,13 +129,20 @@ end
 function dropManager:getDrop()
 	local possible = {}
 	local amount = 0
-	for k, v in pairs(self.rules.spawn) do
-
+	--for k, v in pairs(self.rules.spawn) do
+		--[[
 		if self.timeAlive >= v[1] and self.timeAlive <= v[2] then
 			for i=1, self.spawnPerc[k] do
 				possible[#possible+1] = k
 				amount = amount + 1
 			end
+		end
+		]]
+	for k, v in pairs(self.rules.dropPercent) do
+
+		for i=1, v do
+			possible[#possible+1] = k
+			amount = amount + 1
 		end
 	end
 

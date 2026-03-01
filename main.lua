@@ -209,7 +209,7 @@ function love.draw()
   love.graphics.rectangle("fill", love.graphics.getWidth() - pading.x, 0, pading.x, love.graphics.getHeight() + pading.y)
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), pading.y)
   love.graphics.rectangle("fill", 0, love.graphics.getHeight() - pading.y, love.graphics.getWidth(), pading.y)
-  showDebugInfo()
+  --showDebugInfo()
 end
 
 function love.mousepressed(x, y, button, touch, presses)

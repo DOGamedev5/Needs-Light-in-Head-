@@ -125,7 +125,9 @@ function light:update(delta)
       self.attackTimer = self.attackTimerMax
       self:attack()
     end
-    self.fuel = self.fuel - UpgradeManager:apply("light", "fuelUse", delta*5)
+
+    --self.fuel = self.fuel - UpgradeManager:apply("light", "fuelUse", delta*5)
+    
     if self.fuel <= 0 then
       self.fuel = 0
       Hud:remove(self.hud.attackBarr)

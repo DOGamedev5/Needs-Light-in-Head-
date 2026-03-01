@@ -11,27 +11,27 @@ fonts = {
 
 world = nil
 
--- local baton = require 'plugins.baton'
 lovepatch = require("plugins.lovepatch")
 Timer = require("plugins.hump.timer")
 Vector = require("plugins.hump.vector-light")
--- Camera = require("plugins.hump.camera")
 anim8 = require("plugins.anim8")
 require("tools.input")
 
-require("tools.hud.stringHandler")
+require("classes.hud.stringHandler")
+require("classes.hud.tooltip")
+require("classes.hud.button")
+require("classes.hud.listOrder")
+require("classes.stateMachine")
+require("classes.bufferRegion")
+require("classes.waveSegment")
+
 require("tools.fileSystem")
 require("src.ocean.enemies.enemyClass")
 require("src.ocean.drops.dropClass")
-require("tools.stateMachine")
 --require("tools.particleManager")
-require("tools.hud.listOrder")
 require("tools.tween")
-require("tools.bufferRegion")
 require("tools.upgradeManager")
 require("tools.translateManager")
-require("tools.hud.tooltip")
-require("tools.hud.button")
 
 require("src.ocean.lightHouse.lightBarr.lightBarr")
 
