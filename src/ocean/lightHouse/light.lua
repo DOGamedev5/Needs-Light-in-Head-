@@ -12,10 +12,11 @@ light.force = 1
 light.sfx = love.audio.newSource("src/ocean/lightHouse/attackEffect.wav", "static")
 
 light.hud = {
-  attackBarr = LightBarr.new(100)
+  attackBarr = LightBarr.new(100, 120)
 }
-light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
+light.hud.attackBarr:setPosition(windowSize.x/2, windowSize.y/2+30)
 
+light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
 
 function light:init()
   -- [[status upgradeds setup]]
