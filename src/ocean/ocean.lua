@@ -53,6 +53,8 @@ ocean.timeCounter = {
 function ocean:init(dayInfo)
   setBloomConfig(1.5, 0.85, 0.9)
 
+  self.enemyManager:clear()
+
   self.startStatus = 0
   self.startTimer = 0
   Hud.hidden = true

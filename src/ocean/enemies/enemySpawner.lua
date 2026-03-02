@@ -143,4 +143,11 @@ function EnemySpawner:spawnWave(wave)
 	end
 end
 
+function EnemySpawner:clear()
+	for i=#self.instances, 1, -1 do
+    	self.instances[i]:remove()
+        table.remove(self.instances, i)
+	end
+end
+
 return EnemySpawner
