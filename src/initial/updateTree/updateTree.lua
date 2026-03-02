@@ -16,7 +16,7 @@ tree.pressed = false
 tree.limitX = 500
 tree.limitY = 500
 
-tree.scale = 1
+tree.scale = 1.0
 
 function tree:init()
 	self.posX = 0

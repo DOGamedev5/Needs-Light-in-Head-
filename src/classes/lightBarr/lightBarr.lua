@@ -1,8 +1,8 @@
 LightBarr = {}
 
 LightBarr.lightBarrTexture = {
-  lovepatch.load("src/ocean/lightHouse/lightBarr/lightFuel1.png", 2, 2, 1, 1),
-  lovepatch.load("src/ocean/lightHouse/lightBarr/lightFuel2.png", 2, 2, 1, 1)
+  lovepatch.load("src/classes/lightBarr/lightFuel1.png", 2, 2, 1, 1),
+  lovepatch.load("src/classes/lightBarr/lightFuel2.png", 2, 2, 1, 1)
 }
 
 LightBarr.max = 80

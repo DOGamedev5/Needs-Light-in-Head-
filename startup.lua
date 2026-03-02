@@ -15,7 +15,6 @@ lovepatch = require("plugins.lovepatch")
 Timer = require("plugins.hump.timer")
 Vector = require("plugins.hump.vector-light")
 anim8 = require("plugins.anim8")
-require("tools.input")
 
 require("classes.hud.stringHandler")
 require("classes.hud.tooltip")
@@ -25,17 +24,17 @@ require("classes.stateMachine")
 require("classes.bufferRegion")
 require("classes.waveSegment")
 
-require("tools.fileSystem")
+require("src.classes.lightBarr.lightBarr")
 require("src.ocean.enemies.enemyClass")
 require("src.ocean.drops.dropClass")
---require("tools.particleManager")
+
+require("tools.configuration")
+require("tools.input")
 require("tools.tween")
 require("tools.upgradeManager")
 require("tools.translateManager")
-
-require("src.ocean.lightHouse.lightBarr.lightBarr")
-
-require("plugins.hump.camera")
+require("tools.fileSystem")
 require("tools.sceneManager")
 
+--require("src.ocean.lightHouse.lightBarr.lightBarr")
 require("src.hud")

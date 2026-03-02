@@ -114,28 +114,24 @@ collectsID = {
 screenShake = {x = 0, y = 0}
 
 function love.load()
+  require("startup")
+
+  Configuration:load()
+
   bloom = love.graphics.newShader("src/shaders/bloom.glsl")
-  bloom:send("gamma", 1.0)
+  bloom:send("gamma", Configuration.gamma)
   setBloomConfig(1.0, 0.9, 1.2)
+  
+  TranslateManager:loadLanguege(Configuration.language)
+
   canvas = love.graphics.newCanvas()
   canvasUI = love.graphics.newCanvas()
 
   World = love.physics.newWorld(0 , 0, true)
   World:setCallbacks(worldBegincontact, worldAftercontact)
-  require("startup")
 
   local ww, wh = love.graphics.getDimensions()
   resizeWindow(ww, wh)
-
-  conf = {}
-  conf.languege = "en"
-  conf.version = "v0.1"
-  
-  if not FileSystem.fileExist(confFile) then
-    FileSystem.writeFile(confFile, conf)
-  else
-    conf = FileSystem.loadFile(confFile)
-  end
 
   local OS = love.system.getOS() 
   if OS == "Android" or OS == "iOS" then
@@ -144,7 +140,6 @@ function love.load()
     device = "desktop"
   end
 
-  TranslateManager:loadLanguege(conf.languege)
 
   sceneManager.changeScene(1)
 end
@@ -199,8 +194,9 @@ function love.draw()
   love.graphics.setColor(1, 1, 1)
   love.graphics.setBlendMode("alpha", "premultiplied")
 
-  love.graphics.setShader(bloom)
+  if Configuration.bloom then love.graphics.setShader(bloom) end
   love.graphics.draw(canvas, screenShake.x, screenShake.y)
+  
   love.graphics.setShader()
   love.graphics.draw(canvasUI, 0, 0)
 
@@ -260,6 +256,7 @@ end
 
 function love.quit()
   sceneManager.quit()
+  Configuration:save()
 
   return false
 end

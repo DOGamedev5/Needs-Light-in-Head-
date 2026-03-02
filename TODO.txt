@@ -1,8 +1,60 @@
 TO DO
 
+EnemySpawner
+	improve cache system to unload only the oldest acessed on cache
+
+UpgradeTree
+	Add more upgrades, like, shield timer, collect, speed, oil
+	make zoom in and zoom out system
+	IconButton:
+		make the lines of dependences positions constanst istead of ingame calculated, for improving performance and stop some visual flickering
+
 Menu
-	options
-pause menu
+	options:
+		translation choice
+		bloom effect switch
+		brightNess slider
+
+initial
+	add pause/configuration Tab:
+		HUD button
+		same options configuration as the menu options
+		exit to menu button
+		exii game button
+		exit resume button
+
+	add music
+
+ocean
+	add pause/configuration Tab:
+		HUD button
+		same options configuration as the menu options
+		exit to menu button
+		exii game button
+		exit resume button
+
+	improve Hud:
+		wave info:
+			current and maximum waves
+			wave timer
+
+	add music
+	sfx:
+		lightTower damage sfx
+
+results
+	add music
+
 Control
 	detect control
 	exit with esc
+
+button
+	press SFX
+	locked SFX
+
+slider SFX
+
+Enemies
+	shield SFX
+	shoot SFX

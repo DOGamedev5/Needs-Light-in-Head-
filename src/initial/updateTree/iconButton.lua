@@ -107,7 +107,7 @@ function IconButton:updateInfo()
 end
 
 function IconButton:update(delta)
-	if tools.AABB.detect(self.posX - self.tree.posX - 32, self.posY - self.tree.posY - 32, self.width, self.height, 0, 0, windowSize.x, windowSize.y) then
+	if self:detectAABB(0, 0, true) then
 		if not self.onScreen then
 			self.onScreen = true
 			self:init()
@@ -131,18 +131,25 @@ function IconButton:drawLine()
 	for i, v in ipairs(self.requirements) do
 			local level, max = UpgradeManager:getLevelInfo(v[1], v[2], v[3])
 			local reqX, reqY = UpgradeManager:getPosition(v[1], v[2], v[3])
-			local dirX, dirY = Vector.normalize(reqX - self.posX, reqY - self.posY)
+			
+			local treqX, treqY, _ = self:translatePosition(reqX, reqY)
+			local tx, ty, offset = self:translatePosition(self.posX, self.posY)
 
-			local offsetX = dirX*40
-			local offsetY = dirY*40
+			local dirX, dirY = Vector.normalize(treqX - tx, treqY - ty)
+
+			local offsetX = dirX * (40 * self.tree.scale)
+			local offsetY = dirY * (40 * self.tree.scale)
+
 			if math.abs(dirY) > math.abs(dirX) then
-				offsetY = tools.sign(dirY)*32
+				offsetY = tools.sign(dirY)*offset
 			elseif math.abs(dirX) > math.abs(dirY) then
-				offsetX = tools.sign(dirX)*32
+				offsetX = tools.sign(dirX)*offset
 			end
 
-			local x1, y1 = self.posX + offsetX - self.tree.posX, self.posY + offsetY - self.tree.posY
-			local x2, y2 = reqX - offsetX - self.tree.posX, reqY - offsetY - self.tree.posY
+			local x1, y1 = tx + offsetX, ty + offsetY
+			local x2, y2 = treqX - offsetX, treqY - offsetY
+			--local x1, y1 = tx + offsetX - self.tree.posX, ty + offsetY - self.tree.posY
+			--local x2, y2 = treqX - offsetX - self.tree.posX, treqY - offsetY - self.tree.posY
 
 			love.graphics.setLineStyle("rough")
 			love.graphics.setLineWidth(6)
@@ -171,22 +178,23 @@ function IconButton:draw()
 		quadId = quadId + 3
 	end 
 
-		
 	local scale = 2
 	if self.pressed then scale = 1.8 end
 
 	scale = scale * self.tree.scale
 
+	local tx, ty, _ = self:translatePosition(self.posX, self.posY)
+
 	self.shader:send("complete", self.full)
 
 	if self.state ~= 3 or self.hover then love.graphics.setShader(self.shader) end
 	love.graphics.setColor(1, 1, 1)
-	love.graphics.draw(self.texture, self.quad[quadId], self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
+	love.graphics.draw(self.texture, self.quad[quadId], tx, ty, 0, scale, scale, 16, 16)
 	love.graphics.setShader()
 
 	love.graphics.setColor(1, 1, 1)
 	if self.state == 0 then love.graphics.setColor(0, 0, 0.05) end
-	love.graphics.draw(self.image, self.posX - self.tree.posX, self.posY - self.tree.posY, 0, scale, scale, 16, 16)
+	love.graphics.draw(self.image, tx, ty, 0, scale, scale, 16, 16)
 
 end
 
@@ -266,12 +274,26 @@ function IconButton:getDescription()
 	return result
 end
 
-function IconButton:detectAABB(x, y)
-	local offset = 32 * self.tree.scale
-	local posX = (self.posX - self.tree.posX-offset)
-	local posY = (self.posY - self.tree.posY-offset)
+function IconButton:detectAABB(x, y, screen)
+	local posX, posY, offset = self:translatePosition(self.posX, self.posY)
+	posX = posX - offset
+	posY = posY - offset
+	screen = screen or false
 
-	return tools.AABB.detectPoint(x, y, posX, posY, self.width * self.tree.scale, self.height * self.tree.scale)
+	if screen then
+		return tools.AABB.detect(0, 0, windowSize.x, windowSize.y, posX, posY, self.width * self.tree.scale, self.height * self.tree.scale)
+	else
+		return tools.AABB.detectPoint(x, y, posX, posY, self.width * self.tree.scale, self.height * self.tree.scale)
+	end
+end
+
+function IconButton:translatePosition(x, y)
+	local scale = self.tree.scale
+	local offset = 32 * scale
+	local posX = ((x - windowSize.x/2) * scale) + windowSize.x/2 - self.tree.posX - offset
+	local posY = ((y - windowSize.y/2) * scale) + windowSize.y/2 - self.tree.posY - offset
+
+	return posX, posY, offset
 end
 
 return IconButton

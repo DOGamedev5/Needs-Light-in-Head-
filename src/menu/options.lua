@@ -1,5 +1,4 @@
 local options = {}
-options.file = "configuration.lua"
 
 function options:load(menu)
 

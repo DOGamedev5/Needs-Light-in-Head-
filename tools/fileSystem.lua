@@ -3,7 +3,10 @@ FileSystem = {}
 function FileSystem.serialize(data, indentation)
 	indentation = indentation or 0
 	result = ""
-	if type(data) == "number" then
+
+	if type(data) == "boolean" then
+		return tostring(data)
+	elseif type(data) == "number" then
 		return tostring(data)
 	elseif type(data) == "string" then
 		return string.format("%q", data)
