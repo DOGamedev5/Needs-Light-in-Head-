@@ -5,13 +5,13 @@ lightHouse.hovered = false
 lightHouse.scale = 2
 lightHouse.pressed = false
 
-function lightHouse:init(x, y, owner)
+function lightHouse:init(owner)
 	self.owner = owner
 	self.boatLightWidth = self.boatLight:getWidth()/4
 	self.boatLightHeight = self.boatLight:getHeight()/3
 	self.boatLightGrid = anim8.newGrid(self.boatLightWidth, self.boatLightHeight, self.boatLight:getWidth(), self.boatLight:getHeight())
 	self.boatLightQuads = self.boatLightGrid:getFrames("1-2", 3)
-	self.posX, self.posY = x, y
+	self.posX, self.posY = windowSize.x/2-70, windowSize.y/2+42
 end
 
 function lightHouse:mouseMoved(x, y)

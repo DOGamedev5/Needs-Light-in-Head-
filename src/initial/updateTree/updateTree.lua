@@ -16,6 +16,8 @@ tree.pressed = false
 tree.limitX = 500
 tree.limitY = 500
 
+tree.scale = 1
+
 function tree:init()
 	self.posX = 0
 	self.posY = 0
@@ -27,6 +29,8 @@ function tree:init()
 end
 
 function tree:update(delta)
+	self.scale = math.max(math.min(self.scale, 2), 0.5)
+
 	self.exit:update(delta)
 	self.buy:update(delta)
 	for i, v in ipairs(self.icons) do
@@ -38,6 +42,7 @@ function tree:update(delta)
 	else
 		self.pad = tools.lerp(self.pad, self.padMin, 5*delta)
 	end
+
 end
 
 function tree:updateInfo()

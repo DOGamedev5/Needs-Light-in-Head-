@@ -4,23 +4,26 @@ DaysManager.currentWeek = 0
 DaysManager.daysData = {}
 DaysManager.day = {}
 DaysManager.loaded = ""
-local pathBase = "src.ocean.daysInfo.week%d.day%d"
+local pathBase = "src.daysInfo.week%d.day%d"
+
+local maxDays = 2
+local maxWeeks = 1
 
 function DaysManager:getCurrentDayData(day, week)
-	--[[
-	if self.currentWeek ~= week then
-		self.daysData = require(string.format("src.ocean.daysInfo.week%d", week))
-		self.currentWeek = week
+	
+	if week > maxWeeks then
+		week = maxWeeks
+		day = 6
+	elseif day > maxDays and week == maxWeeks then
+		day = maxDays
 	end
-	return self.daysData[day]
-	]]
+
 	local path = string.format(pathBase, week, day)
 	
 	if path ~= self.loaded then
 		self.day = require(path)
 		self.loaded = path
 	end
-
 	return self.day
 end
 

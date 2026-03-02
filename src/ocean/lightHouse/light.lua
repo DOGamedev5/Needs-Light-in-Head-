@@ -18,9 +18,22 @@ light.fuelBarr = require("src.ocean.lightHouse.fuelBarr")
 
 
 function light:init()
+  -- [[status upgradeds setup]]
   self.radius = UpgradeManager:apply("light", "size", 30)
-  self.sortOffset = self.radius
   self.speed = UpgradeManager:apply("light", "speed", 150)
+  self.fuelUse = UpgradeManager:apply("light", "fuelUse", 10) 
+  self.damage = UpgradeManager:apply("light", "damage", 20)
+  self.fuelMax = UpgradeManager:apply("light", "oil", 100)
+  self.attackTimerMax = UpgradeManager:apply("light", "attackCooldown", 2)
+
+  -- [[status set]]
+  self.fuel = self.fuelMax
+  self.attackTimer = self.attackTimerMax
+  self.sortOffset = self.radius
+
+  self.fuelBarr:setup(self)
+
+  -- [[setup physics and systems]]
 
   self.x, self.y = toGame(lastMousePosition.x, lastMousePosition.y)
   self.target.x, self.target.y = self.x, self.y
@@ -35,25 +48,10 @@ function light:init()
 
   self.entered = {}
 
-  self.damage = UpgradeManager:apply("light", "damage", 20)
-
-  self.timeToDamage = 1
-  self.fuelMax = UpgradeManager:apply("light", "oil", 100)
-  self.fuel = self.fuelMax
-  
-  self.attackTimerMax = UpgradeManager:apply("light", "attackCooldown", 2)
-  self.attackTimer = self.attackTimerMax
-
-  self.fuelBarr:setup(self)
   Hud:addToHud(self.hud.attackBarr)
   Hud:addToHud(self.fuelBarr)
-
-  self:start()
 end
 
-function light:start()
-  self.attackTimer = self.attackTimerMax
-end
 
 function light:beginContact(otherFixture)
   local otherBody = otherFixture:getBody()
@@ -73,48 +71,85 @@ function light:afterContact(otherFixture)
   end
 end
 
-function light:exit()
-  self.fixture:destroy()
-  self.fixture:release()
-  self.body:destroy()
-  self.body:release()
-  self.shape:release()
-  Hud:remove(self.hud.attackBarr)
+-- [[Ligth Logic functions]]
+
+function light:damageFuel(dmg)
+  self.fuel = self.fuel - dmg
+  local sx, sy = Vector.normalize(love.math.random(-2, 2), love.math.random(-2, 2))
+
+  screenShake.x = sx*2
+  screenShake.y = sy*2
+  if self.fuel < 0 then
+    self.fuel = 0
+    Hud:remove(self.hud.attackBarr)
+    self.fixture:setCategory(1)
+  end
 end
 
-function light:update(delta)
+function light:refil(amount)
+  self.fuel = math.min(self.fuel + amount, self.fuelMax)
+end
+
+function light:physics(delta)
   local distX, distY = self.target.x - self.body:getX(), self.target.y - self.body:getY()
   local dirX, dirY = Vector.normalize(distX, distY)
-  
+  local speedX = 0
+  local speedY = 0
+
   if self.body:getX() ~= self.target.x or self.body:getY() ~= self.target.y then
     local oldX, oldY = self.body:getPosition()--self.x, self.y 
-    
-    local speedX = dirX*self.speed
-    if math.abs(distX) < math.abs(speedX)*delta then
-      speedX = distX
-    end
-    local speedY = dirY*self.speed
-    if math.abs(distY) < math.abs(speedY)*delta then
-      speedY = distY
-    end
+    speedX = dirX*self.speed
+    speedY = dirY*self.speed
 
-    self.body:setLinearVelocity(speedX, speedY)
+    if math.abs(distX) < math.abs(speedX)*delta then speedX = distX end
+    if math.abs(distY) < math.abs(speedY)*delta then speedY = distY end
 
     if ((oldX < self.target.x and self.x > self.target.x) or (oldX > self.target.x and self.x < self.target.x)) then 
-      self.x = tools.lerp(oldX, self.target.x, delta*0.5)
-      self.body:setX(self.x)
+      self.body:setX(tools.lerp(oldX, self.target.x, delta*0.5))
+    end
+
+    if ((oldY < self.target.y and self.y > self.target.y) or (oldY > self.target.y and self.y < self.target.y)) then
+      self.body:setY(tools.lerp(oldY, self.target.y, delta*0.5))
+    end
+  end
+
+  self.body:setLinearVelocity(speedX, speedY)
+
+  self.x, self.y = self.body:getPosition()
+end
+
+function light:attack()
+  self.force = 3
+  
+  if #self.entered == 0 then
+    self.force = 1
+  else
+    
+    self.sfx:stop()
+    local p = love.math.random(600, 850)/10
+    self.sfx:setPitch(p/100)
+    self.sfx:setVolume(0.3)
+    self.sfx:play()
+ 
+  end
+  if #self.entered == 0 then return end
+
+  self.fuel = self.fuel - self.fuelUse
+
+  for i, object in ipairs(self.entered) do
+    local enemy = object:getUserData()
+
+    if enemy.toDie then tools.erase(self.entered, object)
+
+    elseif enemy.damaged then
+      enemy:damaged(self.damage)
+      if enemy.toDie then tools.erase(self.entered, object) end
 
     end
-    if ((oldY < self.target.y and self.y > self.target.y) or (oldY > self.target.y and self.y < self.target.y)) then
-      self.y = tools.lerp(oldY, self.target.y, delta*0.5)
-      self.body:setY(self.y)
-    end
-  else
-    self.body:setLinearVelocity(0, 0)
   end
-  
-  self.x, self.y = self.body:getPosition()
-  
+end
+
+function light:fuelLogic(delta)
   if self.fuel > 0 then
     self.force = tools.lerp(self.force, 1, delta*3)
     self.hud.attackBarr:updateFuel(100 - (self.attackTimer / self.attackTimerMax * 100))
@@ -132,10 +167,16 @@ function light:update(delta)
       self.fuel = 0
       Hud:remove(self.hud.attackBarr)
       self.fixture:setCategory(1)
-   end
+    end
   end
-  
 end
+
+function light:update(delta)
+  self:physics(delta)  
+  self:fuelLogic(delta)
+end
+
+-- [[draw functions]]
 
 function light:draw()
   if self.fuel > 0 then
@@ -187,50 +228,13 @@ function light:mouseMoved(x, y, dx, dy, touch)
   self.target.x, self.target.y = toGame(x, y)
 end
 
-function light:attack()
-  self.force = 3
-  
-  if #self.entered == 0 then
-    self.force = 1
-  else
-    
-    self.sfx:stop()
-    local p = love.math.random(60, 85)
-    self.sfx:setPitch(p/100)
-    self.sfx:setVolume(0.3)
-    self.sfx:play()
- 
-  end
-  for i, e in ipairs(self.entered) do
-    local enemy = e:getUserData()
-
-    if enemy.toDie then
-      tools.erase(self.entered, e)
-
-    elseif enemy.damaged then
-      enemy:damaged(self.damage)
-      if enemy.toDie then
-        tools.erase(self.entered, e)
-      end
-    end
-  end
-end
-
-function light:damageFuel(dmg)
-  self.fuel = self.fuel - dmg
-  local sx, sy = Vector.normalize(love.math.random(-2, 2), love.math.random(-2, 2))
-
-  screenShake.x = sx*2
-  screenShake.y = sy*2
-  if self.fuel < 0 then
-    self.fuel = 0
-    Hud:remove(self.hud.attackBarr)
-    self.fixture:setCategory(1)
-  end
-end
-
-function light:refil(amount)
-  self.fuel = math.min(self.fuel + amount, self.fuelMax)
+function light:exit()
+  self.fixture:destroy()
+  self.fixture:release()
+  self.body:destroy()
+  self.body:release()
+  self.shape:release()
+  Hud:remove(self.hud.attackBarr)
 end
 
 return light

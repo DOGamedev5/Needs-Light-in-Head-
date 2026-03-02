@@ -12,7 +12,7 @@ ocean.effects = {}
 ocean.already = false
 
 ocean.entities = {}
-ocean.dayManager = require("src.ocean.daysManager")
+--ocean.dayManager = require("src.ocean.daysManager")
 ocean.enemyManager = require("src.ocean.enemies.enemySpawner")
 --ocean.enemyManager:load()
 ocean.dropManager = require("src.ocean.dropManager")
@@ -50,7 +50,7 @@ ocean.timeCounter = {
 }
 
 
-function ocean:init()
+function ocean:init(dayInfo)
   setBloomConfig(1.5, 0.85, 0.9)
 
   self.startStatus = 0
@@ -64,9 +64,11 @@ function ocean:init()
   self.light:init()
   self.lighthouse:init(self.light)
   
-  self.currentDay = self.dayManager:getCurrentDayData(currentScene.save.currentDay, currentScene.save.currentWeek)
-  self.enemyManager:init(self.currentDay)
-  self.dropManager:init(self.currentDay)
+  
+  self.currentDay = dayInfo
+  self.enemyManager:init(dayInfo)
+  self.dropManager:init(dayInfo)
+
   self.counterhud = {}
   self.counterHud = ListOrder.new(5, 5, 1)
 

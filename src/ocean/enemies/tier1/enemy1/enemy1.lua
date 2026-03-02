@@ -32,9 +32,10 @@ local animations = {
 
 function enemy.new(x, y)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 10,
-    health = 40,
-    damage = 3,
+    speed = 15,
+    health = 60,
+    damage = 2,
+    attackTime = 1.2,
     shape = love.physics.newCircleShape(14)
   }), {__index = enemy})
   instance.animations = {

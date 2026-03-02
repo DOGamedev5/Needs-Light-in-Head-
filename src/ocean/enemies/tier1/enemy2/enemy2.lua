@@ -33,9 +33,9 @@ particleHandler:setSpeed(30)
 function enemy.new(x, y)
   local shape = love.physics.newCircleShape(14)
   local instance = setmetatable(EnemyClass.new(x, y, {
-    speed = 30,
-    health = 35,
-    damage = 2,
+    speed = 25,
+    health = 45,
+    damage = 1,
     attackTime = 0.7,
     shape = shape
   }), {__index = enemy})

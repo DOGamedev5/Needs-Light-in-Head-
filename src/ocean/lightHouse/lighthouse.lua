@@ -14,8 +14,12 @@ lightHouse.animations = {
 lightHouse.width = lightHouse.texturewidth/4
 lightHouse.height = lightHouse.textureheight/3
 
+local shieldTimer = 0
+local shieldTimerMax = 0.8
+
 function lightHouse:init(light)
   self.light = light
+  shieldTimerMax = 1.2
   
   self.currentAnimation = 1
 
@@ -42,19 +46,29 @@ function lightHouse:update(delta)
       currentScene.ocean:finished(false)
     end
   end
+  shieldTimer = shieldTimer - delta 
   self.animations[self.currentAnimation]:update(delta)
 end
 
 function lightHouse:draw()
   local offsetX = 0
   local offsetY = math.sin(love.timer.getTime()*0.25)*4
-  --love.graphics.setColor(0.7, 0.75, 0.9)
+  love.graphics.setColor(1, 1, 1)
+
+  if shieldTimer > 0 then
+    local fade = 0.5 * (shieldTimer/shieldTimerMax) + 0.1*math.cos(shieldTimer*2.0)
+    love.graphics.setColor(1-fade, 1-fade, 1-fade)
+  end
+
   self.animations[self.currentAnimation]:draw(self.texture, self.x - self.width + offsetX, self.y - self.height-48 + offsetY, math.rad(0.2)*offsetY/2, 2, 2) ---self.width/2, -self.height)
   love.graphics.setColor(1, 1, 1)
 end
 
 function lightHouse:damage(dmg)
-  self.light:damageFuel(UpgradeManager:apply("light", "damageResist", dmg))
+  if shieldTimer <= 0 then
+    self.light:damageFuel(UpgradeManager:apply("light", "damageResist", dmg))
+    shieldTimer = shieldTimerMax
+  end
 end
 
 return lightHouse

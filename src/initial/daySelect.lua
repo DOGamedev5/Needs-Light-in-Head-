@@ -13,10 +13,12 @@ daySelect.buttonList:addToList(daySelect.exit)
 daySelect.buttonList:addToList(daySelect.start)
 daySelect.started = false
 daySelect.startTime = 0
+daySelect.dayInfo = nil
 
-function daySelect:init()
+function daySelect:init(dayInfo)
 	self.started = false
 	self.startTime = 0
+	self.dayInfo = dayInfo
 end
 
 function daySelect:update(delta)

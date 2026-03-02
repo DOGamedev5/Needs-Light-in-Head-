@@ -19,29 +19,28 @@ initial.updateTree = require("src.initial.updateTree.updateTree")
 
 initial.collects = {}
 initial.counterList = nil
+initial.dayInfo = {}
 
 local counter = require("src.ocean.hudElements.counter")
 
-function initial:init( )
+function initial:init(dayInfo)
 	self.currentScreen = 1
   	setBloomConfig(0.5, 1.9, 1.0)
 
+  	self.dayInfo = dayInfo
+
 	currentScene:writeSave()
 	self.boatShop:init(self)
-	self.daySelect:init(self)
+	self.daySelect:init(self, dayInfo)
 	self.updateTree:init()
 
-	
-	self.boatLight:init(windowSize.x/2-70, windowSize.y/2+42, self)
+	self.boatLight:init(self)
 	self.time = 0
 	self.water:setWaterColor({26/255, 39/255, 61/255})
-	--self.water:updateOverColor({134/255*1.2, 178/255*1.2, 189/255*1.2, 0.75})
 	self.water:updateOverColor({1, 1, 1, 0.75})
 
 	self.collects = ListOrder.new(10, 10, 5)
 
-
-	--for k, v in pairs(currentScene.save.collects) do
 	for i=1, #collectsID do
 		if currentScene.save.collects[i] == nil then goto continue end
 

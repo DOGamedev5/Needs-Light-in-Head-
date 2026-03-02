@@ -155,7 +155,6 @@ function IconButton:drawLine()
 			end
 
 			love.graphics.line(x1, y1, x2, y2)
-
 	end
 end
 
@@ -175,6 +174,8 @@ function IconButton:draw()
 		
 	local scale = 2
 	if self.pressed then scale = 1.8 end
+
+	scale = scale * self.tree.scale
 
 	self.shader:send("complete", self.full)
 
@@ -196,7 +197,9 @@ function IconButton:mouseMoved(x, y, dx, dy, touch)
   	self.hover = false 
   	return
   end
-  local hovered = tools.AABB.detectPoint(posX, posY, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height)
+
+  local hovered = self:detectAABB(posX, posY)
+
   if self.hover ~= hovered then 
   	self.hover = hovered
   	if hovered then
@@ -224,14 +227,14 @@ end
 function IconButton:mousePressed(x, y, button, touch, presses)
   local tx,ty = toGame(x, y)
 
-  if (button == 1 or touch) and tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height) and not self.pressed and self.state ~= 3 then
+  if (button == 1 or touch) and self:detectAABB(tx, ty) and not self.pressed and self.state ~= 3 then
     self.pressed = true
   end
 end
 
 function IconButton:mouseReleased(x, y, button, touch)
   local tx,ty = toGame(x, y)
-  local inside = tools.AABB.detectPoint(tx, ty, self.posX - self.tree.posX-32, self.posY - self.tree.posY-32, self.width, self.height) and self.pressed
+  local inside = self:detectAABB(tx, ty) and self.pressed
 
   if inside then
     if touch then
@@ -261,6 +264,14 @@ function IconButton:getDescription()
 	result = string.gsub(string.gsub(string.gsub(result, "$name", name), "$property", property), "$value", value)
 
 	return result
+end
+
+function IconButton:detectAABB(x, y)
+	local offset = 32 * self.tree.scale
+	local posX = (self.posX - self.tree.posX-offset)
+	local posY = (self.posY - self.tree.posY-offset)
+
+	return tools.AABB.detectPoint(x, y, posX, posY, self.width * self.tree.scale, self.height * self.tree.scale)
 end
 
 return IconButton

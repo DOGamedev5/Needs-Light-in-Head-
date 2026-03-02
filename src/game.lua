@@ -7,9 +7,16 @@ game.initial = require("src.initial.initial")
 game.saveDirPath = ""
 game.save = {}
 game.mode = ""
+game.dayInfo = {}
+
+local DayManager = require("src.ocean.daysManager")
+local function getDayInfo()
+  game.dayInfo = DayManager:getCurrentDayData(game.save.currentDay, game.save.currentWeek)
+end
 
 function game:load()
   self.saveDirPath = "file".. tostring(currentGameFile) .. "/"
+  
   if FileSystem.fileExist(self.saveDirPath .."save.lua") then
     self.save = FileSystem.loadFile(self.saveDirPath .."save.lua")
 
@@ -36,10 +43,15 @@ function game:load()
     self.collectsIcon[i] = love.graphics.newImage(image)
   end
 
+  getDayInfo()
   self:changeMode("initial")
 end
 
+
 function game:exit()
+  self.saveDirPath = ""
+  self.save = {}
+  self.mode = ""
   self.ocean:exit()
 end
 
@@ -94,7 +106,6 @@ function game:mouseReleased(x, y, button, touch, presses)
   end
 end
 
-
 function game:mouseMoved(x, y, dx, dy, touch)
   if self.mode == "ocean" then
     self.ocean:mouseMoved(x, y, dx, dy, touch)
@@ -114,7 +125,7 @@ end
 
 function game:afterContact(a, b, col)
   if self.mode == "ocean" then
-    game.ocean:afterContact(a, b, col)
+    self.ocean:afterContact(a, b, col)
   else
   end
   
@@ -137,19 +148,21 @@ function game:writeSave()
   if not FileSystem.fileExist(self.saveDirPath, "directory") then
     love.filesystem.createDirectory(self.saveDirPath)
   end
+
   self.save.upgrades = UpgradeManager:getSave()
+  
   FileSystem.writeFile(self.saveDirPath .."save.lua", self.save)
 end
 
 function game:finish(info)
   if info.beated == true then
     self.save.currentDay = self.save.currentDay + 1 
+    getDayInfo()
   end
   
   for k, v in pairs(info.collects) do
     local total = self.save.collects[k] or 0
     self.save.collects[k] = total + v
-
   end
   
   self.results:setupInfo(info)
@@ -160,15 +173,17 @@ end
 function game:changeMode(mode)
   self.mode = mode
   Hud:clear()
+
   if mode == "ocean" then
     isPaused = false
-    self.ocean:init() 
+    self.ocean:init(self.dayInfo)
+
   elseif mode == "results" then
     isPaused = true
-    self.results:init(info)
+    self.results:init()
+
   else
-    
-    self.initial:init()
+    self.initial:init(self.dayInfo)
   end
 end
 
